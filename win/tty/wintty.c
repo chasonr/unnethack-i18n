@@ -209,7 +209,7 @@ bail(const char *mesg)
 
 #if defined(SIGWINCH) && defined(CLIPPING)
 STATIC_OVL void
-winch(void)
+winch(int sig)
 {
     int oldLI = LI, oldCO = CO, i;
     register struct WinDesc *cw;

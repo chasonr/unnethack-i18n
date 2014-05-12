@@ -20,10 +20,6 @@ STATIC_DCL void NDECL(bot2);
 
 #if defined(STATUS_COLORS) && defined(TEXTCOLOR)
 
-extern const struct percent_color_option *hp_colors;
-extern const struct percent_color_option *pw_colors;
-extern const struct text_color_option *text_colors;
-
 struct color_option
 text_color_of(const char *text, const struct text_color_option *color_options)
 {

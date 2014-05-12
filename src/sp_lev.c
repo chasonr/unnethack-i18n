@@ -202,8 +202,8 @@ splev_stack_reverse(struct splevstack *st)
 #define OV_pop_typ(x,typ) (x = splev_stack_getdat(coder, typ))
 
 
-struct opvar *
-opvar_new_str(char *s)
+static struct opvar *
+opvar_new_str(const char *s)
 {
     struct opvar *tmpov = (struct opvar *)alloc(sizeof(struct opvar));
     if (!tmpov) panic("could not alloc opvar struct");
@@ -5912,8 +5912,8 @@ struct _sploader_cache {
 
 struct _sploader_cache *sp_loader_cache = NULL;
 
-sp_lev *
-sp_lev_cache(char *fnam)
+static sp_lev *
+sp_lev_cache(const char *fnam)
 {
     struct _sploader_cache *tmp = sp_loader_cache;
 
@@ -5924,8 +5924,8 @@ sp_lev_cache(char *fnam)
     return NULL;
 }
 
-void
-sp_lev_savecache(char *fnam, sp_lev *lvl)
+static void
+sp_lev_savecache(const char *fnam, sp_lev *lvl)
 {
     struct _sploader_cache *tmp = (struct _sploader_cache *)alloc(sizeof(struct _sploader_cache));
     if (!tmp) panic("save splev cache");

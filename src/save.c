@@ -54,12 +54,6 @@ static long nulls[10];
 extern struct menucoloring *menu_colorings;
 #endif
 
-#if defined(STATUS_COLORS) && defined(TEXTCOLOR)
-extern const struct percent_color_option *hp_colors;
-extern const struct percent_color_option *pw_colors;
-extern const struct text_color_option *text_colors;
-#endif
-
 #ifdef USE_MERSENNE_TWISTER
 extern gsl_rng *rng_state;
 #endif

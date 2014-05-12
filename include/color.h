@@ -100,7 +100,7 @@ struct percent_color_option {
     xchar statclrtype;
     int percentage;
     struct color_option color_option;
-    const struct percent_color_option *next;
+    struct percent_color_option *next;
 };
 
 struct text_color_option {
@@ -108,6 +108,10 @@ struct text_color_option {
     struct color_option color_option;
     const struct text_color_option *next;
 };
+
+extern struct percent_color_option *hp_colors;
+extern struct percent_color_option *pw_colors;
+extern struct text_color_option *text_colors;
 #endif
 
 #ifndef MSDOS
