@@ -19,8 +19,7 @@ STATIC_DCL boolean FDECL(obstructed,(int,int));
 STATIC_DCL void FDECL(chest_shatter_msg, (struct obj *));
 
 boolean
-picking_lock(x, y)
-int *x, *y;
+picking_lock(int *x, int *y)
 {
     if (occupation == picklock) {
         *x = u.ux + u.dx;
@@ -33,15 +32,14 @@ int *x, *y;
 }
 
 boolean
-picking_at(x, y)
-int x, y;
+picking_at(int x, int y)
 {
     return (boolean)(occupation == picklock && xlock.door == &levl[x][y]);
 }
 
 /* produce an occupation string appropriate for the current activity */
 STATIC_OVL const char *
-lock_action()
+lock_action(void)
 {
     /* "unlocking"+2 == "locking" */
     static const char *actions[] = {
@@ -74,7 +72,7 @@ lock_action()
 
 STATIC_PTR
 int
-picklock()	/* try to open/close a lock */
+picklock(void)	/* try to open/close a lock */
 {
 
     if (xlock.box) {
@@ -131,7 +129,7 @@ picklock()	/* try to open/close a lock */
 
 STATIC_PTR
 int
-forcelock()	/* try to force a locked chest */
+forcelock(void)	/* try to force a locked chest */
 {
 
     register struct obj *otmp;
@@ -217,7 +215,7 @@ forcelock()	/* try to force a locked chest */
 }
 
 void
-reset_pick()
+reset_pick(void)
 {
     xlock.usedtime = xlock.chance = xlock.picktyp = 0;
     xlock.door = 0;
@@ -225,10 +223,10 @@ reset_pick()
 }
 
 int
-pick_lock(pick,rx,ry,explicit) /* pick a lock with a given object */
-register struct	obj	*pick;
-int rx,ry;
-boolean explicit; /**< Mentioning tool when (un)locking doors? */
+pick_lock(register struct obj *pick, int rx, int ry, boolean explicit) /* pick a lock with a given object */
+               	   	      
+          
+                  /**< Mentioning tool when (un)locking doors? */
 {
     /* rx and ry are passed only from the use-stethoscope stuff */
     int picktyp, c, ch;
@@ -482,7 +480,7 @@ boolean explicit; /**< Mentioning tool when (un)locking doors? */
 }
 
 int
-doforce()		/* try to force a chest with your weapon */
+doforce(void)		/* try to force a chest with your weapon */
 {
     register struct obj *otmp;
     register int c, picktyp;
@@ -549,15 +547,15 @@ doforce()		/* try to force a chest with your weapon */
 }
 
 int
-doopen()		/* try to open a door */
+doopen(void)		/* try to open a door */
 {
 #ifdef AUTO_OPEN
     return doopen_indir(0, 0);
 }
 
 int
-doopen_indir(x, y)		/* try to open a door in direction u.dx/u.dy */
-int x, y;		/* if true, prompt for direction */
+doopen_indir(int x, int y)		/* try to open a door in direction u.dx/u.dy */
+         		/* if true, prompt for direction */
 {
 #endif /* AUTO_OPEN */
     coord cc;
@@ -663,8 +661,7 @@ int x, y;		/* if true, prompt for direction */
 
 STATIC_OVL
 boolean
-obstructed(x,y)
-register int x, y;
+obstructed(register int x, register int y)
 {
     register struct monst *mtmp = m_at(x, y);
 
@@ -685,7 +682,7 @@ objhere:
 }
 
 int
-doclose()		/* try to close a door */
+doclose(void)		/* try to close a door */
 {
     register int x, y;
     register struct rm *door;
@@ -779,8 +776,8 @@ doclose()		/* try to close a door */
 }
 
 boolean			/* box obj was hit with spell effect otmp */
-boxlock(obj, otmp)	/* returns true if something happened */
-register struct obj *obj, *otmp;	/* obj *is* a box */
+boxlock(register struct obj *obj, register struct obj *otmp)	/* returns true if something happened */
+                                	/* obj *is* a box */
 {
     register boolean res = 0;
 
@@ -815,9 +812,9 @@ register struct obj *obj, *otmp;	/* obj *is* a box */
 }
 
 boolean			/* Door/secret door was hit with spell effect otmp */
-doorlock(otmp,x,y)	/* returns true if something happened */
-struct obj *otmp;
-int x, y;
+doorlock(struct obj *otmp, int x, int y)	/* returns true if something happened */
+                 
+         
 {
     register struct rm *door = &levl[x][y];
     boolean res = TRUE;
@@ -977,8 +974,7 @@ int x, y;
 }
 
 STATIC_OVL void
-chest_shatter_msg(otmp)
-struct obj *otmp;
+chest_shatter_msg(struct obj *otmp)
 {
     const char *disposition;
     const char *thing;
@@ -1032,8 +1028,7 @@ struct obj *otmp;
  */
 
 int
-artifact_door(x, y)
-int x, y;
+artifact_door(int x, int y)
 {
     /*int i;*/
 

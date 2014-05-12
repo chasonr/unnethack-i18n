@@ -361,16 +361,16 @@ sky		{ savetoken(yytext); yylval.i=SKYMAP; return FLAG_TYPE; }
 .		{ savetoken(yytext); return yytext[0]; }
 %%
 #ifdef	AMIGA
-long *alloc(n)
-unsigned n;
+long *
+alloc(unsigned n)
 {
     return ((long *)malloc (n));
 }
 #endif
 
 /* routine to switch to another input file; needed for flex */
-void init_yyin( input_f )
-FILE *input_f;
+void
+init_yyin(FILE *input_f)
 {
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
     if (yyin)
@@ -381,15 +381,14 @@ FILE *input_f;
     if (!orig_yyin) orig_yyin = yyin;
 }
 /* analogous routine (for completeness) */
-void init_yyout( output_f )
-FILE *output_f;
+void
+init_yyout(FILE *output_f)
 {
     yyout = output_f;
 }
 
 void
-include_push(fname)
-const char *fname;
+include_push(const char *fname)
 {
     if (doing_included_file >= 5)
         yyerror("Too deep includes");
@@ -412,7 +411,7 @@ const char *fname;
 }
 
 int
-include_pop()
+include_pop(void)
 {
     if (--doing_included_file < 0) {
         doing_included_file = 0;
@@ -431,14 +430,14 @@ include_pop()
  * Stub needed for lex interface.
  */
 int
-yywrap()
+yywrap(void)
 {
     if (doing_included_file >= 0) include_pop();
     return 1;
 }
 
 long
-handle_varstring_check()
+handle_varstring_check(void)
 {
     struct lc_vardefs *vd;
     yylval.map = (char *) alloc(strlen(yytext)+1);
@@ -461,7 +460,7 @@ handle_varstring_check()
 }
 
 long
-handle_varstring_method()
+handle_varstring_method(void)
 {
     struct lc_vardefs *vd;
     char *idx = index(yytext, '.');
@@ -501,9 +500,7 @@ handle_varstring_method()
 
 
 long
-corefunc_str_check(s, retval)
-char *s;
-long retval;
+corefunc_str_check(char *s, long retval)
 {
     int f = is_core_func(s);
     if (f) {
@@ -529,7 +526,7 @@ long retval;
 }
 
 void
-newline()
+newline(void)
 {
     line_number++;
     token_start_pos = 0;
@@ -537,16 +534,14 @@ newline()
 }
 
 void
-savetoken(s)
-char *s;
+savetoken(char *s)
 {
     sprintf(curr_token, "%s", s);
     advancepos(s);
 }
 
 void
-advancepos(s)
-char *s;
+advancepos(char *s)
 {
     token_start_pos += strlen(s);
 }

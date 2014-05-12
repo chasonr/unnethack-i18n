@@ -7,11 +7,10 @@
 STATIC_PTR int NDECL(stealarm);
 
 STATIC_DCL const char *FDECL(equipname, (struct obj *));
-STATIC_DCL void FDECL(mdrop_obj, (struct monst *,struct obj *,BOOLEAN_P));
+STATIC_DCL void FDECL(mdrop_obj, (struct monst *,struct obj *,boolean));
 
 STATIC_OVL const char *
-equipname(otmp)
-register struct obj *otmp;
+equipname(register struct obj *otmp)
 {
     return (
 #ifdef TOURIST
@@ -26,7 +25,7 @@ register struct obj *otmp;
 
 #ifndef GOLDOBJ
 long		/* actually returns something that fits in an int */
-somegold()
+somegold(void)
 {
 #ifdef LINT	/* long conv. ok */
     return(0L);
@@ -37,8 +36,7 @@ somegold()
 }
 
 void
-stealgold(mtmp)
-register struct monst *mtmp;
+stealgold(register struct monst *mtmp)
 {
     register struct obj *gold = g_at(u.ux, u.uy);
     register long tmp;
@@ -142,7 +140,7 @@ unsigned int stealoid;		/* object to be stolen */
 unsigned int stealmid;		/* monster doing the stealing */
 
 STATIC_PTR int
-stealarm()
+stealarm(void)
 {
     register struct monst *mtmp;
     register struct obj *otmp;
@@ -177,9 +175,9 @@ botm:
 /* An object you're wearing has been taken off by a monster (theft or
    seduction).  Also used if a worn item gets transformed (stone to flesh). */
 void
-remove_worn_item(obj, unchain_ball)
-struct obj *obj;
-boolean unchain_ball;	/* whether to unpunish or just unwield */
+remove_worn_item(struct obj *obj, boolean unchain_ball)
+                
+                     	/* whether to unpunish or just unwield */
 {
     if (donning(obj))
         cancel_don();
@@ -230,9 +228,7 @@ boolean unchain_ball;	/* whether to unpunish or just unwield */
  * Avoid stealing the object stealoid
  */
 int
-steal(mtmp, objnambuf)
-struct monst *mtmp;
-char *objnambuf;
+steal(struct monst *mtmp, char *objnambuf)
 {
     struct obj *otmp;
     int tmp, could_petrify, named = 0, armordelay;
@@ -429,9 +425,7 @@ cant_take:
 
 /* Returns 1 if otmp is free'd, 0 otherwise. */
 int
-mpickobj(mtmp,otmp)
-register struct monst *mtmp;
-register struct obj *otmp;
+mpickobj(register struct monst *mtmp, register struct obj *otmp)
 {
     int freed_otmp;
 
@@ -468,8 +462,7 @@ register struct obj *otmp;
 }
 
 void
-stealamulet(mtmp)
-struct monst *mtmp;
+stealamulet(struct monst *mtmp)
 {
     struct obj *otmp = (struct obj *)0;
     int real=0, fake=0;
@@ -513,10 +506,7 @@ struct monst *mtmp;
 
 /* drop one object taken from a (possibly dead) monster's inventory */
 STATIC_OVL void
-mdrop_obj(mon, obj, verbosely)
-struct monst *mon;
-struct obj *obj;
-boolean verbosely;
+mdrop_obj(struct monst *mon, struct obj *obj, boolean verbosely)
 {
     int omx = mon->mx, omy = mon->my;
 
@@ -548,8 +538,7 @@ boolean verbosely;
    even leaving the game entirely; when that happens, prevent them from
    taking the Amulet or invocation tools with them */
 void
-mdrop_special_objs(mon)
-struct monst *mon;
+mdrop_special_objs(struct monst *mon)
 {
     struct obj *obj, *otmp;
 
@@ -566,10 +555,10 @@ struct monst *mon;
 
 /* release the objects the creature is carrying */
 void
-relobj(mtmp,show,is_pet)
-register struct monst *mtmp;
-register int show;
-boolean is_pet;		/* If true, pet should keep wielded/worn items */
+relobj(register struct monst *mtmp, register int show, boolean is_pet)
+                            
+                  
+               		/* If true, pet should keep wielded/worn items */
 {
     register struct obj *otmp;
     register int omx = mtmp->mx, omy = mtmp->my;

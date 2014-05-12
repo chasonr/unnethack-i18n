@@ -9,10 +9,7 @@
 /*	These routines provide basic data for any type of monster. */
 
 void
-set_mon_data(mon, ptr, flag)
-struct monst *mon;
-struct permonst *ptr;
-int flag;
+set_mon_data(struct monst *mon, struct permonst *ptr, int flag)
 {
     mon->data = ptr;
     if (flag == -1) return;		/* "don't care" */
@@ -25,9 +22,7 @@ int flag;
 }
 
 struct attack *
-attacktype_fordmg(ptr, atyp, dtyp)
-struct permonst *ptr;
-int atyp, dtyp;
+attacktype_fordmg(struct permonst *ptr, int atyp, int dtyp)
 {
     struct attack *a;
 
@@ -39,16 +34,13 @@ int atyp, dtyp;
 }
 
 boolean
-attacktype(ptr, atyp)
-struct permonst *ptr;
-int atyp;
+attacktype(struct permonst *ptr, int atyp)
 {
     return attacktype_fordmg(ptr, atyp, AD_ANY) ? TRUE : FALSE;
 }
 
 boolean
-poly_when_stoned(ptr)
-struct permonst *ptr;
+poly_when_stoned(struct permonst *ptr)
 {
     return((boolean)(is_golem(ptr) && ptr != &mons[PM_STONE_GOLEM] &&
                      !(mvitals[PM_STONE_GOLEM].mvflags & G_GENOD)));
@@ -56,8 +48,8 @@ struct permonst *ptr;
 }
 
 boolean
-resists_drli(mon)	/* returns TRUE if monster is drain-life resistant */
-struct monst *mon;
+resists_drli(struct monst *mon)	/* returns TRUE if monster is drain-life resistant */
+                  
 {
     struct permonst *ptr = mon->data;
     struct obj *wep = ((mon == &youmonst) ? uwep : MON_WEP(mon));
@@ -68,8 +60,8 @@ struct monst *mon;
 }
 
 boolean
-resists_magm(mon)	/* TRUE if monster is magic-missile resistant */
-struct monst *mon;
+resists_magm(struct monst *mon)	/* TRUE if monster is magic-missile resistant */
+                  
 {
     struct permonst *ptr = mon->data;
     struct obj *o;
@@ -93,8 +85,7 @@ struct monst *mon;
 
 /* TRUE iff monster is resistant to light-induced blindness */
 boolean
-resists_blnd(mon)
-struct monst *mon;
+resists_blnd(struct monst *mon)
 {
     struct permonst *ptr = mon->data;
     boolean is_you = (mon == &youmonst);
@@ -124,11 +115,11 @@ struct monst *mon;
 /* TRUE iff monster can be blinded by the given attack */
 /* Note: may return TRUE when mdef is blind (e.g. new cream-pie attack) */
 boolean
-can_blnd(magr, mdef, aatyp, obj)
-struct monst *magr;		/* NULL == no specific aggressor */
-struct monst *mdef;
-uchar aatyp;
-struct obj *obj;		/* aatyp == AT_WEAP, AT_SPIT */
+can_blnd(struct monst *magr, struct monst *mdef, uchar aatyp, struct obj *obj)
+                   		/* NULL == no specific aggressor */
+                   
+            
+                		/* aatyp == AT_WEAP, AT_SPIT */
 {
     boolean is_you = (mdef == &youmonst);
     boolean check_visor = FALSE;
@@ -211,8 +202,8 @@ struct obj *obj;		/* aatyp == AT_WEAP, AT_SPIT */
 }
 
 boolean
-ranged_attk(ptr)	/* returns TRUE if monster can attack at range */
-struct permonst *ptr;
+ranged_attk(struct permonst *ptr)	/* returns TRUE if monster can attack at range */
+                     
 {
     register int i, atyp;
     long atk_mask = (1L << AT_BREA) | (1L << AT_SPIT) | (1L << AT_GAZE);
@@ -233,8 +224,8 @@ struct permonst *ptr;
 }
 
 boolean
-hates_silver(ptr)
-register struct permonst *ptr;
+hates_silver(register struct permonst *ptr)
+                              
 /* returns TRUE if monster is especially affected by silver weapons */
 {
     return((boolean)(is_were(ptr) || is_vampire(ptr) || is_demon(ptr) ||
@@ -244,8 +235,7 @@ register struct permonst *ptr;
 
 /* true iff the type of monster pass through iron bars */
 boolean
-passes_bars(mptr)
-struct permonst *mptr;
+passes_bars(struct permonst *mptr)
 {
     return (boolean) (passes_walls(mptr) || amorphous(mptr) ||
                       is_whirly(mptr) || verysmall(mptr) ||
@@ -254,8 +244,8 @@ struct permonst *mptr;
 }
 
 boolean
-can_track(ptr)		/* returns TRUE if monster can track well */
-register struct permonst *ptr;
+can_track(register struct permonst *ptr)		/* returns TRUE if monster can track well */
+                              
 {
     if (uwep && uwep->oartifact == ART_EXCALIBUR)
         return TRUE;
@@ -264,16 +254,16 @@ register struct permonst *ptr;
 }
 
 boolean
-sliparm(ptr)	/* creature will slide out of armor */
-register struct permonst *ptr;
+sliparm(register struct permonst *ptr)	/* creature will slide out of armor */
+                              
 {
     return((boolean)(is_whirly(ptr) || ptr->msize <= MZ_SMALL ||
                      noncorporeal(ptr)));
 }
 
 boolean
-breakarm(ptr)	/* creature will break out of armor */
-register struct permonst *ptr;
+breakarm(register struct permonst *ptr)	/* creature will break out of armor */
+                              
 {
     return ((bigmonst(ptr) || (ptr->msize > MZ_SMALL && !humanoid(ptr)) ||
              /* special cases of humanoids that cannot wear body armor */
@@ -282,8 +272,8 @@ register struct permonst *ptr;
 }
 
 boolean
-sticks(ptr)	/* creature sticks other creatures it hits */
-register struct permonst *ptr;
+sticks(register struct permonst *ptr)	/* creature sticks other creatures it hits */
+                              
 {
     return((boolean)(dmgtype(ptr,AD_STCK) || dmgtype(ptr,AD_WRAP) ||
                      attacktype(ptr,AT_HUGS)));
@@ -291,8 +281,7 @@ register struct permonst *ptr;
 
 /* number of horns this type of monster has on its head */
 int
-num_horns(ptr)
-struct permonst *ptr;
+num_horns(struct permonst *ptr)
 {
     switch (monsndx(ptr)) {
     case PM_HORNED_DEVIL:	/* ? "more than one" */
@@ -312,9 +301,7 @@ struct permonst *ptr;
 }
 
 struct attack *
-dmgtype_fromattack(ptr, dtyp, atyp)
-struct permonst *ptr;
-int dtyp, atyp;
+dmgtype_fromattack(struct permonst *ptr, int dtyp, int atyp)
 {
     struct attack *a;
 
@@ -326,9 +313,7 @@ int dtyp, atyp;
 }
 
 boolean
-dmgtype(ptr, dtyp)
-struct permonst *ptr;
-int dtyp;
+dmgtype(struct permonst *ptr, int dtyp)
 {
     return dmgtype_fromattack(ptr, dtyp, AT_ANY) ? TRUE : FALSE;
 }
@@ -336,8 +321,7 @@ int dtyp;
 /* returns the maximum damage a defender can do to the attacker via
  * a passive defense */
 int
-max_passive_dmg(mdef, magr)
-register struct monst *mdef, *magr;
+max_passive_dmg(register struct monst *mdef, register struct monst *magr)
 {
     int	i, dmg = 0;
     uchar adtyp;
@@ -362,8 +346,8 @@ register struct monst *mdef, *magr;
 }
 
 int
-monsndx(ptr)		/* return an index into the mons array */
-struct	permonst	*ptr;
+monsndx(struct permonst *ptr)		/* return an index into the mons array */
+      	        	     
 {
     register int	i;
 
@@ -381,8 +365,7 @@ struct	permonst	*ptr;
 }
 
 int
-name_to_mon(in_str)
-const char *in_str;
+name_to_mon(const char *in_str)
 {
     /* Be careful.  We must check the entire string in case it was
      * something such as "ettin zombie corpse".  The calling routine
@@ -503,8 +486,7 @@ const char *in_str;
 
 /* returns 3 values (0=male, 1=female, 2=none) */
 int
-gender(mtmp)
-register struct monst *mtmp;
+gender(register struct monst *mtmp)
 {
     if (is_neuter(mtmp->data)) return 2;
     return mtmp->female;
@@ -513,8 +495,7 @@ register struct monst *mtmp;
 /* Like gender(), but lower animals and such are still "it". */
 /* This is the one we want to use when printing messages. */
 int
-pronoun_gender(mtmp)
-register struct monst *mtmp;
+pronoun_gender(register struct monst *mtmp)
 {
     if (is_neuter(mtmp->data) || !canspotmon(mtmp)) return 2;
     return (humanoid(mtmp->data) || (mtmp->data->geno & G_UNIQ) ||
@@ -523,8 +504,7 @@ register struct monst *mtmp;
 
 /* used for nearby monsters when you go to another level */
 boolean
-levl_follower(mtmp)
-struct monst *mtmp;
+levl_follower(struct monst *mtmp)
 {
     /* monsters with the Amulet--even pets--won't follow across levels */
     if (mon_has_amulet(mtmp)) return FALSE;
@@ -613,8 +593,7 @@ static const short grownups[][2] = {
 };
 
 int
-little_to_big(montype)
-int montype;
+little_to_big(int montype)
 {
 #ifndef AIXPS2_BUG
     register int i;
@@ -640,8 +619,7 @@ int montype;
 }
 
 int
-big_to_little(montype)
-int montype;
+big_to_little(int montype)
 {
     register int i;
 
@@ -656,8 +634,7 @@ int montype;
  * player.  It does not return a pointer to player role character.
  */
 const struct permonst *
-raceptr(mtmp)
-struct monst *mtmp;
+raceptr(struct monst *mtmp)
 {
     if (mtmp == &youmonst && !Upolyd) return(&mons[urace.malenum]);
     else return(mtmp->data);
@@ -672,9 +649,7 @@ static const char *immobile[4]	= { "wiggle", "Wiggle", "pulsate", "Pulsate" };
 static const char *crawl[4]	= { "crawl", "Crawl", "falter", "Falter" };
 
 const char *
-locomotion(ptr, def)
-const struct permonst *ptr;
-const char *def;
+locomotion(const struct permonst *ptr, const char *def)
 {
     int capitalize = (*def == highc(*def));
 
@@ -692,9 +667,7 @@ const char *def;
 }
 
 const char *
-stagger(ptr, def)
-const struct permonst *ptr;
-const char *def;
+stagger(const struct permonst *ptr, const char *def)
 {
     int capitalize = 2 + (*def == highc(*def));
 
@@ -713,9 +686,7 @@ const char *def;
 
 /* return a phrase describing the effect of fire attack on a type of monster */
 const char *
-on_fire(mptr, mattk)
-struct permonst *mptr;
-struct attack *mattk;
+on_fire(struct permonst *mptr, struct attack *mattk)
 {
     const char *what;
 

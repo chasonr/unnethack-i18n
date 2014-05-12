@@ -110,7 +110,7 @@ nhrgb orig_hiwhite;
 
 /* Create the "main" nonvolitile windows used by nethack */
 
-void curses_create_main_windows()
+void curses_create_main_windows(void)
 {
     int message_x = 0;
     int message_y = 0;
@@ -486,7 +486,7 @@ void curses_create_main_windows()
 
 /* Initialize curses colors to colors used by NetHack */
 
-void curses_init_nhcolors()
+void curses_init_nhcolors(void)
 {
 #ifdef TEXTCOLOR
     if (has_colors()) {
@@ -563,7 +563,7 @@ void curses_init_nhcolors()
 /* Allow player to pick character's role, race, gender, and alignment.
 Borrowed from the Gnome window port. */
 
-void curses_choose_character()
+void curses_choose_character(void)
 {
     int n, i, sel, count_off, pick4u;
     int count = 0;
@@ -961,7 +961,7 @@ int curses_character_dialog(const char** choices, const char *prompt)
 
 /* Initialize and display options appropriately */
 
-void curses_init_options()
+void curses_init_options(void)
 {
     set_wc_option_mod_status(WC_ALIGN_MESSAGE|WC_ALIGN_STATUS|WC_COLOR|
                              WC_HILITE_PET|WC_POPUP_DIALOG, SET_IN_GAME);
@@ -1026,7 +1026,7 @@ void curses_init_options()
 
 /* Display an ASCII splash screen if the splash_screen option is set */
 
-void curses_display_splash_window()
+void curses_display_splash_window(void)
 {
     int x_start = 1;
     int y_start = 6;
@@ -1131,7 +1131,7 @@ void curses_display_splash_window()
 
 /* Resore colors and cursor state before exiting */
 
-void curses_cleanup()
+void curses_cleanup(void)
 {
 #ifdef TEXTCOLOR
     if (has_colors() && can_change_color()) {

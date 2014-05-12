@@ -41,19 +41,19 @@ static void FDECL(done_hangup, (int));
 # endif
 #endif
 STATIC_PTR int NDECL(heaven_or_hell_lifesave_end);
-STATIC_DCL void FDECL(disclose,(int,BOOLEAN_P));
+STATIC_DCL void FDECL(disclose,(int,boolean));
 STATIC_DCL void FDECL(get_valuables, (struct obj *));
 STATIC_DCL void FDECL(sort_valuables, (struct valuable_data *,int));
-STATIC_DCL void FDECL(artifact_score, (struct obj *,BOOLEAN_P,winid));
+STATIC_DCL void FDECL(artifact_score, (struct obj *,boolean,winid));
 STATIC_DCL void FDECL(savelife, (int));
-void FDECL(list_vanquished, (CHAR_P,BOOLEAN_P));
+void FDECL(list_vanquished, (char,boolean));
 #ifdef DUMP_LOG
 extern char msgs[][BUFSZ];
 extern int msgs_count[];
 extern int lastmsg;
-void FDECL(do_vanquished, (int, BOOLEAN_P));
+void FDECL(do_vanquished, (int, boolean));
 #endif /* DUMP_LOG */
-STATIC_DCL void FDECL(list_genocided, (int, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL void FDECL(list_genocided, (int, boolean, boolean));
 STATIC_DCL boolean FDECL(should_query_disclose_option, (int,char *));
 
 #if defined(__BEOS__) || defined(MICRO) || defined(WIN32) || defined(OS2)
@@ -113,8 +113,8 @@ extern const char * const killed_by_prefix[];	/* from topten.c */
 
 /*ARGSUSED*/
 void
-done1(sig_unused)   /* called as signal() handler, so sent at least one arg */
-int sig_unused;
+done1(int sig_unused)   /* called as signal() handler, so sent at least one arg */
+               
 {
 #ifndef NO_SIGNAL
     (void) signal(SIGINT,SIG_IGN);
@@ -135,7 +135,7 @@ int sig_unused;
 
 /* "#quit" command or keyboard interrupt */
 int
-done2()
+done2(void)
 {
     if (paranoid_yn("Really quit?", iflags.paranoid_quit) == 'n') {
 #ifndef NO_SIGNAL
@@ -180,8 +180,8 @@ done2()
 #ifndef NO_SIGNAL
 /*ARGSUSED*/
 STATIC_PTR void
-done_intr(sig_unused) /* called as signal() handler, so sent at least one arg */
-int sig_unused;
+done_intr(int sig_unused) /* called as signal() handler, so sent at least one arg */
+               
 {
     done_stopprint++;
     (void) signal(SIGINT, SIG_IGN);
@@ -193,8 +193,8 @@ int sig_unused;
 
 # if defined(UNIX) || defined(VMS) || defined(__EMX__)
 static void
-done_hangup(sig)	/* signal() handler */
-int sig;
+done_hangup(int sig)	/* signal() handler */
+        
 {
     program_state.done_hup++;
     (void)signal(SIGHUP, SIG_IGN);
@@ -205,8 +205,7 @@ int sig;
 #endif /* NO_SIGNAL */
 
 void
-done_in_by(mtmp)
-register struct monst *mtmp;
+done_in_by(register struct monst *mtmp)
 {
     char buf[BUFSZ];
     boolean distorted = (boolean)(Hallucination && canspotmon(mtmp));
@@ -346,9 +345,7 @@ done(PANICKED);
 }
 
 STATIC_OVL boolean
-should_query_disclose_option(category, defquery)
-int category;
-char *defquery;
+should_query_disclose_option(int category, char *defquery)
 {
     int idx;
     char *dop = index(disclosure_options, category);
@@ -384,9 +381,7 @@ char *defquery;
 }
 
 STATIC_OVL void
-disclose(how,taken)
-int how;
-boolean taken;
+disclose(int how, boolean taken)
 {
     char	c = 0, defquery;
     char	qbuf[QBUFSZ];
@@ -448,8 +443,7 @@ boolean taken;
 
 /* try to get the player back in a viable state after being killed */
 STATIC_OVL void
-savelife(how)
-int how;
+savelife(int how)
 {
     u.uswldtim = 0;
     u.uhp = u.uhpmax;
@@ -479,8 +473,8 @@ int how;
  * intact.
  */
 STATIC_OVL void
-get_valuables(list)
-struct obj *list;	/* inventory or container contents */
+get_valuables(struct obj *list)
+                 	/* inventory or container contents */
 {
     register struct obj *obj;
     register int i;
@@ -512,9 +506,9 @@ struct obj *list;	/* inventory or container contents */
  *  as easily use qsort, but we don't care about efficiency here.
  */
 STATIC_OVL void
-sort_valuables(list, size)
-struct valuable_data list[];
-int size;		/* max value is less than 20 */
+sort_valuables(struct valuable_data *list, int size)
+                            
+         		/* max value is less than 20 */
 {
     register int i, j;
     struct valuable_data ltmp;
@@ -535,10 +529,10 @@ int size;		/* max value is less than 20 */
 
 /* called twice; first to calculate total, then to list relevant items */
 STATIC_OVL void
-artifact_score(list, counting, endwin)
-struct obj *list;
-boolean counting;	/* true => add up points; false => display them */
-winid endwin;
+artifact_score(struct obj *list, boolean counting, winid endwin)
+                 
+                 	/* true => add up points; false => display them */
+             
 {
     char pbuf[BUFSZ];
     struct obj *otmp;
@@ -577,8 +571,7 @@ winid endwin;
 
 /* Be careful not to call panic from here! */
 void
-done(how)
-int how;
+done(int how)
 {
     boolean taken;
     char kilbuf[BUFSZ], pbuf[BUFSZ];
@@ -1102,7 +1095,7 @@ die:
 }
 
 STATIC_PTR int
-heaven_or_hell_lifesave_end()
+heaven_or_hell_lifesave_end(void)
 {
     u.uinvulnerable = FALSE;
     return(1);
@@ -1110,9 +1103,7 @@ heaven_or_hell_lifesave_end()
 
 
 void
-container_contents(list, identified, all_containers, want_disp)
-struct obj *list;
-boolean identified, all_containers, want_disp;
+container_contents(struct obj *list, boolean identified, boolean all_containers, boolean want_disp)
 {
     register struct obj *box, *obj;
 #ifdef SORTLOOT
@@ -1213,8 +1204,7 @@ nextclass:
 
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 void
-terminate(status)
-int status;
+terminate(int status)
 {
 #ifdef MAC
     getreturn("to exit");
@@ -1232,7 +1222,7 @@ int status;
 /* #vanquished extended command, based on showborn.
    There is probably a much better place to put this. */
 void
-list_vanquishedonly()
+list_vanquishedonly(void)
 {
     register int i, lev;
     int ntypes = 0, max_lev = 0, nkilled;
@@ -1307,18 +1297,18 @@ list_vanquishedonly()
 }
 
 void		/* showborn patch */
-list_vanquished(defquery, ask)
-char defquery;
-boolean ask;
+list_vanquished(char defquery, boolean ask)
+              
+            
 #ifdef DUMP_LOG
 {
     do_vanquished(defquery, ask);
 }
 
 void
-do_vanquished(defquery, ask)
-int defquery;
-boolean ask;
+do_vanquished(int defquery, boolean ask)
+             
+            
 #endif
 {
     register int i, lev;
@@ -1412,7 +1402,7 @@ boolean ask;
 
 /* number of monster species which have been genocided */
 int
-num_genocides()
+num_genocides(void)
 {
     int i, n = 0;
 
@@ -1423,10 +1413,7 @@ num_genocides()
 }
 
 STATIC_OVL void
-list_genocided(defquery, ask, want_disp)
-int defquery;
-boolean ask;
-boolean want_disp;
+list_genocided(int defquery, boolean ask, boolean want_disp)
 {
     register int i;
     int ngenocided=0;

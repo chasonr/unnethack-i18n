@@ -22,7 +22,7 @@ STATIC_DCL void NDECL(newman);
 /* Assumes u.umonster is set up already */
 /* Use u.umonster since we might be restoring and you may be polymorphed */
 void
-init_uasmon()
+init_uasmon(void)
 {
     int i;
 
@@ -59,7 +59,7 @@ init_uasmon()
 
 /* update the youmonst.data structure pointer */
 void
-set_uasmon()
+set_uasmon(void)
 {
     set_mon_data(&youmonst, ((u.umonnum == u.umonster) ?
                              &upermonst : &mons[u.umonnum]), 0);
@@ -67,7 +67,7 @@ set_uasmon()
 
 /** Returns true if the player monster is genocided. */
 boolean
-is_playermon_genocided()
+is_playermon_genocided(void)
 {
     return ((mvitals[urole.malenum].mvflags & G_GENOD) ||
             (urole.femalenum != NON_PM &&
@@ -79,8 +79,7 @@ is_playermon_genocided()
 
 /* make a (new) human out of the player */
 STATIC_OVL void
-polyman(fmt, arg)
-const char *fmt, *arg;
+polyman(const char *fmt, const char *arg)
 {
     boolean sticky = sticks(youmonst.data) && u.ustuck && !u.uswallow,
             was_mimicking = (youmonst.m_ap_type == M_AP_OBJECT);
@@ -142,7 +141,7 @@ const char *fmt, *arg;
 }
 
 void
-change_sex()
+change_sex(void)
 {
     /* setting u.umonster for caveman/cavewoman or priest/priestess
        swap unintentionally makes `Upolyd' appear to be true */
@@ -174,7 +173,7 @@ change_sex()
 }
 
 STATIC_OVL void
-newman()
+newman(void)
 {
     int tmp, oldlvl;
 
@@ -265,8 +264,7 @@ dead: /* we come directly here if their experience level went to 0 or less */
 }
 
 void
-polyself(forcecontrol)
-boolean forcecontrol;
+polyself(boolean forcecontrol)
 {
     char buf[BUFSZ];
     int old_light, new_light;
@@ -374,8 +372,8 @@ made_change:
 
 /* (try to) make a mntmp monster out of the player */
 int
-polymon(mntmp)	/* returns 1 if polymorph successful */
-int	mntmp;
+polymon(int mntmp)	/* returns 1 if polymorph successful */
+   	      
 {
     boolean sticky = sticks(youmonst.data) && u.ustuck && !u.uswallow,
             was_blind = !!Blind, dochange = FALSE;
@@ -638,7 +636,7 @@ int	mntmp;
 }
 
 STATIC_OVL void
-break_armor()
+break_armor(void)
 {
     register struct obj *otmp;
 
@@ -744,8 +742,7 @@ break_armor()
 }
 
 STATIC_OVL void
-drop_weapon(alone)
-int alone;
+drop_weapon(int alone)
 {
     struct obj *otmp;
     struct obj *otmp2;
@@ -777,7 +774,7 @@ int alone;
 }
 
 void
-rehumanize()
+rehumanize(void)
 {
     /* You can't revert back while unchanging */
     if (Unchanging && (u.mh < 1)) {
@@ -807,7 +804,7 @@ rehumanize()
 }
 
 int
-dobreathe()
+dobreathe(void)
 {
     struct attack *mattk;
 
@@ -843,7 +840,7 @@ dobreathe()
 }
 
 int
-dospit()
+dospit(void)
 {
     struct obj *otmp;
 
@@ -858,7 +855,7 @@ dospit()
 }
 
 int
-doremove()
+doremove(void)
 {
     if (!Punished) {
         You("are not chained to anything!");
@@ -869,7 +866,7 @@ doremove()
 }
 
 int
-dospinweb()
+dospinweb(void)
 {
     register struct trap *ttmp = t_at(u.ux,u.uy);
 
@@ -988,7 +985,7 @@ dospinweb()
 }
 
 int
-dosummon()
+dosummon(void)
 {
     int placeholder;
     if (u.uen < 10) {
@@ -1006,7 +1003,7 @@ dosummon()
 }
 
 int
-dogaze()
+dogaze(void)
 {
     register struct monst *mtmp;
     int looked = 0;
@@ -1134,7 +1131,7 @@ dogaze()
 }
 
 int
-dohide()
+dohide(void)
 {
     boolean ismimic = youmonst.data->mlet == S_MIMIC;
 
@@ -1153,7 +1150,7 @@ dohide()
 }
 
 int
-domindblast()
+domindblast(void)
 {
     struct monst *mtmp, *nmon;
 
@@ -1197,15 +1194,14 @@ domindblast()
 }
 
 STATIC_OVL void
-uunstick()
+uunstick(void)
 {
     pline("%s is no longer in your clutches.", Monnam(u.ustuck));
     u.ustuck = 0;
 }
 
 void
-skinback(silently)
-boolean silently;
+skinback(boolean silently)
 {
     if (uskin) {
         if (!silently) Your("skin returns to its original form.");
@@ -1217,9 +1213,7 @@ boolean silently;
 }
 
 const char *
-mbodypart(mon, part)
-struct monst *mon;
-int part;
+mbodypart(struct monst *mon, int part)
 {
     static NEARDATA const char
     *humanoid_parts[] = { "arm", "eye", "face", "finger",
@@ -1340,14 +1334,13 @@ int part;
 }
 
 const char *
-body_part(part)
-int part;
+body_part(int part)
 {
     return mbodypart(&youmonst, part);
 }
 
 int
-poly_gender()
+poly_gender(void)
 {
     /* Returns gender of polymorphed player; 0/1=same meaning as flags.female,
      * 2=none.
@@ -1357,8 +1350,7 @@ poly_gender()
 }
 
 void
-ugolemeffects(damtype, dam)
-int damtype, dam;
+ugolemeffects(int damtype, int dam)
 {
     int heal = 0;
     /* We won't bother with "slow"/"haste" since players do not
@@ -1387,8 +1379,7 @@ int damtype, dam;
 }
 
 STATIC_OVL int
-armor_to_dragon(atyp)
-int atyp;
+armor_to_dragon(int atyp)
 {
     switch(atyp) {
     case GRAY_DRAGON_SCALE_MAIL:

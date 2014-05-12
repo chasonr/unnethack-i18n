@@ -29,8 +29,7 @@ extern void VDECL(panic, (const char *,...)) PRINTF_F(1,2);
 
 
 long *
-alloc(lth)
-register unsigned int lth;
+alloc(register unsigned int lth)
 {
 #ifdef LINT
     /*
@@ -77,9 +76,7 @@ register unsigned int lth;
 
 /* format a pointer for display purposes; caller supplies the result buffer */
 char *
-fmt_ptr(ptr, buf)
-const genericptr ptr;
-char *buf;
+fmt_ptr(const void *ptr, char *buf)
 {
     Sprintf(buf, PTR_FMT, (PTR_TYP)ptr);
     return buf;

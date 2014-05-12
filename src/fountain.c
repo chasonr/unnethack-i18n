@@ -13,14 +13,13 @@ STATIC_PTR void FDECL(gush, (int,int,genericptr_t));
 STATIC_DCL void NDECL(dofindgem);
 
 void
-floating_above(what)
-const char *what;
+floating_above(const char *what)
 {
     You("are floating high above the %s.", what);
 }
 
 STATIC_OVL void
-dowatersnakes() /* Fountain of snakes! */
+dowatersnakes(void) /* Fountain of snakes! */
 {
     register int num = rn1(5,2);
     struct monst *mtmp;
@@ -41,7 +40,7 @@ dowatersnakes() /* Fountain of snakes! */
 
 STATIC_OVL
 void
-dowaterdemon() /* Water demon */
+dowaterdemon(void) /* Water demon */
 {
     register struct monst *mtmp;
 
@@ -66,7 +65,7 @@ dowaterdemon() /* Water demon */
 }
 
 STATIC_OVL void
-dowaternymph() /* Water Nymph */
+dowaternymph(void) /* Water Nymph */
 {
     register struct monst *mtmp;
 
@@ -86,8 +85,8 @@ dowaternymph() /* Water Nymph */
 }
 
 void
-dogushforth(drinking) /* Gushing forth along LOS from (u.ux, u.uy) */
-int drinking;
+dogushforth(int drinking) /* Gushing forth along LOS from (u.ux, u.uy) */
+             
 {
     int madepool = 0;
 
@@ -101,9 +100,7 @@ int drinking;
 }
 
 STATIC_PTR void
-gush(x, y, poolcnt)
-int x, y;
-genericptr_t poolcnt;
+gush(int x, int y, genericptr_t poolcnt)
 {
     register struct monst *mtmp;
     register struct trap *ttmp;
@@ -133,7 +130,7 @@ genericptr_t poolcnt;
 }
 
 STATIC_OVL void
-dofindgem() /* Find a gem in the sparkling waters. */
+dofindgem(void) /* Find a gem in the sparkling waters. */
 {
     if (!Blind) You("spot a gem in the sparkling waters!");
     else You_feel("a gem here!");
@@ -145,9 +142,7 @@ dofindgem() /* Find a gem in the sparkling waters. */
 }
 
 void
-dryup(x, y, isyou)
-xchar x, y;
-boolean isyou;
+dryup(xchar x, xchar y, boolean isyou)
 {
     if (IS_FOUNTAIN(levl[x][y].typ) &&
             (!rn2(3) || FOUNTAIN_IS_WARNED(x,y))) {
@@ -191,7 +186,7 @@ boolean isyou;
 }
 
 void
-drinkfountain()
+drinkfountain(void)
 {
     /* What happens when you drink from a fountain? */
     register boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
@@ -347,8 +342,7 @@ drinkfountain()
 }
 
 void
-dipfountain(obj)
-register struct obj *obj;
+dipfountain(register struct obj *obj)
 {
     if (Levitation) {
         floating_above("fountain");
@@ -493,8 +487,7 @@ register struct obj *obj;
 
 #ifdef SINKS
 void
-breaksink(x,y)
-int x, y;
+breaksink(int x, int y)
 {
     if(cansee(x,y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
@@ -506,7 +499,7 @@ int x, y;
 }
 
 void
-drinksink()
+drinksink(void)
 {
     struct obj *otmp;
     struct monst *mtmp;

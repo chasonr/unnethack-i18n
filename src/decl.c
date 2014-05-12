@@ -328,7 +328,7 @@ struct _plinemsg *pline_msg = NULL;
 
 /* dummy routine used to force linkage */
 void
-decl_init()
+decl_init(void)
 {
     return;
 }

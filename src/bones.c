@@ -12,12 +12,11 @@ extern long bytes_counted;
 
 STATIC_DCL boolean FDECL(no_bones_level, (d_level *));
 STATIC_DCL void FDECL(goodfruit, (int));
-STATIC_DCL void FDECL(resetobjs,(struct obj *,BOOLEAN_P));
+STATIC_DCL void FDECL(resetobjs,(struct obj *,boolean));
 STATIC_DCL void FDECL(drop_upon_death, (struct monst *, struct obj *));
 
 STATIC_OVL boolean
-no_bones_level(lev)
-d_level *lev;
+no_bones_level(d_level *lev)
 {
     extern d_level save_dlevel;		/* in do.c */
     s_level *sptr;
@@ -40,8 +39,7 @@ d_level *lev;
  * chain of fruit types, we know to only save the types that exist.
  */
 STATIC_OVL void
-goodfruit(id)
-int id;
+goodfruit(int id)
 {
     register struct fruit *f;
 
@@ -54,9 +52,7 @@ int id;
 }
 
 STATIC_OVL void
-resetobjs(ochain,restore)
-struct obj *ochain;
-boolean restore;
+resetobjs(struct obj *ochain, boolean restore)
 {
     struct obj *otmp;
 
@@ -127,10 +123,7 @@ boolean restore;
 
 /** Removes objects recursively from a container with a probability of prob1/prob2. */
 STATIC_OVL void
-trim_contents(container, prob1, prob2)
-struct obj *container;
-int prob1;
-int prob2;
+trim_contents(struct obj *container, int prob1, int prob2)
 {
     struct obj *otmp;
     struct obj *onext;
@@ -165,9 +158,7 @@ int prob2;
 }
 
 STATIC_OVL void
-drop_upon_death(mtmp, cont)
-struct monst *mtmp;
-struct obj *cont;
+drop_upon_death(struct monst *mtmp, struct obj *cont)
 {
     struct obj *otmp;
     int inventory_count=count_objects(invent);
@@ -214,7 +205,7 @@ struct obj *cont;
 
 /* check whether bones are feasible */
 boolean
-can_make_bones()
+can_make_bones(void)
 {
     register struct trap *ttmp;
 
@@ -245,8 +236,7 @@ can_make_bones()
 
 /* save bones and possessions of a deceased adventurer */
 void
-savebones(corpse)
-struct obj *corpse;
+savebones(struct obj *corpse)
 {
     int fd, x, y;
     struct trap *ttmp;
@@ -443,7 +433,7 @@ make_bones:
 }
 
 int
-getbones()
+getbones(void)
 {
     register int fd;
     register int ok;

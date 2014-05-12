@@ -56,8 +56,7 @@ void FDECL( amii_speaker, ( struct obj *, char *, int ) );
  */
 
 void
-awaken_monsters(distance)
-int distance;
+awaken_monsters(int distance)
 {
     register struct monst *mtmp = fmon;
     register int distm;
@@ -84,8 +83,7 @@ int distance;
  */
 
 STATIC_OVL void
-put_monsters_to_sleep(distance)
-int distance;
+put_monsters_to_sleep(int distance)
 {
     register struct monst *mtmp = fmon;
 
@@ -104,8 +102,7 @@ int distance;
  */
 
 STATIC_OVL void
-charm_snakes(distance)
-int distance;
+charm_snakes(int distance)
 {
     register struct monst *mtmp = fmon;
     int could_see_mon, was_peaceful;
@@ -138,8 +135,7 @@ int distance;
  */
 
 STATIC_OVL void
-calm_nymphs(distance)
-int distance;
+calm_nymphs(int distance)
 {
     register struct monst *mtmp = fmon;
 
@@ -161,7 +157,7 @@ int distance;
 /* Awake only soldiers of the level. */
 
 void
-awaken_soldiers()
+awaken_soldiers(void)
 {
     register struct monst *mtmp = fmon;
 
@@ -184,8 +180,7 @@ awaken_soldiers()
  */
 
 STATIC_OVL void
-charm_monsters(distance)
-int distance;
+charm_monsters(int distance)
 {
     struct monst *mtmp, *mtmp2;
 
@@ -211,8 +206,7 @@ int distance;
  */
 
 void
-do_earthquake(force)
-int force;
+do_earthquake(int force)
 {
     register int x,y;
     struct monst *mtmp;
@@ -351,8 +345,7 @@ do_pit:
  */
 
 STATIC_OVL int
-do_improvisation(instr)
-struct obj *instr;
+do_improvisation(struct obj *instr)
 {
     int damage, do_spec = !Confusion;
 #if defined(MAC) || defined(AMIGA) || defined(VPIX_MUSIC) || defined (PCMUSIC)
@@ -474,8 +467,7 @@ struct obj *instr;
  */
 
 int
-do_play_instrument(instr)
-struct obj *instr;
+do_play_instrument(struct obj *instr)
 {
     char buf[BUFSZ], c = 'y';
     char *s;

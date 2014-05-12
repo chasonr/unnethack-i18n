@@ -15,14 +15,14 @@
 #endif
 
 STATIC_DCL void FDECL(redotoplin, (const char*));
-STATIC_DCL void FDECL(topl_putsym, (CHAR_P));
+STATIC_DCL void FDECL(topl_putsym, (char));
 STATIC_DCL void NDECL(remember_topl);
 STATIC_DCL void FDECL(removetopl, (int));
 
 #ifdef OVLB
 
 int
-tty_doprev_message()
+tty_doprev_message(void)
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -121,8 +121,7 @@ tty_doprev_message()
 #ifdef OVL1
 
 STATIC_OVL void
-redotoplin(str)
-const char *str;
+redotoplin(const char *str)
 {
     int otoplin = ttyDisplay->toplin;
     home();
@@ -141,7 +140,7 @@ const char *str;
 }
 
 STATIC_OVL void
-remember_topl()
+remember_topl(void)
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
     int idx = cw->maxrow;
@@ -158,8 +157,7 @@ remember_topl()
 }
 
 void
-addtopl(s)
-const char *s;
+addtopl(const char *s)
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -173,7 +171,7 @@ const char *s;
 #ifdef OVL2
 
 void
-more()
+more(void)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -211,8 +209,7 @@ more()
 }
 
 void
-update_topl(bp)
-register const char *bp;
+update_topl(register const char *bp)
 {
     register char *tl, *otl;
     register int n0;
@@ -260,8 +257,7 @@ register const char *bp;
 
 STATIC_OVL
 void
-topl_putsym(c)
-char c;
+topl_putsym(char c)
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -300,16 +296,14 @@ char c;
 }
 
 void
-putsyms(str)
-const char *str;
+putsyms(const char *str)
 {
     while(*str)
         topl_putsym(*str++);
 }
 
 STATIC_OVL void
-removetopl(n)
-register int n;
+removetopl(register int n)
 {
     /* assume addtopl() has been done, so ttyDisplay->toplin is already set */
     while (n-- > 0) putsyms("\b \b");
@@ -318,9 +312,9 @@ register int n;
 extern char erase_char;		/* from xxxtty.c; don't need kill_char */
 
 char
-tty_yn_function(query,resp, def)
-const char *query,*resp;
-char def;
+tty_yn_function(const char *query, const char *resp, char def)
+                        
+         
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or
  *   return; 'esc' returns 'q', or 'n', or the default, depending on

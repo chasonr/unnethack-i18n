@@ -8,7 +8,7 @@
 STATIC_DCL void FDECL(curse_objects, (struct obj *, int, boolean));
 
 void
-take_gold()
+take_gold(void)
 {
 #ifndef GOLDOBJ
     if (u.ugold <= 0)  {
@@ -38,7 +38,7 @@ take_gold()
 }
 
 int
-dosit()
+dosit(void)
 {
     static const char sit_message[] = "sit on the %s.";
     register struct trap *trap;
@@ -313,7 +313,7 @@ in_water:
 }
 
 void
-rndcurse()			/* curse a few inventory items at random! */
+rndcurse(void)			/* curse a few inventory items at random! */
 {
     struct	obj	*otmp;
     static const char mal_aura[] = "feel a malignant aura surround %s.";
@@ -352,10 +352,7 @@ rndcurse()			/* curse a few inventory items at random! */
 }
 
 void
-curse_objects(firstobj, ncurse, showmsg)
-struct obj *firstobj;
-int ncurse;
-boolean showmsg;
+curse_objects(struct obj *firstobj, int ncurse, boolean showmsg)
 {
     struct obj *otmp;
     int cnt, onum;
@@ -404,7 +401,7 @@ boolean showmsg;
 }
 
 void
-attrcurse()			/* remove a random INTRINSIC ability */
+attrcurse(void)			/* remove a random INTRINSIC ability */
 {
     switch(rnd(11)) {
     case 1 :

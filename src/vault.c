@@ -10,16 +10,14 @@ STATIC_DCL struct monst *NDECL(findgd);
 #define g_monnam(mtmp) \
 	x_monnam(mtmp, ARTICLE_NONE, (char *)0, SUPPRESS_IT, FALSE)
 
-STATIC_DCL boolean FDECL(clear_fcorr, (struct monst *,BOOLEAN_P));
+STATIC_DCL boolean FDECL(clear_fcorr, (struct monst *,boolean));
 STATIC_DCL void FDECL(restfakecorr,(struct monst *));
 STATIC_DCL boolean FDECL(in_fcorridor, (struct monst *,int,int));
 STATIC_DCL void FDECL(move_gold,(struct obj *,int));
 STATIC_DCL void FDECL(wallify_vault,(struct monst *));
 
 STATIC_OVL boolean
-clear_fcorr(grd, forceshow)
-register struct monst *grd;
-register boolean forceshow;
+clear_fcorr(register struct monst *grd, register boolean forceshow)
 {
     register int fcx, fcy, fcbeg;
     register struct monst *mtmp;
@@ -58,16 +56,15 @@ register boolean forceshow;
 }
 
 STATIC_OVL void
-restfakecorr(grd)
-register struct monst *grd;
+restfakecorr(register struct monst *grd)
 {
     /* it seems you left the corridor - let the guard disappear */
     if(clear_fcorr(grd, FALSE)) mongone(grd);
 }
 
 boolean
-grddead(grd)				/* called in mon.c */
-register struct monst *grd;
+grddead(register struct monst *grd)				/* called in mon.c */
+                           
 {
     register boolean dispose = clear_fcorr(grd, TRUE);
 
@@ -84,9 +81,7 @@ register struct monst *grd;
 }
 
 STATIC_OVL boolean
-in_fcorridor(grd, x, y)
-register struct monst *grd;
-int x, y;
+in_fcorridor(register struct monst *grd, int x, int y)
 {
     register int fci;
 
@@ -99,7 +94,7 @@ int x, y;
 
 STATIC_OVL
 struct monst *
-findgd()
+findgd(void)
 {
     register struct monst *mtmp;
 
@@ -110,8 +105,7 @@ findgd()
 }
 
 char
-vault_occupied(array)
-char *array;
+vault_occupied(char *array)
 {
     register char *ptr;
 
@@ -122,7 +116,7 @@ char *array;
 }
 
 void
-invault()
+invault(void)
 {
 #ifdef BSD_43_BUG
     int dummy;		/* hack to avoid schain botch */
@@ -359,9 +353,7 @@ fnd:
 }
 
 STATIC_OVL void
-move_gold(gold, vroom)
-struct obj *gold;
-int vroom;
+move_gold(struct obj *gold, int vroom)
 {
     xchar nx, ny;
 
@@ -375,8 +367,7 @@ int vroom;
 }
 
 STATIC_OVL void
-wallify_vault(grd)
-struct monst *grd;
+wallify_vault(struct monst *grd)
 {
     int x, y, typ;
     int vlt = EGD(grd)->vroom;
@@ -443,8 +434,7 @@ struct monst *grd;
  * return  1: guard moved,  0: guard didn't,  -1: let m_move do it,  -2: died
  */
 int
-gd_move(grd)
-register struct monst *grd;
+gd_move(register struct monst *grd)
 {
     int x, y, nx, ny, m, n;
     int dx, dy, gx, gy, fci;
@@ -754,7 +744,7 @@ cleanup:
 
 /* Routine when dying or quitting with a vault guard around */
 void
-paygd()
+paygd(void)
 {
     register struct monst *grd = findgd();
 #ifndef GOLDOBJ
@@ -814,7 +804,7 @@ paygd()
 }
 
 long
-hidden_gold()
+hidden_gold(void)
 {
     register long value = 0L;
     register struct obj *obj;
@@ -828,7 +818,7 @@ hidden_gold()
 }
 
 boolean
-gd_sound()  /* prevent "You hear footsteps.." when inappropriate */
+gd_sound(void)  /* prevent "You hear footsteps.." when inappropriate */
 {
     register struct monst *grd = findgd();
 

@@ -44,7 +44,7 @@
 
 #define NUM_PUN_SPELLS  10
 
-STATIC_DCL void FDECL(cursetxt,(struct monst *,BOOLEAN_P));
+STATIC_DCL void FDECL(cursetxt,(struct monst *,boolean));
 STATIC_DCL int FDECL(choose_magic_spell, (int));
 STATIC_DCL int FDECL(choose_clerical_spell, (int));
 STATIC_DCL int FDECL(choose_punisher_spell, (void));
@@ -60,9 +60,7 @@ extern const char * const flash_types[];	/* from zap.c */
 /* feedback when frustrated monster couldn't cast a spell */
 STATIC_OVL
 void
-cursetxt(mtmp, undirected)
-struct monst *mtmp;
-boolean undirected;
+cursetxt(struct monst *mtmp, boolean undirected)
 {
     /* silent monsters don't curse. */
     if (is_silent(mtmp->data)) return;
@@ -92,8 +90,7 @@ boolean undirected;
 /* convert a level based random selection into a specific mage spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
 STATIC_OVL int
-choose_magic_spell(spellval)
-int spellval;
+choose_magic_spell(int spellval)
 {
     switch (spellval) {
     case 22:
@@ -137,8 +134,7 @@ int spellval;
 
 /* convert a level based random selection into a specific cleric spell */
 STATIC_OVL int
-choose_clerical_spell(spellnum)
-int spellnum;
+choose_clerical_spell(int spellnum)
 {
     switch (spellnum) {
     case 13:
@@ -189,11 +185,7 @@ choose_punisher_spell(void)
  * 0: unsuccessful spell
  */
 int
-castmu(mtmp, mattk, thinks_it_foundyou, foundyou)
-register struct monst *mtmp;
-register struct attack *mattk;
-boolean thinks_it_foundyou;
-boolean foundyou;
+castmu(register struct monst *mtmp, register struct attack *mattk, boolean thinks_it_foundyou, boolean foundyou)
 {
     int	dmg, ml = mtmp->m_lev;
     int ret;
@@ -368,10 +360,7 @@ boolean foundyou;
  */
 STATIC_OVL
 void
-cast_wizard_spell(mtmp, dmg, spellnum)
-struct monst *mtmp;
-int dmg;
-int spellnum;
+cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         warning("cast directed wizard spell (%d) with dmg=0?", spellnum);
@@ -531,10 +520,7 @@ int spellnum;
 
 STATIC_OVL
 void
-cast_punisher_spell(mtmp, dmg, spellnum)
-struct monst* mtmp;
-int dmg;
-int spellnum;
+cast_punisher_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     switch(spellnum) {
     case PUN_PUNISHMENT:
@@ -545,10 +531,7 @@ int spellnum;
 
 STATIC_OVL
 void
-cast_cleric_spell(mtmp, dmg, spellnum)
-struct monst *mtmp;
-int dmg;
-int spellnum;
+cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         warning("cast directed cleric spell (%d) with dmg=0?", spellnum);
@@ -728,10 +711,7 @@ int spellnum;
 
 STATIC_DCL
 void
-map_punisher_spell(spellnum, padtyp, pspellnum)
-int spellnum;
-unsigned int* padtyp;
-int* pspellnum;
+map_punisher_spell(int spellnum, unsigned int *padtyp, int *pspellnum)
 {
     switch(spellnum) {
     case PUN_OPEN_WOUNDS:
@@ -778,9 +758,7 @@ int* pspellnum;
 
 STATIC_DCL
 boolean
-is_undirected_spell(adtyp, spellnum)
-unsigned int adtyp;
-int spellnum;
+is_undirected_spell(unsigned int adtyp, int spellnum)
 {
     if (adtyp == AD_SPEL) {
         switch (spellnum) {
@@ -820,10 +798,7 @@ int spellnum;
 /* Some spells are useless under some circumstances. */
 STATIC_DCL
 boolean
-spell_would_be_useless(mtmp, adtyp, spellnum)
-struct monst *mtmp;
-unsigned int adtyp;
-int spellnum;
+spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
 {
     /* Some spells don't require the player to really be there and can be cast
      * by the monster when you're invisible, yet still shouldn't be cast when
@@ -888,9 +863,9 @@ int spellnum;
 #define ad_to_typ(k) (10 + (int)k - 1)
 
 int
-buzzmu(mtmp, mattk)		/* monster uses spell (ranged) */
-register struct monst *mtmp;
-register struct attack  *mattk;
+buzzmu(register struct monst *mtmp, register struct attack *mattk)		/* monster uses spell (ranged) */
+                            
+                               
 {
     /* don't print constant stream of curse messages for 'normal'
        spellcasting monsters at range */

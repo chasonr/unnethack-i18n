@@ -6,7 +6,7 @@
 #include "lev.h"	/* save & restore info */
 
 STATIC_DCL void FDECL(setgemprobs, (d_level*));
-STATIC_DCL void FDECL(shuffle,(int,int,BOOLEAN_P));
+STATIC_DCL void FDECL(shuffle,(int,int,boolean));
 STATIC_DCL void NDECL(shuffle_all);
 STATIC_DCL boolean FDECL(interesting_to_discover,(int));
 STATIC_DCL void FDECL(swap_armor,(int, int, int));
@@ -42,8 +42,7 @@ shuffle_tiles()
 #endif	/* USE_TILES */
 
 STATIC_OVL void
-setgemprobs(dlev)
-d_level *dlev;
+setgemprobs(d_level *dlev)
 {
     int j, first, lev;
 
@@ -69,9 +68,7 @@ d_level *dlev;
 
 /* shuffle descriptions on objects o_low to o_high */
 STATIC_OVL void
-shuffle(o_low, o_high, domaterial)
-int o_low, o_high;
-boolean domaterial;
+shuffle(int o_low, int o_high, boolean domaterial)
 {
     int i, j, num_to_shuffle;
     short sw;
@@ -106,7 +103,7 @@ boolean domaterial;
 }
 
 void
-init_objects()
+init_objects(void)
 {
     register int i, first, last, sum;
     register char oclass;
@@ -178,7 +175,7 @@ check:
 }
 
 STATIC_OVL void
-shuffle_all()
+shuffle_all(void)
 {
     int first, last, oclass;
 
@@ -242,10 +239,10 @@ shuffle_all()
  * Currently name, color and price are swapped.
  */
 void
-swap_armor(old_relative_position, new_relative_position, first)
-int old_relative_position,  /* old position of dragon scales */
-    new_relative_position,  /* new position of dragon scales */
-    first; /* first armor of this armor class */
+swap_armor(int old_relative_position, int new_relative_position, int first)
+                            /* old position of dragon scales */
+                            /* new position of dragon scales */
+           /* first armor of this armor class */
 {
     struct objclass tmp;
 
@@ -267,7 +264,7 @@ int old_relative_position,  /* old position of dragon scales */
 
 /* find the object index for snow boots; used [once] by slippery ice code */
 int
-find_skates()
+find_skates(void)
 {
     register int i;
     register const char *s;
@@ -281,14 +278,13 @@ find_skates()
 }
 
 void
-oinit()			/* level dependent initialization */
+oinit(void)			/* level dependent initialization */
 {
     setgemprobs(&u.uz);
 }
 
 void
-savenames(fd, mode)
-int fd, mode;
+savenames(int fd, int mode)
 {
     register int i;
     unsigned int len;
@@ -317,8 +313,7 @@ int fd, mode;
 }
 
 void
-restnames(fd)
-register int fd;
+restnames(register int fd)
 {
     register int i;
     unsigned int len;
@@ -338,10 +333,7 @@ register int fd;
 }
 
 void
-discover_object(oindx, mark_as_known, credit_hero)
-register int oindx;
-boolean mark_as_known;
-boolean credit_hero;
+discover_object(register int oindx, boolean mark_as_known, boolean credit_hero)
 {
     if (!objects[oindx].oc_name_known) {
         register int dindx, acls = objects[oindx].oc_class;
@@ -369,8 +361,7 @@ boolean credit_hero;
 
 /* if a class name has been cleared, we may need to purge it from disco[] */
 void
-undiscover_object(oindx)
-register int oindx;
+undiscover_object(register int oindx)
 {
     if (!objects[oindx].oc_name_known) {
         register int dindx, acls = objects[oindx].oc_class;
@@ -398,8 +389,7 @@ register int oindx;
 }
 
 STATIC_OVL boolean
-interesting_to_discover(i)
-register int i;
+interesting_to_discover(register int i)
 {
     /* Pre-discovered objects are now printed with a '*' */
     return((boolean)(objects[i].oc_uname != (char *)0 ||
@@ -415,7 +405,7 @@ static short uniq_objs[] = {
 };
 
 int
-dodiscovered()				/* free after Robert Viduya */
+dodiscovered(void)				/* free after Robert Viduya */
 {
     register int i, dis;
     int	ct = 0;
@@ -480,7 +470,7 @@ dodiscovered()				/* free after Robert Viduya */
  * Currently name, color are shuffled.
  */
 void
-dragons_init()
+dragons_init(void)
 {
     /* Number of existing dragons. Assumes order of dragons */
     int ndragons = YELLOW_DRAGON_SCALES - GRAY_DRAGON_SCALES + 1;

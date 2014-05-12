@@ -5,8 +5,7 @@
 #include "hack.h"
 
 void
-were_change(mon)
-register struct monst *mon;
+were_change(register struct monst *mon)
 {
     if (!is_were(mon->data))
         return;
@@ -42,8 +41,7 @@ register struct monst *mon;
 STATIC_DCL int FDECL(counter_were,(int));
 
 STATIC_OVL int
-counter_were(pm)
-int pm;
+counter_were(int pm)
 {
     switch(pm) {
     case PM_WEREWOLF:
@@ -64,8 +62,7 @@ int pm;
 }
 
 void
-new_were(mon)
-register struct monst *mon;
+new_were(register struct monst *mon)
 {
     register int pm;
 
@@ -95,11 +92,11 @@ register struct monst *mon;
 }
 
 int
-were_summon(ptr,yours,visible,genbuf)	/* were-creature (even you) summons a horde */
-register struct permonst *ptr;
-register boolean yours;
-int *visible;			/* number of visible helpers created */
-char *genbuf;
+were_summon(register struct permonst *ptr, register boolean yours, int *visible, char *genbuf)	/* were-creature (even you) summons a horde */
+                              
+                       
+             			/* number of visible helpers created */
+             
 {
     register int i, typ, pm = monsndx(ptr);
     register struct monst *mtmp;
@@ -141,7 +138,7 @@ char *genbuf;
 }
 
 void
-you_were()
+you_were(void)
 {
     char qbuf[QBUFSZ];
 
@@ -156,8 +153,7 @@ you_were()
 }
 
 void
-you_unwere(purify)
-boolean purify;
+you_unwere(boolean purify)
 {
     if (purify) {
         You_feel("purified.");

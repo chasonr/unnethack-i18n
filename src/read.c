@@ -40,7 +40,7 @@ STATIC_PTR void FDECL(undo_flood, (int,int,genericptr_t));
 STATIC_PTR void FDECL(set_lit, (int,int,genericptr_t));
 
 int
-doread()
+doread(void)
 {
     register struct obj *scroll;
     register boolean confused;
@@ -343,8 +343,7 @@ doread()
 }
 
 static void
-stripspe(obj)
-register struct obj *obj;
+stripspe(register struct obj *obj)
 {
     if (obj->blessed) pline("%s", nothing_happens);
     else {
@@ -358,17 +357,14 @@ register struct obj *obj;
 }
 
 static void
-p_glow1(otmp)
-register struct obj	*otmp;
+p_glow1(register struct obj *otmp)
 {
     Your("%s %s briefly.", xname(otmp),
          otense(otmp, Blind ? "vibrate" : "glow"));
 }
 
 static void
-p_glow2(otmp,color)
-register struct obj	*otmp;
-register const char *color;
+p_glow2(register struct obj *otmp, register const char *color)
 {
     Your("%s %s%s%s for a moment.",
          xname(otmp),
@@ -380,8 +376,7 @@ register const char *color;
 /* Is the object chargeable?  For purposes of inventory display; it is */
 /* possible to be able to charge things for which this returns FALSE. */
 boolean
-is_chargeable(obj)
-struct obj *obj;
+is_chargeable(struct obj *obj)
 {
     if (obj->oclass == WAND_CLASS) return TRUE;
     /* known && !uname is possible after amnesia/mind flayer */
@@ -400,9 +395,7 @@ struct obj *obj;
  * was cursed, +1 if blessed, 0 otherwise.
  */
 void
-recharge(obj, curse_bless)
-struct obj *obj;
-int curse_bless;
+recharge(struct obj *obj, int curse_bless)
 {
     register int n;
     boolean is_cursed, is_blessed;
@@ -654,8 +647,7 @@ not_chargable:
 
 /* Forget known information about this object class. */
 static void
-forget_single_object(obj_id)
-int obj_id;
+forget_single_object(int obj_id)
 {
     objects[obj_id].oc_name_known = 0;
     objects[obj_id].oc_pre_discovered = 0;	/* a discovery when relearned */
@@ -693,9 +685,7 @@ int oclass;
 
 /* randomize the given list of numbers  0 <= i < count */
 static void
-randomize(indices, count)
-int *indices;
-int count;
+randomize(int *indices, int count)
 {
     int i, iswap, temp;
 
@@ -710,8 +700,7 @@ int count;
 
 /* Forget % of known objects. */
 void
-forget_objects(percent)
-int percent;
+forget_objects(int percent)
 {
     int i, count;
     int indices[NUM_OBJECTS];
@@ -738,8 +727,7 @@ int percent;
 
 /* Forget some or all of map (depends on parameters). */
 void
-forget_map(howmuch)
-int howmuch;
+forget_map(int howmuch)
 {
     register int zx, zy;
 
@@ -760,7 +748,7 @@ int howmuch;
 
 /* Forget all traps on the level. */
 void
-forget_traps()
+forget_traps(void)
 {
     register struct trap *trap;
 
@@ -775,8 +763,7 @@ forget_traps()
  * except this one.
  */
 void
-forget_levels(percent)
-int percent;
+forget_levels(int percent)
 {
     int i, count;
     xchar  maxl, this_lev;
@@ -866,9 +853,7 @@ int howmuch;
 
 /* monster is hit by scroll of taming's effect */
 static void
-maybe_tame(mtmp, sobj)
-struct monst *mtmp;
-struct obj *sobj;
+maybe_tame(struct monst *mtmp, struct obj *sobj)
 {
 #ifdef BLACKMARKET
     if (sobj->cursed || Is_blackmarket(&u.uz)) {
@@ -886,9 +871,7 @@ struct obj *sobj;
 
 /** Remove water tile at x,y. */
 STATIC_PTR void
-undo_flood(x, y, roomcnt)
-int x, y;
-genericptr_t roomcnt;
+undo_flood(int x, int y, genericptr_t roomcnt)
 {
     if ((levl[x][y].typ != POOL) &&
             (levl[x][y].typ != MOAT) &&
@@ -904,9 +887,7 @@ genericptr_t roomcnt;
 }
 
 STATIC_PTR void
-do_flood(x, y, poolcnt)
-int x, y;
-genericptr_t poolcnt;
+do_flood(int x, int y, genericptr_t poolcnt)
 {
     register struct monst *mtmp;
     register struct trap *ttmp;
@@ -938,8 +919,7 @@ genericptr_t poolcnt;
 }
 
 int
-seffects(sobj)
-register struct obj	*sobj;
+seffects(register struct obj *sobj)
 {
     register int cval;
     register boolean confused = (Confusion != 0);
@@ -1620,8 +1600,7 @@ id:
 }
 
 static void
-wand_explode(obj)
-register struct obj *obj;
+wand_explode(register struct obj *obj)
 {
     obj->in_use = TRUE;	/* in case losehp() is fatal */
     Your("%s vibrates violently, and explodes!",xname(obj));
@@ -1635,9 +1614,7 @@ register struct obj *obj;
  * Low-level lit-field update routine.
  */
 STATIC_PTR void
-set_lit(x,y,val)
-int x, y;
-genericptr_t val;
+set_lit(int x, int y, genericptr_t val)
 {
     if (val)
         levl[x][y].lit = 1;
@@ -1648,9 +1625,7 @@ genericptr_t val;
 }
 
 void
-litroom(on,obj)
-register boolean on;
-struct obj *obj;
+litroom(register boolean on, struct obj *obj)
 {
     char is_lit;	/* value is irrelevant; we use its address
 			   as a `not null' flag for set_lit() */
@@ -1900,9 +1875,9 @@ do_class_genocide()
 #define PLAYER 2
 #define ONTHRONE 4
 void
-do_genocide(how, only_on_level)
-int how;
-boolean only_on_level; /**< if TRUE only genocide monsters on current level,
+do_genocide(int how, boolean only_on_level)
+        
+                       /**< if TRUE only genocide monsters on current level,
                             not in the complete dungeon */
 /* 0 = no genocide; create monsters (cursed scroll) */
 /* 1 = normal genocide */
@@ -2093,8 +2068,7 @@ boolean only_on_level; /**< if TRUE only genocide monsters on current level,
 }
 
 void
-punish(sobj)
-register struct obj	*sobj;
+punish(register struct obj *sobj)
 {
 #ifdef CONVICT
     struct obj *otmp;
@@ -2137,7 +2111,7 @@ register struct obj	*sobj;
 }
 
 void
-unpunish()
+unpunish(void)
 {
     /* remove the ball and chain */
     struct obj *savechain = uchain;
@@ -2155,9 +2129,7 @@ unpunish()
  * one, the disoriented creature becomes a zombie
  */
 boolean
-cant_create(mtype, revival)
-int *mtype;
-boolean revival;
+cant_create(int *mtype, boolean revival)
 {
 
     /* SHOPKEEPERS can be revived now */
@@ -2181,7 +2153,7 @@ boolean revival;
  * than a mimic; this behavior quirk is useful so don't "fix" it...
  */
 boolean
-create_particular()
+create_particular(void)
 {
     char buf[BUFSZ], *bufp, monclass = MAXMCLASSES;
     int which, tries, i, quan;
@@ -2261,11 +2233,11 @@ create_particular()
 #endif /* WIZARD */
 
 void
-drop_boulder_on_player(confused, helmet_protects, by_player, drop_directly_to_floor)
-boolean confused;
-boolean helmet_protects; /**< if player is protected by a hard helmet */
-boolean by_player; /**< is boulder creation caused by player */
-boolean drop_directly_to_floor; /**< don't check if player is swallowed by a monster */
+drop_boulder_on_player(boolean confused, boolean helmet_protects, boolean by_player, boolean drop_directly_to_floor)
+                 
+                         /**< if player is protected by a hard helmet */
+                   /**< is boulder creation caused by player */
+                                /**< don't check if player is swallowed by a monster */
 {
     int dmg;
     struct obj *otmp2;
@@ -2309,10 +2281,10 @@ boolean drop_directly_to_floor; /**< don't check if player is swallowed by a mon
 }
 
 int
-drop_boulder_on_monster(x, y, confused, by_player)
-int x,y;
-boolean confused;
-boolean by_player; /**< is boulder creation caused by player */
+drop_boulder_on_monster(int x, int y, boolean confused, boolean by_player)
+        
+                 
+                   /**< is boulder creation caused by player */
 {
     register struct obj *otmp2;
     register struct monst *mtmp2;

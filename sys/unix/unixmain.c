@@ -25,7 +25,7 @@ extern struct passwd *FDECL(getpwuid,(int));
 #endif
 extern struct passwd *FDECL(getpwnam,(const char *));
 #ifdef CHDIR
-static void FDECL(chdirx, (const char *,BOOLEAN_P));
+static void FDECL(chdirx, (const char *,boolean));
 #endif /* CHDIR */
 static boolean NDECL(whoami);
 static void FDECL(process_options, (int, char **));
@@ -45,9 +45,7 @@ static boolean wiz_error_flag = FALSE;
 #endif
 
 int
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char **argv)
 {
     register int fd;
 #ifdef CHDIR
@@ -310,9 +308,7 @@ not_recovered:
 }
 
 static void
-process_options(argc, argv)
-int argc;
-char *argv[];
+process_options(int argc, char **argv)
 {
     int i;
 
@@ -427,9 +423,7 @@ char *argv[];
 
 #ifdef CHDIR
 static void
-chdirx(dir, wr)
-const char *dir;
-boolean wr;
+chdirx(const char *dir, boolean wr)
 {
     if (dir					/* User specified directory? */
 # ifdef HACKDIR
@@ -484,7 +478,7 @@ boolean wr;
 #endif /* CHDIR */
 
 static boolean
-whoami()
+whoami(void)
 {
     /*
      * Who am i? Algorithm: 1. Use name as specified in NETHACKOPTIONS
@@ -522,7 +516,7 @@ port_help()
 #endif
 
 static void
-wd_message()
+wd_message(void)
 {
 #ifdef WIZARD
     if (wiz_error_flag) {
@@ -544,8 +538,7 @@ wd_message()
  * be room for the /
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 

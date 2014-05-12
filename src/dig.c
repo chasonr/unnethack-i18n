@@ -9,9 +9,9 @@
 static NEARDATA boolean did_dig_msg;
 
 STATIC_DCL boolean NDECL(rm_waslit);
-STATIC_DCL void FDECL(mkcavepos, (XCHAR_P,XCHAR_P,int,BOOLEAN_P,BOOLEAN_P));
-STATIC_DCL void FDECL(mkcavearea, (BOOLEAN_P));
-STATIC_DCL int FDECL(dig_typ, (struct obj *,XCHAR_P,XCHAR_P));
+STATIC_DCL void FDECL(mkcavepos, (xchar,xchar,int,boolean,boolean));
+STATIC_DCL void FDECL(mkcavearea, (boolean));
+STATIC_DCL int FDECL(dig_typ, (struct obj *,xchar,xchar));
 STATIC_DCL int NDECL(dig);
 STATIC_DCL void NDECL(dig_up_grave);
 
@@ -26,7 +26,7 @@ STATIC_DCL void NDECL(dig_up_grave);
 
 
 STATIC_OVL boolean
-rm_waslit()
+rm_waslit(void)
 {
     register xchar x, y;
 
@@ -43,10 +43,7 @@ rm_waslit()
  * immediately after the effect is complete.
  */
 STATIC_OVL void
-mkcavepos(x, y, dist, waslit, rockit)
-xchar x,y;
-int dist;
-boolean waslit, rockit;
+mkcavepos(xchar x, xchar y, int dist, boolean waslit, boolean rockit)
 {
     register struct rm *lev;
 
@@ -82,8 +79,7 @@ boolean waslit, rockit;
 }
 
 STATIC_OVL void
-mkcavearea(rockit)
-register boolean rockit;
+mkcavearea(register boolean rockit)
 {
     int dist;
     xchar xmin = u.ux, xmax = u.ux;
@@ -131,9 +127,7 @@ register boolean rockit;
 
 /* When digging into location <x,y>, what are you actually digging into? */
 STATIC_OVL int
-dig_typ(otmp, x, y)
-struct obj *otmp;
-xchar x, y;
+dig_typ(struct obj *otmp, xchar x, xchar y)
 {
     boolean ispick = is_pick(otmp);
 
@@ -149,7 +143,7 @@ xchar x, y;
 }
 
 boolean
-is_digging()
+is_digging(void)
 {
     if (occupation == dig) {
         return TRUE;
@@ -161,10 +155,7 @@ is_digging()
 #define BY_OBJECT	((struct monst *)0)
 
 boolean
-dig_check(madeby, verbose, x, y)
-struct monst	*madeby;
-boolean		verbose;
-int		x, y;
+dig_check(struct monst *madeby, boolean verbose, int x, int y)
 {
     struct trap *ttmp = t_at(x, y);
     const char *verb = (madeby == BY_YOU && uwep && is_axe(uwep)) ? "chop" : "dig in";
@@ -216,7 +207,7 @@ int		x, y;
 }
 
 STATIC_OVL int
-dig()
+dig(void)
 {
     register struct rm *lev;
     register xchar dpx = digging.pos.x, dpy = digging.pos.y;
@@ -475,7 +466,7 @@ cleanup:
 
 /* When will hole be finished? Very rough indication used by shopkeeper. */
 int
-holetime()
+holetime(void)
 {
     if(occupation != dig || !*u.ushops) return(-1);
     return ((250 - digging.effort) / 20);
@@ -483,8 +474,7 @@ holetime()
 
 /* Return typ of liquid to fill a hole with, or ROOM, if no liquid nearby */
 schar
-fillholetyp(x,y)
-int x, y;
+fillholetyp(int x, int y)
 {
     register int x1, y1;
     int lo_x = max(1,x-1), hi_x = min(x+1,COLNO-1),
@@ -523,10 +513,7 @@ int x, y;
 }
 
 void
-digactualhole(x, y, madeby, ttyp)
-register int	x, y;
-struct monst	*madeby;
-int ttyp;
+digactualhole(register int x, register int y, struct monst *madeby, int ttyp)
 {
     struct obj *oldobjs, *newobjs;
     register struct trap *ttmp;
@@ -693,8 +680,7 @@ int ttyp;
 
 /* return TRUE if digging succeeded, FALSE otherwise */
 boolean
-dighole(pit_only)
-boolean pit_only;
+dighole(boolean pit_only)
 {
     register struct trap *ttmp = t_at(u.ux, u.uy);
     struct rm *lev = &levl[u.ux][u.uy];
@@ -812,7 +798,7 @@ liquid_flow:
 }
 
 STATIC_OVL void
-dig_up_grave()
+dig_up_grave(void)
 {
     struct obj *otmp;
 
@@ -863,8 +849,7 @@ dig_up_grave()
 }
 
 int
-use_pick_axe(obj)
-struct obj *obj;
+use_pick_axe(struct obj *obj)
 {
     boolean ispick;
     char dirsyms[12];
@@ -917,8 +902,7 @@ struct obj *obj;
 /*       use_pick_axe2() uses the existing u.dx, u.dy and u.dz    */
 
 int
-use_pick_axe2(obj)
-struct obj *obj;
+use_pick_axe2(struct obj *obj)
 {
     register int rx, ry;
     register struct rm *lev;
@@ -1070,10 +1054,7 @@ struct obj *obj;
  * zap == TRUE if wand/spell of digging, FALSE otherwise (chewing)
  */
 void
-watch_dig(mtmp, x, y, zap)
-struct monst *mtmp;
-xchar x, y;
-boolean zap;
+watch_dig(struct monst *mtmp, xchar x, xchar y, boolean zap)
 {
     struct rm *lev = &levl[x][y];
 
@@ -1119,8 +1100,7 @@ boolean zap;
 
 /* Return TRUE if monster died, FALSE otherwise.  Called from m_move(). */
 boolean
-mdig_tunnel(mtmp)
-register struct monst *mtmp;
+mdig_tunnel(register struct monst *mtmp)
 {
     register struct rm *here;
     int pile = rnd(12);
@@ -1205,7 +1185,7 @@ register struct monst *mtmp;
 
 /* digging via wand zap or spell cast */
 void
-zap_dig()
+zap_dig(void)
 {
     struct rm *room;
     struct monst *mtmp;
@@ -1367,9 +1347,9 @@ zap_dig()
 /* move objects from fobj/nexthere lists to buriedobjlist, keeping position */
 /* information */
 struct obj *
-bury_an_obj(otmp, dealloced)
-struct obj *otmp;
-boolean *dealloced; /* return TRUE if otmp was freed */
+bury_an_obj(struct obj *otmp, boolean *dealloced)
+                 
+                    /* return TRUE if otmp was freed */
 {
     struct obj *otmp2;
     boolean under_ice;
@@ -1424,8 +1404,7 @@ boolean *dealloced; /* return TRUE if otmp was freed */
 }
 
 void
-bury_objs(x, y)
-int x, y;
+bury_objs(int x, int y)
 {
     struct obj *otmp, *otmp2;
 
@@ -1443,8 +1422,7 @@ int x, y;
 
 /* move objects from buriedobjlist to fobj/nexthere lists */
 void
-unearth_objs(x, y)
-int x, y;
+unearth_objs(int x, int y)
 {
     struct obj *otmp, *otmp2;
 
@@ -1476,9 +1454,9 @@ int x, y;
  */
 /* ARGSUSED */
 void
-rot_organic(arg, timeout)
-genericptr_t arg;
-long timeout;	/* unused */
+rot_organic(genericptr_t arg, long int timeout)
+                 
+             	/* unused */
 {
     struct obj *obj = (struct obj *) arg;
 
@@ -1499,9 +1477,9 @@ long timeout;	/* unused */
  * Called when a corpse has rotted completely away.
  */
 void
-rot_corpse(arg, timeout)
-genericptr_t arg;
-long timeout;	/* unused */
+rot_corpse(genericptr_t arg, long int timeout)
+                 
+             	/* unused */
 {
     xchar x = 0, y = 0;
     struct obj *obj = (struct obj *) arg;

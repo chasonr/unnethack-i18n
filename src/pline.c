@@ -21,9 +21,7 @@ int lastmsg = -1;
 #endif
 
 void
-msgpline_add(typ, pattern)
-int typ;
-char *pattern;
+msgpline_add(int typ, char *pattern)
 {
     struct _plinemsg *tmp = (struct _plinemsg *) alloc(sizeof(struct _plinemsg));
     if (!tmp) return;
@@ -34,7 +32,7 @@ char *pattern;
 }
 
 void
-msgpline_free()
+msgpline_free(void)
 {
     struct _plinemsg *tmp = pline_msg;
     struct _plinemsg *tmp2;
@@ -48,8 +46,7 @@ msgpline_free()
 }
 
 int
-msgpline_type(msg)
-char *msg;
+msgpline_type(char *msg)
 {
     struct _plinemsg *tmp = pline_msg;
     while (tmp) {
@@ -155,8 +152,7 @@ static char *you_buf = 0;
 static int you_buf_siz = 0;
 
 static char *
-You_buf(siz)
-int siz;
+You_buf(int siz)
 {
     if (siz > you_buf_siz) {
         if (you_buf) free((genericptr_t) you_buf);
@@ -167,7 +163,7 @@ int siz;
 }
 
 void
-free_youbuf()
+free_youbuf(void)
 {
     if (you_buf) free((genericptr_t) you_buf),  you_buf = (char *)0;
     you_buf_siz = 0;
@@ -351,8 +347,7 @@ VA_END();
 }
 
 const char *
-align_str(alignment)
-aligntyp alignment;
+align_str(aligntyp alignment)
 {
     switch ((int)alignment) {
     case A_CHAOTIC:
@@ -368,8 +363,7 @@ aligntyp alignment;
 }
 
 void
-mstatusline(mtmp)
-register struct monst *mtmp;
+mstatusline(register struct monst *mtmp)
 {
     aligntyp alignment;
     char info[BUFSZ], monnambuf[BUFSZ];
@@ -471,7 +465,7 @@ register struct monst *mtmp;
 }
 
 void
-ustatusline()
+ustatusline(void)
 {
     char info[BUFSZ];
 
@@ -545,7 +539,7 @@ ustatusline()
 }
 
 void
-self_invis_message()
+self_invis_message(void)
 {
     pline("%s %s.",
           Hallucination ? "Far out, man!  You" : "Gee!  All of a sudden, you",

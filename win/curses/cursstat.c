@@ -1160,7 +1160,7 @@ void curses_update_stats(boolean redraw)
 /* Decrement the highlight_turns for all stats.  Call curses_update_stats
 if needed to unhighlight a stat */
 
-void curses_decrement_highlight()
+void curses_decrement_highlight(void)
 {
     boolean unhighlight = FALSE;
 
@@ -1339,7 +1339,7 @@ void curses_decrement_highlight()
 
 /* Initialize the stats with beginning values. */
 
-static void init_stats()
+static void init_stats(void)
 {
     char buf[BUFSZ];
     int count;

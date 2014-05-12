@@ -33,8 +33,7 @@ static struct stat buf;
 
 /* see whether we should throw away this xlock file */
 static int
-veryold(fd)
-int fd;
+veryold(int fd)
 {
     time_t date;
 
@@ -70,7 +69,7 @@ int fd;
 }
 
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     register int i;
 
@@ -98,7 +97,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     register int i = 0, fd, c;
 #ifndef FILE_AREAS
@@ -262,8 +261,8 @@ gotlock:
 }
 
 void
-regularize(s)	/* normalize file name - we don't like .'s, /'s, spaces */
-register char *s;
+regularize(register char *s)	/* normalize file name - we don't like .'s, /'s, spaces */
+                 
 {
     register char *lp;
 
@@ -325,8 +324,7 @@ dosh()
 
 #if defined(SHELL) || defined(DEF_PAGER) || defined(DEF_MAILREADER)
 int
-child(wt)
-int wt;
+child(int wt)
 {
     register int f;
     suspend_nhwindows((char *)0);	/* also calls end_screen() */
@@ -378,8 +376,7 @@ int wt;
  */
 
 char *
-make_file_name(filearea, filename)
-const char *filearea, *filename;
+make_file_name(const char *filearea, const char *filename)
 {
     char *buf;
     int lenarea;
@@ -397,9 +394,7 @@ const char *filearea, *filename;
 }
 
 FILE *
-fopen_datafile_area(filearea, filename, mode, use_scoreprefix)
-const char *filearea, *filename, *mode;
-boolean use_scoreprefix;
+fopen_datafile_area(const char *filearea, const char *filename, const char *mode, boolean use_scoreprefix)
 {
     FILE *fp;
     char *buf;
@@ -410,9 +405,7 @@ boolean use_scoreprefix;
 }
 
 int
-chmod_area(filearea, filename, mode)
-const char *filearea, *filename;
-int mode;
+chmod_area(const char *filearea, const char *filename, int mode)
 {
     int retval;
     char *buf;
@@ -423,9 +416,7 @@ int mode;
 }
 
 int
-open_area(filearea, filename, flags, mode)
-const char *filearea, *filename;
-int flags, mode;
+open_area(const char *filearea, const char *filename, int flags, int mode)
 {
     int fd;
     char *buf;
@@ -436,9 +427,7 @@ int flags, mode;
 }
 
 int
-creat_area(filearea, filename, mode)
-const char *filearea, *filename;
-int mode;
+creat_area(const char *filearea, const char *filename, int mode)
 {
     int fd;
     char *buf;
@@ -449,8 +438,7 @@ int mode;
 }
 
 int
-rename_area(filearea, oldfilename, newfilename)
-const char *filearea, *oldfilename, *newfilename;
+rename_area(const char *filearea, const char *oldfilename, const char *newfilename)
 {
     int retval;
     char *oldpath,*newpath;
@@ -463,8 +451,7 @@ const char *filearea, *oldfilename, *newfilename;
 }
 
 int
-remove_area(filearea, filename)
-const char *filearea, *filename;
+remove_area(const char *filearea, const char *filename)
 {
     int retval;
     char *buf;
@@ -475,9 +462,7 @@ const char *filearea, *filename;
 }
 
 FILE *
-freopen_area(filearea, filename, mode, stream)
-const char *filearea, *filename, *mode;
-FILE *stream;
+freopen_area(const char *filearea, const char *filename, const char *mode, FILE *stream)
 {
     FILE *fp;
     char *buf;

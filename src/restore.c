@@ -20,16 +20,16 @@ static int NDECL(mgetc);
 #endif
 STATIC_DCL void NDECL(find_lev_obj);
 STATIC_DCL void FDECL(restlevchn, (int));
-STATIC_DCL void FDECL(restdamage, (int,BOOLEAN_P));
-STATIC_DCL struct obj *FDECL(restobjchn, (int,BOOLEAN_P,BOOLEAN_P));
-STATIC_DCL struct monst *FDECL(restmonchn, (int,BOOLEAN_P));
+STATIC_DCL void FDECL(restdamage, (int,boolean));
+STATIC_DCL struct obj *FDECL(restobjchn, (int,boolean,boolean));
+STATIC_DCL struct monst *FDECL(restmonchn, (int,boolean));
 STATIC_DCL struct fruit *FDECL(loadfruitchn, (int));
 STATIC_DCL void FDECL(freefruitchn, (struct fruit *));
 STATIC_DCL void FDECL(ghostfruit, (struct obj *));
 STATIC_DCL boolean FDECL(restgamestate, (int, unsigned int *, unsigned int *));
 STATIC_DCL void FDECL(restlevelstate, (unsigned int, unsigned int));
-STATIC_DCL int FDECL(restlevelfile, (int,XCHAR_P));
-STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
+STATIC_DCL int FDECL(restlevelfile, (int,xchar));
+STATIC_DCL void FDECL(reset_oattached_mids, (boolean));
 
 /*
  * Save a mapping of IDs from ghost levels to the current level.  This
@@ -66,7 +66,7 @@ static NEARDATA long omoves;
 
 /* Recalculate level.objects[x][y], since this info was not saved. */
 STATIC_OVL void
-find_lev_obj()
+find_lev_obj(void)
 {
     register struct obj *fobjtmp = (struct obj *)0;
     register struct obj *otmp;
@@ -99,8 +99,7 @@ find_lev_obj()
  * infamous "HUP" cheat) get used up here.
  */
 void
-inven_inuse(quietly)
-boolean quietly;
+inven_inuse(boolean quietly)
 {
     register struct obj *otmp, *otmp2;
 
@@ -125,8 +124,7 @@ boolean quietly;
 }
 
 STATIC_OVL void
-restlevchn(fd)
-register int fd;
+restlevchn(register int fd)
 {
     int cnt;
     s_level	*tmplev, *x;
@@ -148,9 +146,7 @@ register int fd;
 }
 
 STATIC_OVL void
-restdamage(fd, ghostly)
-int fd;
-boolean ghostly;
+restdamage(int fd, boolean ghostly)
 {
     int counter;
     struct damage *tmp_dam;
@@ -191,8 +187,7 @@ boolean ghostly;
 }
 
 struct lvl_sounds *
-rest_lvl_sounds(fd)
-register int fd;
+rest_lvl_sounds(register int fd)
 {
     int marker;
     struct lvl_sounds *or = NULL;
@@ -217,8 +212,7 @@ register int fd;
 }
 
 struct mon_gen_override *
-rest_mongen_override(fd)
-register int fd;
+rest_mongen_override(register int fd)
 {
     int marker;
     struct mon_gen_override *or = NULL;
@@ -249,9 +243,7 @@ register int fd;
 
 
 STATIC_OVL struct obj *
-restobjchn(fd, ghostly, frozen)
-register int fd;
-boolean ghostly, frozen;
+restobjchn(register int fd, boolean ghostly, boolean frozen)
 {
     register struct obj *otmp, *otmp2 = 0;
     register struct obj *first = (struct obj *)0;
@@ -299,9 +291,7 @@ boolean ghostly, frozen;
 }
 
 STATIC_OVL struct monst *
-restmonchn(fd, ghostly)
-register int fd;
-boolean ghostly;
+restmonchn(register int fd, boolean ghostly)
 {
     register struct monst *mtmp, *mtmp2 = 0;
     register struct monst *first = (struct monst *)0;
@@ -368,8 +358,7 @@ boolean ghostly;
 }
 
 STATIC_OVL struct fruit *
-loadfruitchn(fd)
-int fd;
+loadfruitchn(int fd)
 {
     register struct fruit *flist, *fnext;
 
@@ -385,8 +374,7 @@ int fd;
 }
 
 STATIC_OVL void
-freefruitchn(flist)
-register struct fruit *flist;
+freefruitchn(register struct fruit *flist)
 {
     register struct fruit *fnext;
 
@@ -398,8 +386,7 @@ register struct fruit *flist;
 }
 
 STATIC_OVL void
-ghostfruit(otmp)
-register struct obj *otmp;
+ghostfruit(register struct obj *otmp)
 {
     register struct fruit *oldf;
 
@@ -412,9 +399,9 @@ register struct obj *otmp;
 
 STATIC_OVL
 boolean
-restgamestate(fd, stuckid, steedid)
-register int fd;
-unsigned int *stuckid, *steedid;	/* STEED */
+restgamestate(register int fd, unsigned int *stuckid, unsigned int *steedid)
+                
+                                	/* STEED */
 {
     /* discover is actually flags.explore */
     boolean remember_discover = discover;
@@ -512,8 +499,8 @@ unsigned int *stuckid, *steedid;	/* STEED */
  * don't dereference a wild u.ustuck when saving the game state, for instance)
  */
 STATIC_OVL void
-restlevelstate(stuckid, steedid)
-unsigned int stuckid, steedid;	/* STEED */
+restlevelstate(unsigned int stuckid, unsigned int steedid)
+                              	/* STEED */
 {
     register struct monst *mtmp;
 
@@ -536,9 +523,9 @@ unsigned int stuckid, steedid;	/* STEED */
 
 /*ARGSUSED*/	/* fd used in MFLOPPY only */
 STATIC_OVL int
-restlevelfile(fd, ltmp)
-register int fd;
-xchar ltmp;
+restlevelfile(register int fd, xchar ltmp)
+                
+           
 #if defined(macintosh) && (defined(__SC__) || defined(__MRC__))
 # pragma unused(fd)
 #endif
@@ -598,8 +585,7 @@ return(2);
 }
 
 int
-dorecover(fd)
-register int fd;
+dorecover(register int fd)
 {
     unsigned int stuckid = 0, steedid = 0;	/* not a register */
     xchar ltmp;
@@ -766,8 +752,7 @@ register int fd;
 }
 
 void
-trickery(reason)
-char *reason;
+trickery(char *reason)
 {
     pline("Strange, this map is not as I remember it.");
     pline("Somebody is trying some trickery here...");
@@ -777,10 +762,7 @@ char *reason;
 }
 
 void
-getlev(fd, pid, lev, ghostly)
-int fd, pid;
-xchar lev;
-boolean ghostly;
+getlev(int fd, int pid, xchar lev, boolean ghostly)
 {
     register struct trap *trap;
     register struct monst *mtmp;
@@ -995,7 +977,7 @@ boolean ghostly;
 
 /* Clear all structures for object and monster ID mapping. */
 STATIC_OVL void
-clear_id_mapping()
+clear_id_mapping(void)
 {
     struct bucket *curr;
 
@@ -1008,8 +990,7 @@ clear_id_mapping()
 
 /* Add a mapping to the ID map. */
 STATIC_OVL void
-add_id_mapping(gid, nid)
-unsigned gid, nid;
+add_id_mapping(unsigned int gid, unsigned int nid)
 {
     int idx;
 
@@ -1033,8 +1014,7 @@ unsigned gid, nid;
  * ID.
  */
 boolean
-lookup_id_mapping(gid, nidp)
-unsigned gid, *nidp;
+lookup_id_mapping(unsigned int gid, unsigned int *nidp)
 {
     int i;
     struct bucket *curr;
@@ -1059,8 +1039,7 @@ unsigned gid, *nidp;
 }
 
 STATIC_OVL void
-reset_oattached_mids(ghostly)
-boolean ghostly;
+reset_oattached_mids(boolean ghostly)
 {
     struct obj *otmp;
     unsigned oldid, nid;
@@ -1148,16 +1127,13 @@ register unsigned len;
 #else /* ZEROCOMP */
 
 void
-minit()
+minit(void)
 {
     return;
 }
 
 void
-mread(fd, buf, len)
-register int fd;
-register genericptr_t buf;
-register unsigned int len;
+mread(register int fd, register genericptr_t buf, register unsigned int len)
 {
     register int rlen;
 

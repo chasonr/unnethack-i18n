@@ -25,9 +25,7 @@ extern const struct percent_color_option *pw_colors;
 extern const struct text_color_option *text_colors;
 
 struct color_option
-text_color_of(text, color_options)
-const char *text;
-const struct text_color_option *color_options;
+text_color_of(const char *text, const struct text_color_option *color_options)
 {
     if (color_options == NULL) {
         struct color_option result = {NO_COLOR, 0};
@@ -40,9 +38,7 @@ const struct text_color_option *color_options;
 }
 
 struct color_option
-percentage_color_of(value, max, color_options)
-int value, max;
-const struct percent_color_option *color_options;
+percentage_color_of(int value, int max, const struct percent_color_option *color_options)
 {
     if (color_options == NULL) {
         struct color_option result = {NO_COLOR, 0};
@@ -71,8 +67,7 @@ const struct percent_color_option *color_options;
 }
 
 void
-start_color_option(color_option)
-struct color_option color_option;
+start_color_option(struct color_option color_option)
 {
 #ifdef TTY_GRAPHICS
     int i;
@@ -85,8 +80,7 @@ struct color_option color_option;
 }
 
 void
-end_color_option(color_option)
-struct color_option color_option;
+end_color_option(struct color_option color_option)
 {
 #ifdef TTY_GRAPHICS
     int i;
@@ -100,10 +94,10 @@ struct color_option color_option;
 
 static
 void
-apply_color_option(color_option, newbot2, statusline)
-struct color_option color_option;
-const char *newbot2;
-int statusline; /* apply color on this statusline: 1 or 2 */
+apply_color_option(struct color_option color_option, const char *newbot2, int statusline)
+                                 
+                    
+                /* apply color on this statusline: 1 or 2 */
 {
     if (!iflags.use_status_colors || !iflags.use_color) return;
     curs(WIN_STATUS, 1, statusline-1);
@@ -113,9 +107,7 @@ int statusline; /* apply color on this statusline: 1 or 2 */
 }
 
 void
-add_colored_text(text, newbot2)
-const char *text;
-char *newbot2;
+add_colored_text(const char *text, char *newbot2)
 {
     char *nb;
     struct color_option color_option;
@@ -153,8 +145,7 @@ STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 
 /* convert experience level (1..30) to rank index (0..8) */
 int
-xlev_to_rank(xlev)
-int xlev;
+xlev_to_rank(int xlev)
 {
     return (xlev <= 2) ? 0 : (xlev <= 30) ? ((xlev + 2) / 4) : 8;
 }
@@ -170,10 +161,7 @@ int rank;
 #endif
 
 const char *
-rank_of(lev, monnum, female)
-int lev;
-short monnum;
-boolean female;
+rank_of(int lev, short int monnum, boolean female)
 {
     register struct Role *role;
     register int i;
@@ -200,15 +188,13 @@ boolean female;
 
 
 const char *
-rank()
+rank(void)
 {
     return(rank_of(u.ulevel, Role_switch, flags.female));
 }
 
 int
-title_to_mon(str, rank_indx, title_length)
-const char *str;
-int *rank_indx, *title_length;
+title_to_mon(const char *str, int *rank_indx, int *title_length)
 {
     register int i, j;
 
@@ -234,7 +220,7 @@ int *rank_indx, *title_length;
 }
 
 void
-max_rank_sz()
+max_rank_sz(void)
 {
     register int i, r, maxr = 0;
     for (i = 0; i < 9; i++) {
@@ -372,7 +358,7 @@ bot1()
 #ifdef DUMP_LOG
 }
 STATIC_OVL void
-bot1()
+bot1(void)
 {
     char newbot1[MAXCO];
 
@@ -386,8 +372,7 @@ bot1()
 
 /* provide the name of the current level for display by various ports */
 int
-describe_level(buf)
-char *buf;
+describe_level(char *buf)
 {
     int ret = 1;
 
@@ -420,11 +405,11 @@ char *buf;
 }
 
 #ifdef DUMP_LOG
-void bot2str(newbot2)
-char* newbot2;
+void bot2str(char *newbot2)
+              
 #else
-STATIC_OVL void
-bot2()
+               
+      
 #endif
 {
 #ifndef DUMP_LOG
@@ -573,7 +558,7 @@ bot2()
 #ifdef DUMP_LOG
 }
 STATIC_OVL void
-bot2()
+bot2(void)
 {
     char newbot2[MAXCO];
     bot2str(newbot2);
@@ -585,7 +570,7 @@ bot2()
 }
 
 void
-bot()
+bot(void)
 {
     bot1();
     bot2();

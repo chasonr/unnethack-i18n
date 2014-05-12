@@ -629,23 +629,21 @@ static char NEARDATA randomstr[] = "random";
 
 
 boolean
-validrole(rolenum)
-int rolenum;
+validrole(int rolenum)
 {
     return (rolenum >= 0 && rolenum < SIZE(roles)-1);
 }
 
 
 int
-randrole()
+randrole(void)
 {
     return (rn2(SIZE(roles)-1));
 }
 
 
 int
-str2role(str)
-char *str;
+str2role(char *str)
 {
     int i, len;
 
@@ -677,8 +675,7 @@ char *str;
 
 
 boolean
-validrace(rolenum, racenum)
-int rolenum, racenum;
+validrace(int rolenum, int racenum)
 {
     /* Assumes validrole */
     /* WAC -- checks ROLE_GENDMASK and ROLE_ALIGNMASK as well (otherwise, there
@@ -692,8 +689,7 @@ int rolenum, racenum;
 
 
 int
-randrace(rolenum)
-int rolenum;
+randrace(int rolenum)
 {
     int i, n = 0;
 
@@ -719,8 +715,7 @@ int rolenum;
 
 
 int
-str2race(str)
-char *str;
+str2race(char *str)
 {
     int i, len;
 
@@ -749,8 +744,7 @@ char *str;
 
 
 boolean
-validgend(rolenum, racenum, gendnum)
-int rolenum, racenum, gendnum;
+validgend(int rolenum, int racenum, int gendnum)
 {
     /* Assumes validrole and validrace */
     return (gendnum >= 0 && gendnum < ROLE_GENDERS &&
@@ -760,8 +754,7 @@ int rolenum, racenum, gendnum;
 
 
 int
-randgend(rolenum, racenum)
-int rolenum, racenum;
+randgend(int rolenum, int racenum)
 {
     int i, n = 0;
 
@@ -788,8 +781,7 @@ int rolenum, racenum;
 
 
 int
-str2gend(str)
-char *str;
+str2gend(char *str)
 {
     int i, len;
 
@@ -817,8 +809,7 @@ char *str;
 
 
 boolean
-validalign(rolenum, racenum, alignnum)
-int rolenum, racenum, alignnum;
+validalign(int rolenum, int racenum, int alignnum)
 {
     /* Assumes validrole and validrace */
     return (alignnum >= 0 && alignnum < ROLE_ALIGNS &&
@@ -828,8 +819,7 @@ int rolenum, racenum, alignnum;
 
 
 int
-randalign(rolenum, racenum)
-int rolenum, racenum;
+randalign(int rolenum, int racenum)
 {
     int i, n = 0;
 
@@ -854,8 +844,7 @@ int rolenum, racenum;
 
 
 int
-str2align(str)
-char *str;
+str2align(char *str)
 {
     int i, len;
 
@@ -883,8 +872,7 @@ char *str;
 
 /* is rolenum compatible with any racenum/gendnum/alignnum constraints? */
 boolean
-ok_role(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_role(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     short allow;
@@ -929,8 +917,7 @@ int rolenum, racenum, gendnum, alignnum;
 /* If pickhow == PICK_RIGID a role is returned only if there is  */
 /* a single possibility */
 int
-pick_role(racenum, gendnum, alignnum, pickhow)
-int racenum, gendnum, alignnum, pickhow;
+pick_role(int racenum, int gendnum, int alignnum, int pickhow)
 {
     int i;
     int roles_ok = 0;
@@ -955,8 +942,7 @@ int racenum, gendnum, alignnum, pickhow;
 
 /* is racenum compatible with any rolenum/gendnum/alignnum constraints? */
 boolean
-ok_race(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_race(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     short allow;
@@ -1001,8 +987,7 @@ int rolenum, racenum, gendnum, alignnum;
 /* If pickhow == PICK_RIGID a race is returned only if there is  */
 /* a single possibility */
 int
-pick_race(rolenum, gendnum, alignnum, pickhow)
-int rolenum, gendnum, alignnum, pickhow;
+pick_race(int rolenum, int gendnum, int alignnum, int pickhow)
 {
     int i;
     int races_ok = 0;
@@ -1028,8 +1013,7 @@ int rolenum, gendnum, alignnum, pickhow;
 /* is gendnum compatible with any rolenum/racenum/alignnum constraints? */
 /* gender and alignment are not comparable (and also not constrainable) */
 boolean
-ok_gend(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_gend(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     short allow;
@@ -1064,8 +1048,7 @@ int rolenum, racenum, gendnum, alignnum;
 /* If pickhow == PICK_RIGID a gender is returned only if there is  */
 /* a single possibility */
 int
-pick_gend(rolenum, racenum, alignnum, pickhow)
-int rolenum, racenum, alignnum, pickhow;
+pick_gend(int rolenum, int racenum, int alignnum, int pickhow)
 {
     int i;
     int gends_ok = 0;
@@ -1091,8 +1074,7 @@ int rolenum, racenum, alignnum, pickhow;
 /* is alignnum compatible with any rolenum/racenum/gendnum constraints? */
 /* alignment and gender are not comparable (and also not constrainable) */
 boolean
-ok_align(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_align(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     short allow;
@@ -1127,8 +1109,7 @@ int rolenum, racenum, gendnum, alignnum;
 /* If pickhow == PICK_RIGID an alignment is returned only if there is  */
 /* a single possibility */
 int
-pick_align(rolenum, racenum, gendnum, pickhow)
-int rolenum, racenum, gendnum, pickhow;
+pick_align(int rolenum, int racenum, int gendnum, int pickhow)
 {
     int i;
     int aligns_ok = 0;
@@ -1152,7 +1133,7 @@ int rolenum, racenum, gendnum, pickhow;
 }
 
 void
-rigid_role_checks()
+rigid_role_checks(void)
 {
     /* Some roles are limited to a single race, alignment, or gender and
      * calling this routine prior to XXX_player_selection() will help
@@ -1194,9 +1175,7 @@ rigid_role_checks()
 STATIC_VAR char pa[NUM_BP], post_attribs;
 
 STATIC_OVL char *
-promptsep(buf, num_post_attribs)
-char *buf;
-int num_post_attribs;
+promptsep(char *buf, int num_post_attribs)
 {
     const char *conj = "and ";
     if (num_post_attribs > 1
@@ -1209,8 +1188,7 @@ int num_post_attribs;
 }
 
 STATIC_OVL int
-role_gendercount(rolenum)
-int rolenum;
+role_gendercount(int rolenum)
 {
     int gendcount = 0;
     if (validrole(rolenum)) {
@@ -1222,8 +1200,7 @@ int rolenum;
 }
 
 STATIC_OVL int
-race_alignmentcount(racenum)
-int racenum;
+race_alignmentcount(int racenum)
 {
     int aligncount = 0;
     if (racenum != ROLE_NONE && racenum != ROLE_RANDOM) {
@@ -1235,9 +1212,7 @@ int racenum;
 }
 
 char *
-root_plselection_prompt(suppliedbuf, buflen, rolenum, racenum, gendnum, alignnum)
-char *suppliedbuf;
-int buflen, rolenum, racenum, gendnum, alignnum;
+root_plselection_prompt(char *suppliedbuf, int buflen, int rolenum, int racenum, int gendnum, int alignnum)
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];
@@ -1370,9 +1345,7 @@ int buflen, rolenum, racenum, gendnum, alignnum;
 }
 
 char *
-build_plselection_prompt(buf, buflen, rolenum, racenum, gendnum, alignnum)
-char *buf;
-int buflen, rolenum, racenum, gendnum, alignnum;
+build_plselection_prompt(char *buf, int buflen, int rolenum, int racenum, int gendnum, int alignnum)
 {
     const char *defprompt = "Shall I pick a character for you? [yntq] ";
     int num_post_attribs = 0;
@@ -1430,7 +1403,7 @@ int buflen, rolenum, racenum, gendnum, alignnum;
 #undef NUM_BP
 
 void
-plnamesuffix()
+plnamesuffix(void)
 {
     char *sptr, *eptr;
     int i;
@@ -1483,7 +1456,7 @@ plnamesuffix()
  * This code also replaces quest_init().
  */
 void
-role_init()
+role_init(void)
 {
     int alignmnt;
 
@@ -1592,8 +1565,7 @@ role_init()
 }
 
 const char *
-Hello(mtmp)
-struct monst *mtmp;
+Hello(struct monst *mtmp)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -1619,7 +1591,7 @@ struct monst *mtmp;
 }
 
 const char *
-Goodbye()
+Goodbye(void)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -1641,8 +1613,7 @@ Goodbye()
 
 /* A function to break a specific roleplay-conduct */
 void
-violated(cdt)
-int cdt;
+violated(int cdt)
 {
     switch(cdt) {
     case CONDUCT_PACIFISM:
@@ -1734,8 +1705,7 @@ int cdt;
  * return FALSE if broken
 */
 boolean
-successful_cdt(cdt)
-int cdt;
+successful_cdt(int cdt)
 {
     if ((cdt == CONDUCT_PACIFISM) && !u.uconduct.killer &&
             !num_genocides() && (u.uconduct.weaphit<=100))
@@ -1758,8 +1728,7 @@ int cdt;
 /* a function to check whether a specific conduct *
  *  was selected at character creation		  */
 boolean
-intended_cdt(cdt)
-int cdt;
+intended_cdt(int cdt)
 {
     if ((cdt == CONDUCT_PACIFISM) && flags.pacifist) return TRUE;
     if ((cdt == CONDUCT_ATHEISM) && flags.atheist) return TRUE;
@@ -1775,8 +1744,7 @@ int cdt;
 
 /* a function to check whether it's superflous to list that conduct */
 boolean
-superfluous_cdt(cdt)
-int cdt;
+superfluous_cdt(int cdt)
 {
     if ((cdt == CONDUCT_VEGAN) && successful_cdt(CONDUCT_FOODLESS)) return TRUE;
     if ((cdt == CONDUCT_VEGETARIAN) && successful_cdt(CONDUCT_VEGAN)) return TRUE;
@@ -1787,8 +1755,7 @@ int cdt;
 
 /* tell if you failed a selected conduct */
 boolean
-failed_cdt(cdt)
-int cdt;
+failed_cdt(int cdt)
 {
     return (intended_cdt(cdt) && !successful_cdt(cdt));
 }

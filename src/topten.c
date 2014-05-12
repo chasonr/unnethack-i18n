@@ -65,7 +65,7 @@ STATIC_DCL void FDECL(topten_print, (const char *));
 STATIC_DCL void FDECL(topten_print_bold, (const char *));
 STATIC_DCL xchar FDECL(observable_depth, (d_level *));
 STATIC_DCL void NDECL(outheader);
-STATIC_DCL void FDECL(outentry, (int,struct toptenentry *,BOOLEAN_P));
+STATIC_DCL void FDECL(outentry, (int,struct toptenentry *,boolean));
 STATIC_DCL void FDECL(readentry, (FILE *,struct toptenentry *));
 STATIC_DCL void FDECL(writeentry, (FILE *,struct toptenentry *));
 #ifdef XLOGFILE
@@ -73,9 +73,9 @@ STATIC_DCL void FDECL(munge_xlstring, (char *dest, char *src, int n));
 STATIC_DCL void FDECL(write_xlentry, (FILE *,struct toptenentry *));
 #endif
 STATIC_DCL void FDECL(free_ttlist, (struct toptenentry *));
-STATIC_DCL int FDECL(classmon, (char *,BOOLEAN_P));
+STATIC_DCL int FDECL(classmon, (char *,boolean));
 STATIC_DCL int FDECL(score_wanted,
-                     (BOOLEAN_P, int,struct toptenentry *,int,const char **,int));
+                     (boolean, int,struct toptenentry *,int,const char **,int));
 #ifdef RECORD_ACHIEVE
 STATIC_DCL long FDECL(encodeachieve, (void));
 #endif
@@ -103,8 +103,7 @@ NEARDATA const char * const killed_by_prefix[] = {
 static winid toptenwin = WIN_ERR;
 
 STATIC_OVL void
-topten_print(x)
-const char *x;
+topten_print(const char *x)
 {
     if (toptenwin == WIN_ERR)
         raw_print(x);
@@ -113,8 +112,7 @@ const char *x;
 }
 
 STATIC_OVL void
-topten_print_bold(x)
-const char *x;
+topten_print_bold(const char *x)
 {
     if (toptenwin == WIN_ERR)
         raw_print_bold(x);
@@ -123,8 +121,7 @@ const char *x;
 }
 
 STATIC_OVL xchar
-observable_depth(lev)
-d_level *lev;
+observable_depth(d_level *lev)
 {
 #ifdef RANDOMIZED_PLANES	/* if we ever randomize the order of the elemental planes, we
 	   must use a constant external representation in the record file */
@@ -141,9 +138,7 @@ d_level *lev;
 }
 
 STATIC_OVL void
-readentry(rfile,tt)
-FILE *rfile;
-struct toptenentry *tt;
+readentry(FILE *rfile, struct toptenentry *tt)
 {
 #ifdef NO_SCAN_BRACK /* Version_ Pts DgnLevs_ Hp___ Died__Born id */
     static const char fmt[] = GAME_SHORT_NAME " %d %d %d %ld %d %d %d %d %d %d %ld %ld %d%*c";
@@ -204,9 +199,7 @@ struct toptenentry *tt;
 }
 
 STATIC_OVL void
-writeentry(rfile,tt)
-FILE *rfile;
-struct toptenentry *tt;
+writeentry(FILE *rfile, struct toptenentry *tt)
 {
 #ifdef NO_SCAN_BRACK
     nsb_mung_line(tt->name);
@@ -252,10 +245,7 @@ struct toptenentry *tt;
 /* copy a maximum of n-1 characters from src to dest, changing ':' and '\n'
  * to '_'; always null-terminate. */
 STATIC_OVL void
-munge_xlstring(dest, src, n)
-char *dest;
-char *src;
-int n;
+munge_xlstring(char *dest, char *src, int n)
 {
     int i;
 
@@ -272,7 +262,7 @@ int n;
 }
 
 STATIC_OVL unsigned long
-encode_uevent()
+encode_uevent(void)
 {
     unsigned long c = 0UL;
 
@@ -311,7 +301,7 @@ encode_uevent()
 }
 
 STATIC_OVL unsigned long
-encode_carried()
+encode_carried(void)
 {
     unsigned long c = 0UL;
 
@@ -327,9 +317,7 @@ encode_carried()
 }
 
 STATIC_OVL void
-write_xlentry(rfile,tt)
-FILE *rfile;
-struct toptenentry *tt;
+write_xlentry(FILE *rfile, struct toptenentry *tt)
 {
     s_level *lev = Is_special(&u.uz);
     char buf[DTHSZ+1];
@@ -429,8 +417,7 @@ struct toptenentry *tt;
 #endif /* XLOGFILE */
 
 STATIC_OVL void
-free_ttlist(tt)
-struct toptenentry *tt;
+free_ttlist(struct toptenentry *tt)
 {
     struct toptenentry *ttnext;
 
@@ -443,8 +430,7 @@ struct toptenentry *tt;
 }
 
 void
-topten(how)
-int how;
+topten(int how)
 {
     int uid = getuid();
     int rank, rank0 = -1, rank1 = 0;
@@ -801,7 +787,7 @@ destroywin:
 }
 
 STATIC_OVL void
-outheader()
+outheader(void)
 {
     char linebuf[BUFSZ];
     register char *bp;
@@ -818,10 +804,7 @@ outheader()
 
 /* so>0: standout line; so=0: ordinary line */
 STATIC_OVL void
-outentry(rank, t1, so)
-struct toptenentry *t1;
-int rank;
-boolean so;
+outentry(int rank, struct toptenentry *t1, boolean so)
 {
     boolean second_line = TRUE;
     char linebuf[BUFSZ];
@@ -1002,13 +985,7 @@ boolean so;
 }
 
 STATIC_OVL int
-score_wanted(current_ver, rank, t1, playerct, players, uid)
-boolean current_ver;
-int rank;
-struct toptenentry *t1;
-int playerct;
-const char **players;
-int uid;
+score_wanted(boolean current_ver, int rank, struct toptenentry *t1, int playerct, const char **players, int uid)
 {
     int i;
 
@@ -1127,9 +1104,7 @@ encodeachieve(void)
  * and argv[1] starting with "-s".
  */
 void
-prscore(argc,argv)
-int argc;
-char **argv;
+prscore(int argc, char **argv)
 {
     const char **players;
     int playerct, rank;
@@ -1268,9 +1243,7 @@ char **argv;
 }
 
 STATIC_OVL int
-classmon(plch, fem)
-char *plch;
-boolean fem;
+classmon(char *plch, boolean fem)
 {
     int i;
 
@@ -1296,8 +1269,7 @@ boolean fem;
  * and attach them to an object (for statues or morgue corpses).
  */
 struct obj *
-tt_oname(otmp)
-struct obj *otmp;
+tt_oname(struct obj *otmp)
 {
     int rank;
     register int i;

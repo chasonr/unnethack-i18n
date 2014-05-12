@@ -81,7 +81,7 @@ static char origdir[255]="";
  */
 
 static void
-usage()
+usage(void)
 {
     (void) printf("Usage: %s [ctxCIfv] arguments... [files...]\n", progname);
     (void) printf("  default library is %s\n", library_file);
@@ -90,7 +90,7 @@ usage()
 }
 
 static void
-verbose_help()
+verbose_help(void)
 {
     static const char *long_help[] = {
         "",
@@ -117,9 +117,7 @@ verbose_help()
 }
 
 libdir *
-realloc_ld(ld, len)
-libdir *ld;
-long *len;
+realloc_ld(libdir *ld, long int *len)
 {
     libdir *tmp = (libdir *)alloc(((*len) + DLB_IDX_REALLOC) * sizeof(libdir));
     if (!tmp) {
@@ -135,10 +133,7 @@ long *len;
 }
 
 static void
-Write(out,buf,len)
-int out;
-char *buf;
-long len;
+Write(int out, char *buf, long int len)
 {
 #if defined(MSDOS) && !defined(__DJGPP__)
     unsigned short slen;
@@ -160,8 +155,7 @@ long len;
 
 
 char *
-eos(s)
-char *s;
+eos(char *s)
 {
     while (*s) s++;
     return s;
@@ -192,8 +186,7 @@ const char *filename, *mode;
 #ifdef FILE_AREAS
 #ifdef UNIX
 FILE *
-fopen_datafile_area(filearea, filename, mode)
-const char *filearea, *filename, *mode;
+fopen_datafile_area(const char *filearea, const char *filename, const char *mode)
 {
     FILE *fp;
     char *buf;
@@ -223,9 +216,7 @@ const char *filename, *mode;
 #endif	/* DLB */
 
 int
-main(argc, argv)
-int argc;
-char **argv;
+main(int argc, char **argv)
 {
 #ifdef DLB
 #ifdef DLBLIB
@@ -532,10 +523,7 @@ char **argv;
 #ifdef DLBLIB
 
 static void
-write_dlb_directory(out, nfiles, ld, slen, dir_size, flen)
-int out, nfiles;
-libdir *ld;
-long slen, dir_size, flen;
+write_dlb_directory(int out, int nfiles, libdir *ld, long int slen, long int dir_size, long int flen)
 {
     char buf[BUFSIZ];
     int i;
@@ -566,8 +554,7 @@ long slen, dir_size, flen;
 #endif	/* DLB */
 
 static void
-xexit(retcd)
-int retcd;
+xexit(int retcd)
 {
 #ifdef DLB
 #ifdef AMIGA

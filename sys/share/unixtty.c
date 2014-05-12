@@ -139,8 +139,7 @@ struct termstruct inittyb, curttyb;
 
 #ifdef POSIX_TYPES
 static int
-speednum(speed)
-speed_t speed;
+speednum(speed_t speed)
 {
     switch (speed) {
     case B0:
@@ -182,7 +181,7 @@ speed_t speed;
 #endif
 
 static void
-setctty()
+setctty(void)
 {
     if(STTY(&curttyb) < 0 || STTY2(&curttyb2) < 0)
         perror("NetHack (setctty)");
@@ -194,7 +193,7 @@ setctty()
  * Called by startup() in termcap.c and after returning from ! or ^Z
  */
 void
-gettty()
+gettty(void)
 {
     if(GTTY(&inittyb) < 0 || GTTY2(&inittyb2) < 0)
         perror("NetHack (gettty)");
@@ -216,8 +215,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     end_screen();
     if(s) raw_print(s);
@@ -230,7 +228,7 @@ const char *s;
 }
 
 void
-setftty()
+setftty(void)
 {
     register int ef = 0;			/* desired value of flags & ECHO */
 #ifdef LINT	/* cf = CBRKON(CBRKMASK); const expr to initialize is ok */
@@ -298,7 +296,7 @@ setftty()
 }
 
 void
-intron()		/* enable kbd interupts if enabled when game started */
+intron(void)		/* enable kbd interupts if enabled when game started */
 {
 #ifdef TTY_GRAPHICS
     /* Ugly hack to keep from changing tty modes for non-tty games -dlc */
@@ -311,7 +309,7 @@ intron()		/* enable kbd interupts if enabled when game started */
 }
 
 void
-introff()		/* disable kbd interrupts if required*/
+introff(void)		/* disable kbd interrupts if required*/
 {
 #ifdef TTY_GRAPHICS
     /* Ugly hack to keep from changing tty modes for non-tty games -dlc */
@@ -403,7 +401,7 @@ void NDECL(check_linux_console);
 void NDECL(init_linux_cons);
 
 void
-linux_mapon()
+linux_mapon(void)
 {
 # ifdef TTY_GRAPHICS
     if (!strcmp(windowprocs.name, "tty") && linux_flag_console) {
@@ -413,7 +411,7 @@ linux_mapon()
 }
 
 void
-linux_mapoff()
+linux_mapoff(void)
 {
 # ifdef TTY_GRAPHICS
     if (!strcmp(windowprocs.name, "tty") && linux_flag_console) {
@@ -423,7 +421,7 @@ linux_mapoff()
 }
 
 void
-check_linux_console()
+check_linux_console(void)
 {
     struct vt_mode vtm;
 
@@ -433,7 +431,7 @@ check_linux_console()
 }
 
 void
-init_linux_cons()
+init_linux_cons(void)
 {
 # ifdef TTY_GRAPHICS
     if (!strcmp(windowprocs.name, "tty") && linux_flag_console) {

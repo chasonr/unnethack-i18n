@@ -28,7 +28,7 @@ STATIC_DCL int FDECL(defdisintagr, (struct monst *,struct monst *,struct attack 
 STATIC_DCL void FDECL(mswingsm, (struct monst *, struct monst *, struct obj *));
 STATIC_DCL void FDECL(noises,(struct monst *,struct attack *));
 STATIC_DCL void FDECL(missmm,(struct monst *,struct monst *,struct attack *));
-STATIC_DCL int FDECL(passivemm, (struct monst *, struct monst *, BOOLEAN_P, int));
+STATIC_DCL int FDECL(passivemm, (struct monst *, struct monst *, boolean, int));
 
 /* Needed for the special case of monsters wielding vorpal blades (rare).
  * If we use this a lot it should probably be a parameter to mdamagem()
@@ -39,9 +39,7 @@ static int dieroll;
 /* returns mon_nam(mon) relative to other_mon; normal name unless they're
    the same, in which case the reference is to {him|her|it} self */
 STATIC_OVL char *
-mon_nam_too(outbuf, mon, other_mon)
-char *outbuf;
-struct monst *mon, *other_mon;
+mon_nam_too(char *outbuf, struct monst *mon, struct monst *other_mon)
 {
     Strcpy(outbuf, mon_nam(mon));
     if (mon == other_mon)
@@ -60,9 +58,7 @@ struct monst *mon, *other_mon;
 }
 
 STATIC_OVL void
-noises(magr, mattk)
-register struct monst *magr;
-register struct	attack *mattk;
+noises(register struct monst *magr, register struct attack *mattk)
 {
     boolean farq = (distu(magr->mx, magr->my) > 15);
 
@@ -77,9 +73,7 @@ register struct	attack *mattk;
 
 STATIC_OVL
 void
-missmm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
-struct attack *mattk;
+missmm(register struct monst *magr, register struct monst *mdef, struct attack *mattk)
 {
     const char *fmt;
     char buf[BUFSZ], mdef_name[BUFSZ];
@@ -110,8 +104,8 @@ struct attack *mattk;
  *  digest the hero.
  */
 int
-fightm(mtmp)		/* have monsters fight each other */
-register struct monst *mtmp;
+fightm(register struct monst *mtmp)		/* have monsters fight each other */
+                            
 {
     register struct monst *mon, *nmon;
     int result, has_u_swallowed;
@@ -199,8 +193,7 @@ register struct monst *mtmp;
  * In the case of exploding monsters, the monster dies as well.
  */
 int
-mattackm(magr, mdef)
-register struct monst *magr,*mdef;
+mattackm(register struct monst *magr, register struct monst *mdef)
 {
     int		    i,		/* loop counter */
                 tmp,	/* amour class difference */
@@ -405,9 +398,7 @@ register struct monst *magr,*mdef;
 
 /* Returns the result of mdamagem(). */
 STATIC_OVL int
-hitmm(magr, mdef, mattk)
-register struct monst *magr,*mdef;
-struct	attack *mattk;
+hitmm(register struct monst *magr, register struct monst *mdef, struct attack *mattk)
 {
     if(vis) {
         int compat;
@@ -473,9 +464,7 @@ struct	attack *mattk;
 
 /* Returns the same values as mdamagem(). */
 STATIC_OVL int
-gazemm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
-struct attack *mattk;
+gazemm(register struct monst *magr, register struct monst *mdef, struct attack *mattk)
 {
     char buf[BUFSZ];
 
@@ -535,9 +524,7 @@ struct attack *mattk;
 
 /* Returns the same values as mattackm(). */
 STATIC_OVL int
-gulpmm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
-register struct	attack *mattk;
+gulpmm(register struct monst *magr, register struct monst *mdef, register struct attack *mattk)
 {
     xchar	ax, ay, dx, dy;
     int	status;
@@ -600,9 +587,7 @@ register struct	attack *mattk;
 }
 
 STATIC_OVL int
-explmm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
-register struct	attack *mattk;
+explmm(register struct monst *magr, register struct monst *mdef, register struct attack *mattk)
 {
     int result;
 
@@ -629,9 +614,7 @@ register struct	attack *mattk;
 
 #ifdef WEBB_DISINT
 STATIC_OVL int
-defdisintagr(magr, mdef, mattk)
-register struct monst	*magr, *mdef;
-register struct attack	*mattk;
+defdisintagr(register struct monst *magr, register struct monst *mdef, register struct attack *mattk)
 {
     int tmp=-1; /* -1 a miss,
 	               -MM_AGR_DIED aggre died,
@@ -764,9 +747,7 @@ register struct attack	*mattk;
  *  See comment at top of mattackm(), for return values.
  */
 STATIC_OVL int
-mdamagem(magr, mdef, mattk)
-register struct monst	*magr, *mdef;
-register struct attack	*mattk;
+mdamagem(register struct monst *magr, register struct monst *mdef, register struct attack *mattk)
 {
     struct obj *obj;
     char buf[BUFSZ];
@@ -1486,8 +1467,8 @@ post_stone:
 }
 
 int
-noattacks(ptr)			/* returns 1 if monster doesn't attack */
-struct	permonst *ptr;
+noattacks(struct permonst *ptr)			/* returns 1 if monster doesn't attack */
+      	              
 {
     int i;
 
@@ -1499,9 +1480,7 @@ struct	permonst *ptr;
 
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 int
-sleep_monst(mon, amt, how)
-struct monst *mon;
-int amt, how;
+sleep_monst(struct monst *mon, int amt, int how)
 {
     if (resists_sleep(mon) ||
             (how >= 0 && resist(mon, (char)how, 0, NOTELL))) {
@@ -1521,8 +1500,7 @@ int amt, how;
 
 /* sleeping grabber releases, engulfer doesn't; don't use for paralysis! */
 void
-slept_monst(mon)
-struct monst *mon;
+slept_monst(struct monst *mon)
 {
     if ((mon->msleeping || !mon->mcanmove) && mon == u.ustuck &&
             !sticks(youmonst.data) && !u.uswallow) {
@@ -1532,9 +1510,7 @@ struct monst *mon;
 }
 
 STATIC_OVL void
-mrustm(magr, mdef, obj)
-register struct monst *magr, *mdef;
-register struct obj *obj;
+mrustm(register struct monst *magr, register struct monst *mdef, register struct obj *obj)
 {
     boolean is_acid;
 
@@ -1569,9 +1545,7 @@ register struct obj *obj;
 }
 
 STATIC_OVL void
-mswingsm(magr, mdef, otemp)
-register struct monst *magr, *mdef;
-register struct obj *otemp;
+mswingsm(register struct monst *magr, register struct monst *mdef, register struct obj *otemp)
 {
     char buf[BUFSZ];
     if (!flags.verbose || Blind || !mon_visible(magr)) return;
@@ -1586,10 +1560,7 @@ register struct obj *otemp;
  * handled above.  Returns same values as mattackm.
  */
 STATIC_OVL int
-passivemm(magr,mdef,mhit,mdead)
-register struct monst *magr, *mdef;
-boolean mhit;
-int mdead;
+passivemm(register struct monst *magr, register struct monst *mdef, boolean mhit, int mdead)
 {
     register struct permonst *mddat = mdef->data;
     register struct permonst *madat = magr->data;
@@ -1744,8 +1715,7 @@ assess_dmg:
 /* "aggressive defense"; what type of armor prevents specified attack
    from touching its target? */
 long
-attk_protection(aatyp)
-int aatyp;
+attk_protection(int aatyp)
 {
     long w_mask = 0L;
 
@@ -1785,10 +1755,7 @@ int aatyp;
 }
 
 void
-maybe_freeze_m(mdef, vis, pdmg)
-struct monst* mdef;
-int vis;
-int* pdmg;
+maybe_freeze_m(struct monst *mdef, int vis, int *pdmg)
 {
     if (flaming(mdef->data)) {
         pline("%s burns the ice away.", Monnam(mdef));

@@ -60,36 +60,36 @@ NetHack, except that rounddiv may call panic().
 #endif
 
 boolean
-digit(c)		/* is 'c' a digit? */
-char c;
+digit(char c)		/* is 'c' a digit? */
+       
 {
     return((boolean)('0' <= c && c <= '9'));
 }
 
 boolean
-letter(c)		/* is 'c' a letter?  note: '@' classed as letter */
-char c;
+letter(char c)		/* is 'c' a letter?  note: '@' classed as letter */
+       
 {
     return((boolean)(('@' <= c && c <= 'Z') || ('a' <= c && c <= 'z')));
 }
 
 char
-highc(c)			/* force 'c' into uppercase */
-char c;
+highc(char c)			/* force 'c' into uppercase */
+       
 {
     return((char)(('a' <= c && c <= 'z') ? (c & ~040) : c));
 }
 
 char
-lowc(c)			/* force 'c' into lowercase */
-char c;
+lowc(char c)			/* force 'c' into lowercase */
+       
 {
     return((char)(('A' <= c && c <= 'Z') ? (c | 040) : c));
 }
 
 char *
-lcase(s)		/* convert a string into all lowercase */
-char *s;
+lcase(char *s)		/* convert a string into all lowercase */
+        
 {
     register char *p;
 
@@ -99,8 +99,8 @@ char *s;
 }
 
 char *
-upstart(s)		/* convert first character of a string to uppercase */
-char *s;
+upstart(char *s)		/* convert first character of a string to uppercase */
+        
 {
     if (s) *s = highc(*s);
     return s;
@@ -108,8 +108,7 @@ char *s;
 
 /* remove excess whitespace from a string buffer (in place) */
 char *
-mungspaces(bp)
-char *bp;
+mungspaces(char *bp)
 {
     register char c, *p, *p2;
     boolean was_space = TRUE;
@@ -125,8 +124,8 @@ char *bp;
 }
 
 char *
-eos(s)			/* return the end of a string (pointing at '\0') */
-register char *s;
+eos(register char *s)			/* return the end of a string (pointing at '\0') */
+                 
 {
     while (*s) s++;	/* s += strlen(s); */
     return s;
@@ -134,9 +133,9 @@ register char *s;
 
 /* strcat(s, {c,'\0'}); */
 char *
-strkitten(s, c)		/* append a character to a string (in place) */
-char *s;
-char c;
+strkitten(char *s, char c)		/* append a character to a string (in place) */
+        
+       
 {
     char *p = eos(s);
 
@@ -147,8 +146,7 @@ char c;
 
 /* replace (in place) characters below space in the string */
 void
-sanitizestr(s)
-char *s;
+sanitizestr(char *s)
 {
     if (!s) return;
     while (*s) {
@@ -159,8 +157,8 @@ char *s;
 
 
 char *
-s_suffix(s)		/* return a name converted to possessive */
-const char *s;
+s_suffix(const char *s)		/* return a name converted to possessive */
+              
 {
     Static char buf[BUFSZ];
 
@@ -175,9 +173,9 @@ const char *s;
 }
 
 char *
-xcrypt(str, buf)	/* trivial text encryption routine (see makedefs) */
-const char *str;
-char *buf;
+xcrypt(const char *str, char *buf)	/* trivial text encryption routine (see makedefs) */
+                
+          
 {
     register const char *p;
     register char *q;
@@ -193,8 +191,8 @@ char *buf;
 }
 
 boolean
-onlyspace(s)		/* is a string entirely whitespace? */
-const char *s;
+onlyspace(const char *s)		/* is a string entirely whitespace? */
+              
 {
     for (; *s; s++)
         if (*s != ' ' && *s != '\t') return FALSE;
@@ -202,8 +200,8 @@ const char *s;
 }
 
 char *
-tabexpand(sbuf)		/* expand tabs into proper number of spaces */
-char *sbuf;
+tabexpand(char *sbuf)		/* expand tabs into proper number of spaces */
+           
 {
     char buf[BUFSZ];
     register char *bp, *s = sbuf;
@@ -225,8 +223,8 @@ char *sbuf;
 }
 
 char *
-visctrl(c)		/* make a displayable string from a character */
-char c;
+visctrl(char c)		/* make a displayable string from a character */
+       
 {
     Static char ccc[3];
 
@@ -247,8 +245,8 @@ char c;
 }
 
 const char *
-ordin(n)		/* return the ordinal suffix of a number */
-int n;			/* note: should be non-negative */
+ordin(int n)		/* return the ordinal suffix of a number */
+      			/* note: should be non-negative */
 {
     register int dd = n % 10;
 
@@ -257,8 +255,8 @@ int n;			/* note: should be non-negative */
 }
 
 char *
-sitoa(n)		/* make a signed digit string from a number */
-int n;
+sitoa(int n)		/* make a signed digit string from a number */
+      
 {
     Static char buf[13];
 
@@ -267,16 +265,16 @@ int n;
 }
 
 int
-sgn(n)			/* return the sign of a number: -1, 0, or 1 */
-int n;
+sgn(int n)			/* return the sign of a number: -1, 0, or 1 */
+      
 {
     return (n < 0) ? -1 : (n != 0);
 }
 
 int
-rounddiv(x, y)		/* calculate x/y, rounding as appropriate */
-long x;
-int  y;
+rounddiv(long int x, int y)		/* calculate x/y, rounding as appropriate */
+       
+       
 {
     int r, m;
     int divsgn = 1;
@@ -299,8 +297,8 @@ int  y;
 }
 
 int
-distmin(x0, y0, x1, y1) /* distance between two points, in moves */
-int x0, y0, x1, y1;
+distmin(int x0, int y0, int x1, int y1) /* distance between two points, in moves */
+                   
 {
     register int dx = x0 - x1, dy = y0 - y1;
     if (dx < 0) dx = -dx;
@@ -312,16 +310,15 @@ int x0, y0, x1, y1;
 }
 
 int
-dist2(x0, y0, x1, y1)	/* square of euclidean distance between pair of pts */
-int x0, y0, x1, y1;
+dist2(int x0, int y0, int x1, int y1)	/* square of euclidean distance between pair of pts */
+                   
 {
     register int dx = x0 - x1, dy = y0 - y1;
     return dx * dx + dy * dy;
 }
 
 int
-isqrt(val)
-int val;
+isqrt(int val)
 {
     int rt = 0;
     int odd = 1;
@@ -334,8 +331,8 @@ int val;
 }
 
 boolean
-online2(x0, y0, x1, y1) /* are two points lined up (on a straight line)? */
-int x0, y0, x1, y1;
+online2(int x0, int y0, int x1, int y1) /* are two points lined up (on a straight line)? */
+                   
 {
     int dx = x0 - x1, dy = y0 - y1;
     /*  If either delta is zero then they're on an orthogonal line,
@@ -345,8 +342,8 @@ int x0, y0, x1, y1;
 }
 
 boolean
-pmatch(patrn, strng)	/* match a string against a pattern */
-const char *patrn, *strng;
+pmatch(const char *patrn, const char *strng)	/* match a string against a pattern */
+                          
 {
     char s, p;
     /*
@@ -369,9 +366,9 @@ pmatch_top:
 
 #ifndef STRNCMPI
 int
-strncmpi(s1, s2, n)	/* case insensitive counted string comparison */
-register const char *s1, *s2;
-register int n; /*(should probably be size_t, which is usually unsigned)*/
+strncmpi(register const char *s1, register const char *s2, register int n)	/* case insensitive counted string comparison */
+                             
+                /*(should probably be size_t, which is usually unsigned)*/
 {
     /*{ aka strncasecmp }*/
     register char t1, t2;
@@ -390,9 +387,9 @@ register int n; /*(should probably be size_t, which is usually unsigned)*/
 #ifndef STRSTRI
 
 char *
-strstri(str, sub)	/* case insensitive substring search */
-const char *str;
-const char *sub;
+strstri(const char *str, const char *sub)	/* case insensitive substring search */
+                
+                
 {
     register const char *s1, *s2;
     register int i, k;
@@ -430,10 +427,7 @@ const char *sub;
 /* compare two strings for equality, ignoring the presence of specified
    characters (typically whitespace) and possibly ignoring case */
 boolean
-fuzzymatch(s1, s2, ignore_chars, caseblind)
-const char *s1, *s2;
-const char *ignore_chars;
-boolean caseblind;
+fuzzymatch(const char *s1, const char *s2, const char *ignore_chars, boolean caseblind)
 {
     register char c1, c2;
 
@@ -473,7 +467,7 @@ gsl_rng *rng_state = NULL;
 #endif
 
 void
-setrandom()
+setrandom(void)
 {
     int random_seed=0;
 #ifdef DEV_RANDOM
@@ -517,7 +511,7 @@ setrandom()
 }
 
 static struct tm *
-getlt()
+getlt(void)
 {
     time_t date = current_epoch();
 
@@ -529,21 +523,21 @@ getlt()
 }
 
 int
-getyear()
+getyear(void)
 {
     return(1900 + getlt()->tm_year);
 }
 
 /** Returns current month (1-12, 1 = January) */
 int
-getmonth()
+getmonth(void)
 {
     return(1 + getlt()->tm_mon);
 }
 
 /** Returns current day of month (1-31) */
 int
-getmday()
+getmday(void)
 {
     return(getlt()->tm_mday);
 }
@@ -573,8 +567,7 @@ time_t date;
 #endif
 
 long
-yyyymmdd(date)
-time_t date;
+yyyymmdd(time_t date)
 {
     long datenum;
     struct tm *lt;
@@ -615,7 +608,7 @@ time_t date;
  * + 11/22 for rounding
  */
 int
-phase_of_the_moon()		/* 0-7, with 0: new, 4: full */
+phase_of_the_moon(void)		/* 0-7, with 0: new, 4: full */
 {
     register struct tm *lt = getlt();
     register int epact, diy, goldn;
@@ -630,7 +623,7 @@ phase_of_the_moon()		/* 0-7, with 0: new, 4: full */
 }
 
 boolean
-friday_13th()
+friday_13th(void)
 {
     register struct tm *lt = getlt();
 
@@ -638,7 +631,7 @@ friday_13th()
 }
 
 int
-night()
+night(void)
 {
     register int hour = getlt()->tm_hour;
 
@@ -646,19 +639,19 @@ night()
 }
 
 int
-midnight()
+midnight(void)
 {
     return(getlt()->tm_hour == 0);
 }
 
 boolean
-towelday()
+towelday(void)
 {
     return(boolean)((getmday()==25) && (getmonth()==5));
 }
 
 boolean
-piday()
+piday(void)
 {
     return(boolean)(
               ((getmonth()==3) && (getmday()==14)) || /* Pi Day */
@@ -667,19 +660,19 @@ piday()
 }
 
 boolean
-aprilfoolsday()
+aprilfoolsday(void)
 {
     return(boolean)((getmonth()==4) && (getmday()==1));
 }
 
 boolean
-pirateday()
+pirateday(void)
 {
     return(boolean)((getmday()==19) && (getmonth()==9));
 }
 
 boolean
-discordian_holiday()
+discordian_holiday(void)
 {
     return(boolean)((getmday()==23) && (getmonth()==5));
 }
@@ -689,9 +682,7 @@ static char buf_fmt_time[BUFSZ];
 /** Returns a date formatted by strftime.
  * Returns current time if time is 0. */
 char *
-get_formatted_time(time, fmt)
-time_t time;
-const char *fmt;
+get_formatted_time(time_t time, const char *fmt)
 {
     strftime(buf_fmt_time, BUFSZ, fmt,
              (time == 0) ? getlt() : localtime(&time));
@@ -700,8 +691,7 @@ const char *fmt;
 
 /** Returns a iso-8601 formatted date (e.g. 2010-03-19T08:46:23+0100). */
 char *
-iso8601(date)
-time_t date;
+iso8601(time_t date)
 {
     return get_formatted_time(date, "%Y-%m-%dT%H:%M:%S%z");
 }
@@ -709,8 +699,7 @@ time_t date;
 static char buf_fmt_duration[BUFSZ];
 /** Returns a iso-8601 formatted duration (e.g. PThh:mm:ss). */
 char *
-iso8601_duration(seconds)
-long seconds;
+iso8601_duration(long int seconds)
 {
     /* currently no days, months and years, as the conversion
      * is non-trivial */
@@ -725,7 +714,7 @@ long seconds;
 
 /** Returns epoch time. */
 time_t
-current_epoch()
+current_epoch(void)
 {
     time_t date;
 

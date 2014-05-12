@@ -93,7 +93,7 @@ hpnotify_format_str(char *str)
  * It is also not possible to hold artifacts as secondary weapons.
  */
 boolean
-can_regenerate()
+can_regenerate(void)
 {
     if (is_elf(youmonst.data)) {
         if (uwep && is_iron(uwep) &&
@@ -134,7 +134,7 @@ can_regenerate()
 }
 
 void
-moveloop()
+moveloop(void)
 {
 #if defined(MICRO) || defined(WIN32)
     char ch;
@@ -660,7 +660,7 @@ moveloop()
 }
 
 void
-stop_occupation()
+stop_occupation(void)
 {
     if(occupation) {
         if (!maybe_finished_meal(TRUE))
@@ -678,7 +678,7 @@ stop_occupation()
 }
 
 void
-display_gamewindows()
+display_gamewindows(void)
 {
     WIN_MESSAGE = create_nhwindow(NHW_MESSAGE);
     WIN_STATUS = create_nhwindow(NHW_STATUS);
@@ -707,7 +707,7 @@ display_gamewindows()
 }
 
 void
-newgame()
+newgame(void)
 {
     int i;
 
@@ -804,8 +804,8 @@ newgame()
 
 /* show "welcome [back] to unnethack" message at program startup */
 void
-welcome(new_game)
-boolean new_game;	/* false => restoring an old game */
+welcome(boolean new_game)
+                 	/* false => restoring an old game */
 {
     char buf[BUFSZ];
     boolean currentgend = Upolyd ? u.mfemale : flags.female;
@@ -945,10 +945,7 @@ get_realtime(void)
 /** Interrupt a multiturn action if current_points is equal to max_points. */
 STATIC_DCL
 void
-interrupt_multi(points, current_points, max_points)
-const char *points;
-int current_points;
-int max_points;
+interrupt_multi(const char *points, int current_points, int max_points)
 {
     if (multi > 0 &&
             current_points == max_points) {

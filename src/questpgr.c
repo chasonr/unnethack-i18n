@@ -22,7 +22,7 @@ STATIC_DCL const char * NDECL(neminame);
 STATIC_DCL const char * NDECL(guardname);
 STATIC_DCL const char * NDECL(homebase);
 STATIC_DCL struct qtmsg * FDECL(msg_in, (struct qtmsg *,int));
-STATIC_DCL void FDECL(convert_arg, (CHAR_P));
+STATIC_DCL void FDECL(convert_arg, (char));
 STATIC_DCL void NDECL(convert_line);
 STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *));
 STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *,int));
@@ -53,10 +53,7 @@ dump_qtlist()	/* dump the character msg list to check appearance */
 #endif /* DEBUG */
 
 static void
-Fread(ptr, size, nitems, stream)
-genericptr_t	ptr;
-int	size, nitems;
-dlb	*stream;
+Fread(genericptr_t ptr, int size, int nitems, dlb *stream)
 {
     int cnt;
 
@@ -68,8 +65,7 @@ dlb	*stream;
 }
 
 STATIC_OVL struct qtmsg *
-construct_qtlist(hdr_offset)
-long	hdr_offset;
+construct_qtlist(long int hdr_offset)
 {
     struct qtmsg *msg_list;
     int	n_msgs;
@@ -89,7 +85,7 @@ long	hdr_offset;
 }
 
 void
-load_qtlist()
+load_qtlist(void)
 {
 
     int	n_classes, i;
@@ -137,7 +133,7 @@ load_qtlist()
 
 /* called at program exit */
 void
-unload_qtlist()
+unload_qtlist(void)
 {
     if (msg_file)
         (void) dlb_fclose(msg_file),  msg_file = 0;
@@ -149,8 +145,7 @@ unload_qtlist()
 }
 
 short
-quest_info(typ)
-int typ;
+quest_info(int typ)
 {
     switch (typ) {
     case 0:
@@ -168,7 +163,7 @@ int typ;
 }
 
 const char *
-ldrname()	/* return your role leader's name */
+ldrname(void)	/* return your role leader's name */
 {
     int i = urole.ldrnum;
 
@@ -179,20 +174,19 @@ ldrname()	/* return your role leader's name */
 }
 
 STATIC_OVL const char *
-intermed()	/* return your intermediate target string */
+intermed(void)	/* return your intermediate target string */
 {
     return (urole.intermed);
 }
 
 boolean
-is_quest_artifact(otmp)
-struct obj *otmp;
+is_quest_artifact(struct obj *otmp)
 {
     return((boolean)(otmp->oartifact == urole.questarti));
 }
 
 STATIC_OVL const char *
-neminame()	/* return your role nemesis' name */
+neminame(void)	/* return your role nemesis' name */
 {
     int i = urole.neminum;
 
@@ -203,7 +197,7 @@ neminame()	/* return your role nemesis' name */
 }
 
 STATIC_OVL const char *
-guardname()	/* return your role leader's guard monster name */
+guardname(void)	/* return your role leader's guard monster name */
 {
     int i = urole.guardnum;
 
@@ -211,15 +205,13 @@ guardname()	/* return your role leader's guard monster name */
 }
 
 STATIC_OVL const char *
-homebase()	/* return your role leader's location */
+homebase(void)	/* return your role leader's location */
 {
     return(urole.homebase);
 }
 
 STATIC_OVL struct qtmsg *
-msg_in(qtm_list, msgnum)
-struct qtmsg *qtm_list;
-int	msgnum;
+msg_in(struct qtmsg *qtm_list, int msgnum)
 {
     struct qtmsg *qt_msg;
 
@@ -230,8 +222,7 @@ int	msgnum;
 }
 
 STATIC_OVL void
-convert_arg(c)
-char c;
+convert_arg(char c)
 {
     register const char *str;
 
@@ -319,7 +310,7 @@ char c;
 }
 
 STATIC_OVL void
-convert_line()
+convert_line(void)
 {
     char *c, *cc;
 
@@ -398,8 +389,7 @@ convert_line()
 }
 
 char *
-string_subst(str)
-char *str;
+string_subst(char *str)
 {
     strncpy(in_line, str, 79);
     in_line[79] = '\0';
@@ -409,8 +399,7 @@ char *str;
 
 
 STATIC_OVL void
-deliver_by_pline(qt_msg)
-struct qtmsg *qt_msg;
+deliver_by_pline(struct qtmsg *qt_msg)
 {
     long	size;
     char xbuf[BUFSZ];
@@ -425,9 +414,7 @@ struct qtmsg *qt_msg;
 }
 
 STATIC_OVL void
-deliver_by_window(qt_msg, how)
-struct qtmsg *qt_msg;
-int how;
+deliver_by_window(struct qtmsg *qt_msg, int how)
 {
     long	size;
     char xbuf[BUFSZ];
@@ -444,9 +431,7 @@ int how;
 }
 
 void
-qt_com_firstline(msgnum, msgbuf)
-int     msgnum;
-char   *msgbuf;
+qt_com_firstline(int msgnum, char *msgbuf)
 {
     struct qtmsg *qt_msg;
     char xbuf[BUFSZ];
@@ -465,8 +450,7 @@ char   *msgbuf;
 }
 
 void
-com_pager(msgnum)
-int	msgnum;
+com_pager(int msgnum)
 {
     struct qtmsg *qt_msg;
 
@@ -483,8 +467,7 @@ int	msgnum;
 }
 
 void
-qt_pager(msgnum)
-int	msgnum;
+qt_pager(int msgnum)
 {
     struct qtmsg *qt_msg;
 
@@ -526,7 +509,7 @@ static const char *creator_names[] = {
 /** Return the name of the creator deity.
  * The name stays the same for the running game. */
 STATIC_OVL const char *
-creatorname()
+creatorname(void)
 {
     if (pirateday()) {
         return "the FSM";

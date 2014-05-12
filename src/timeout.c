@@ -27,7 +27,7 @@ static NEARDATA const char * const stoned_texts[] = {
 };
 
 STATIC_OVL void
-stoned_dialogue()
+stoned_dialogue(void)
 {
     register long i = (Stoned & TIMEOUT);
 
@@ -44,7 +44,7 @@ stoned_dialogue()
 
 #ifdef CONVICT
 STATIC_OVL void
-phasing_dialogue()
+phasing_dialogue(void)
 {
     if (Phasing == 15) {
         if (!Hallucination) {
@@ -74,7 +74,7 @@ static NEARDATA const char * const vomiting_texts[] = {
 };
 
 STATIC_OVL void
-vomiting_dialogue()
+vomiting_dialogue(void)
 {
     register long i = (Vomiting & TIMEOUT) / 3L;
 
@@ -114,7 +114,7 @@ static NEARDATA const char * const choke_texts2[] = {
 };
 
 STATIC_OVL void
-choke_dialogue()
+choke_dialogue(void)
 {
     register long i = (Strangled & TIMEOUT);
 
@@ -142,7 +142,7 @@ static NEARDATA const char * const slime_texts[] = {
 };
 
 STATIC_OVL void
-slime_dialogue()
+slime_dialogue(void)
 {
     register long i = (Slimed & TIMEOUT) / 2L;
 
@@ -168,7 +168,7 @@ slime_dialogue()
 }
 
 void
-burn_away_slime()
+burn_away_slime(void)
 {
     if (Slimed) {
         pline_The("slime that covers you is burned away!");
@@ -180,7 +180,7 @@ burn_away_slime()
 
 
 void
-nh_timeout()
+nh_timeout(void)
 {
     register struct prop *upp;
     int sleeptime;
@@ -412,9 +412,7 @@ nh_timeout()
 }
 
 void
-fall_asleep(how_long, wakeup_msg)
-int how_long;
-boolean wakeup_msg;
+fall_asleep(int how_long, boolean wakeup_msg)
 {
     stop_occupation();
     nomul(how_long, "sleeping");
@@ -432,8 +430,7 @@ boolean wakeup_msg;
 
 /* Attach an egg hatch timeout to the given egg. */
 void
-attach_egg_hatch_timeout(egg)
-struct obj *egg;
+attach_egg_hatch_timeout(struct obj *egg)
 {
     int i;
 
@@ -457,8 +454,7 @@ struct obj *egg;
 
 /* prevent an egg from ever hatching */
 void
-kill_egg(egg)
-struct obj *egg;
+kill_egg(struct obj *egg)
 {
     /* stop previous timer, if any */
     (void) stop_timer(HATCH_EGG, (genericptr_t) egg);
@@ -466,9 +462,7 @@ struct obj *egg;
 
 /* timer callback routine: hatch the given egg */
 void
-hatch_egg(arg, timeout)
-genericptr_t arg;
-long timeout;
+hatch_egg(genericptr_t arg, long int timeout)
 {
     struct obj *egg;
     struct monst *mon, *mon2;
@@ -637,8 +631,7 @@ long timeout;
 
 /* Learn to recognize eggs of the given type. */
 void
-learn_egg_type(mnum)
-int mnum;
+learn_egg_type(int mnum)
 {
     /* baby monsters hatch from grown-up eggs */
     mnum = little_to_big(mnum);
@@ -649,8 +642,7 @@ int mnum;
 
 /* Attach a fig_transform timeout to the given figurine. */
 void
-attach_fig_transform_timeout(figurine)
-struct obj *figurine;
+attach_fig_transform_timeout(struct obj *figurine)
 {
     int i;
 
@@ -668,7 +660,7 @@ struct obj *figurine;
 
 /* give a fumble message */
 STATIC_OVL void
-slip_or_trip()
+slip_or_trip(void)
 {
     struct obj *otmp = vobj_at(u.ux, u.uy);
     const char *what, *pronoun;
@@ -753,9 +745,7 @@ slip_or_trip()
 
 /* Print a lamp flicker message with tailer. */
 STATIC_OVL void
-see_lamp_flicker(obj, tailer)
-struct obj *obj;
-const char *tailer;
+see_lamp_flicker(struct obj *obj, const char *tailer)
 {
     switch (obj->where) {
     case OBJ_INVENT:
@@ -770,8 +760,7 @@ const char *tailer;
 
 /* Print a dimming message for brass lanterns. */
 STATIC_OVL void
-lantern_message(obj)
-struct obj *obj;
+lantern_message(struct obj *obj)
 {
     /* from adventure */
     switch (obj->where) {
@@ -795,9 +784,7 @@ struct obj *obj;
  * See begin_burn() for meanings of obj->age and obj->spe.
  */
 void
-burn_object(arg, timeout)
-genericptr_t arg;
-long timeout;
+burn_object(genericptr_t arg, long int timeout)
 {
     struct obj *obj = (struct obj *) arg;
     boolean canseeit, many, menorah, need_newsym;
@@ -1094,9 +1081,7 @@ long timeout;
  * This is a "silent" routine - it should not print anything out.
  */
 void
-begin_burn(obj, already_lit)
-struct obj *obj;
-boolean already_lit;
+begin_burn(struct obj *obj, boolean already_lit)
 {
     int radius = 3;
     long turns = 0;
@@ -1190,9 +1175,7 @@ boolean already_lit;
  * light source.
  */
 void
-end_burn(obj, timer_attached)
-struct obj *obj;
-boolean timer_attached;
+end_burn(struct obj *obj, boolean timer_attached)
 {
     if (!obj->lamplit) {
         warning("end_burn: obj %s not lit", xname(obj));
@@ -1216,9 +1199,7 @@ boolean timer_attached;
  * Cleanup a burning object if timer stopped.
  */
 static void
-cleanup_burn(arg, expire_time)
-genericptr_t arg;
-long expire_time;
+cleanup_burn(genericptr_t arg, long int expire_time)
 {
     struct obj *obj = (struct obj *)arg;
     if (!obj->lamplit) {
@@ -1238,7 +1219,7 @@ long expire_time;
 }
 
 void
-do_storms()
+do_storms(void)
 {
     int nstrike;
     register int x, y;
@@ -1331,16 +1312,16 @@ do_storms()
  */
 
 #ifdef WIZARD
-STATIC_DCL const char *FDECL(kind_name, (SHORT_P));
+STATIC_DCL const char *FDECL(kind_name, (short));
 STATIC_DCL void FDECL(print_queue, (winid, timer_element *));
 #endif
 STATIC_DCL void FDECL(insert_timer, (timer_element *));
-STATIC_DCL timer_element *FDECL(remove_timer, (timer_element **, SHORT_P,
+STATIC_DCL timer_element *FDECL(remove_timer, (timer_element **, short,
                                 genericptr_t));
 STATIC_DCL void FDECL(write_timer, (int, timer_element *));
 STATIC_DCL boolean FDECL(mon_is_local, (struct monst *));
 STATIC_DCL boolean FDECL(timer_is_local, (timer_element *));
-STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P));
+STATIC_DCL int FDECL(maybe_write_timer, (int, int, boolean));
 
 /* ordered timer list */
 static timer_element *timer_base;		/* "active" */
@@ -1374,8 +1355,7 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
 #if defined(WIZARD)
 
 STATIC_OVL const char *
-kind_name(kind)
-short kind;
+kind_name(short int kind)
 {
     switch (kind) {
     case TIMER_LEVEL:
@@ -1391,9 +1371,7 @@ short kind;
 }
 
 STATIC_OVL void
-print_queue(win, base)
-winid win;
-timer_element *base;
+print_queue(winid win, timer_element *base)
 {
     timer_element *curr;
     char buf[BUFSZ], arg_address[20];
@@ -1420,7 +1398,7 @@ timer_element *base;
 }
 
 int
-wiz_timeout_queue()
+wiz_timeout_queue(void)
 {
     winid win;
     char buf[BUFSZ];
@@ -1442,7 +1420,7 @@ wiz_timeout_queue()
 }
 
 void
-timer_sanity_check()
+timer_sanity_check(void)
 {
     timer_element *curr;
     char obj_address[20];
@@ -1466,7 +1444,7 @@ timer_sanity_check()
  * Do this until their time is less than or equal to the move count.
  */
 void
-run_timers()
+run_timers(void)
 {
     timer_element *curr;
 
@@ -1490,11 +1468,7 @@ run_timers()
  * Start a timer.  Return TRUE if successful.
  */
 boolean
-start_timer(when, kind, func_index, arg)
-long when;
-short kind;
-short func_index;
-genericptr_t arg;
+start_timer(long int when, short int kind, short int func_index, genericptr_t arg)
 {
     timer_element *gnu;
 
@@ -1524,9 +1498,7 @@ genericptr_t arg;
  * it would have gone off, 0 if not found.
  */
 long
-stop_timer(func_index, arg)
-short func_index;
-genericptr_t arg;
+stop_timer(short int func_index, genericptr_t arg)
 {
     timer_element *doomed;
     long timeout;
@@ -1550,8 +1522,7 @@ genericptr_t arg;
  * Move all object timers from src to dest, leaving src untimed.
  */
 void
-obj_move_timers(src, dest)
-struct obj *src, *dest;
+obj_move_timers(struct obj *src, struct obj *dest)
 {
     int count;
     timer_element *curr;
@@ -1572,8 +1543,7 @@ struct obj *src, *dest;
  * Find all object timers and duplicate them for the new object "dest".
  */
 void
-obj_split_timers(src, dest)
-struct obj *src, *dest;
+obj_split_timers(struct obj *src, struct obj *dest)
 {
     timer_element *curr, *next_timer=0;
 
@@ -1592,8 +1562,7 @@ struct obj *src, *dest;
  * all object pointers are unique.
  */
 void
-obj_stop_timers(obj)
-struct obj *obj;
+obj_stop_timers(struct obj *obj)
 {
     timer_element *curr, *prev, *next_timer=0;
 
@@ -1618,8 +1587,7 @@ struct obj *obj;
 
 /* Insert timer into the global queue */
 STATIC_OVL void
-insert_timer(gnu)
-timer_element *gnu;
+insert_timer(timer_element *gnu)
 {
     timer_element *curr, *prev;
 
@@ -1635,10 +1603,7 @@ timer_element *gnu;
 
 
 STATIC_OVL timer_element *
-remove_timer(base, func_index, arg)
-timer_element **base;
-short func_index;
-genericptr_t arg;
+remove_timer(timer_element **base, short int func_index, genericptr_t arg)
 {
     timer_element *prev, *curr;
 
@@ -1657,9 +1622,7 @@ genericptr_t arg;
 
 
 STATIC_OVL void
-write_timer(fd, timer)
-int fd;
-timer_element *timer;
+write_timer(int fd, timer_element *timer)
 {
     genericptr_t arg_save;
 
@@ -1710,8 +1673,7 @@ timer_element *timer;
  * saved.
  */
 boolean
-obj_is_local(obj)
-struct obj *obj;
+obj_is_local(struct obj *obj)
 {
     switch (obj->where) {
     case OBJ_INVENT:
@@ -1735,8 +1697,7 @@ struct obj *obj;
  * level is saved.
  */
 STATIC_OVL boolean
-mon_is_local(mon)
-struct monst *mon;
+mon_is_local(struct monst *mon)
 {
     struct monst *curr;
 
@@ -1754,8 +1715,7 @@ struct monst *mon;
  * level when the level is saved.
  */
 STATIC_OVL boolean
-timer_is_local(timer)
-timer_element *timer;
+timer_is_local(timer_element *timer)
 {
     switch (timer->kind) {
     case TIMER_LEVEL:
@@ -1777,9 +1737,7 @@ timer_element *timer;
  * be written.  If write_it is true, actually write the timer.
  */
 STATIC_OVL int
-maybe_write_timer(fd, range, write_it)
-int fd, range;
-boolean write_it;
+maybe_write_timer(int fd, int range, boolean write_it)
 {
     int count = 0;
     timer_element *curr;
@@ -1822,8 +1780,7 @@ boolean write_it;
  *		+ timeouts that stay with the level (obj & monst)
  */
 void
-save_timers(fd, mode, range)
-int fd, mode, range;
+save_timers(int fd, int mode, int range)
 {
     timer_element *curr, *prev, *next_timer=0;
     int count;
@@ -1861,10 +1818,10 @@ int fd, mode, range;
  * monster pointers.
  */
 void
-restore_timers(fd, range, ghostly, adjust)
-int fd, range;
-boolean ghostly;	/* restoring from a ghost level */
-long adjust;	/* how much to adjust timeout */
+restore_timers(int fd, int range, boolean ghostly, long int adjust)
+              
+                	/* restoring from a ghost level */
+            	/* how much to adjust timeout */
 {
     int count;
     timer_element *curr;
@@ -1886,8 +1843,7 @@ long adjust;	/* how much to adjust timeout */
 
 /* reset all timers that are marked for reseting */
 void
-relink_timers(ghostly)
-boolean ghostly;
+relink_timers(boolean ghostly)
 {
     timer_element *curr;
     unsigned nid;

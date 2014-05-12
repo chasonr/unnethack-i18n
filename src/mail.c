@@ -84,7 +84,7 @@ static long laststattime;
 # endif
 
 void
-getmailstatus()
+getmailstatus(void)
 {
     if(!mailbox && !(mailbox = nh_getenv("MAIL"))) {
 #  ifdef MAILPATH
@@ -124,8 +124,7 @@ getmailstatus()
  * from newmail() and newphone().
  */
 STATIC_OVL boolean
-md_start(startp)
-coord *startp;
+md_start(coord *startp)
 {
     coord testcc;	/* scratch coordinates */
     int row;		/* current row we are checking */
@@ -225,9 +224,9 @@ retry:
  * its point randomly, which is not what we want.
  */
 STATIC_OVL boolean
-md_stop(stopp, startp)
-coord *stopp;	/* stopping position (we fill it in) */
-coord *startp;	/* starting positon (read only) */
+md_stop(coord *stopp, coord *startp)
+             	/* stopping position (we fill it in) */
+              	/* starting positon (read only) */
 {
     int x, y, distance, min_distance = -1;
 
@@ -269,9 +268,9 @@ static NEARDATA const char *mail_text[] = {
  * TRUE otherwise.
  */
 STATIC_OVL boolean
-md_rush(md,tx,ty)
-struct monst *md;
-register int tx, ty;		/* destination of mail daemon */
+md_rush(struct monst *md, register int tx, register int ty)
+                 
+                    		/* destination of mail daemon */
 {
     struct monst *mon;			/* displaced monster */
     register int dx, dy;		/* direction counters */
@@ -365,8 +364,7 @@ register int tx, ty;		/* destination of mail daemon */
 /* Deliver a scroll of mail. */
 /*ARGSUSED*/
 STATIC_OVL void
-newmail(info)
-struct mail_info *info;
+newmail(struct mail_info *info)
 {
     struct monst *md;
     coord start, stop;
@@ -468,7 +466,7 @@ struct obj *otmp;
 # ifdef UNIX
 
 void
-ckmailstatus()
+ckmailstatus(void)
 {
 #ifdef SIMPLE_MAIL
     if (mailckfreq == 0)
@@ -508,8 +506,7 @@ ckmailstatus()
 
 /*ARGSUSED*/
 void
-readmail(otmp)
-struct obj *otmp;
+readmail(struct obj *otmp)
 {
 #ifdef DEF_MAILREADER
     register const char *mr = 0;
@@ -689,8 +686,7 @@ struct obj *otmp;
 # endif /* LAN_MAIL */
 
 void
-read_hint(otmp)
-struct obj *otmp;
+read_hint(struct obj *otmp)
 {
     /* TODO: option for beginner, general changes, public server hints? */
     static char *hint[] = {
@@ -719,7 +715,7 @@ struct obj *otmp;
 }
 
 void
-maybe_hint()
+maybe_hint(void)
 {
     if (u.uswallow || !flags.biff || !flags.hint) return;
 

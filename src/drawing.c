@@ -753,8 +753,7 @@ void NDECL((*ascgraphics_mode_callback)) = 0;	/* set in tty_start_screen() */
  * options.c, pickup.c, sp_lev.c, and lev_main.c.
  */
 int
-def_char_to_objclass(ch)
-char ch;
+def_char_to_objclass(char ch)
 {
     int i;
     for (i = 1; i < MAXOCLASSES; i++)
@@ -767,8 +766,7 @@ char ch;
  * match made.  If there are are no matches, return MAXMCLASSES.
  */
 int
-def_char_to_monclass(ch)
-char ch;
+def_char_to_monclass(char ch)
 {
     int i;
     for (i = 1; i < MAXMCLASSES; i++)
@@ -777,9 +775,7 @@ char ch;
 }
 
 void
-assign_graphics(graph_chars, glth, maxlen, offset)
-register glyph_t *graph_chars;
-int glth, maxlen, offset;
+assign_graphics(register glyph_t *graph_chars, int glth, int maxlen, int offset)
 {
     register int i;
 
@@ -789,8 +785,7 @@ int glth, maxlen, offset;
 }
 
 void
-switch_graphics(gr_set_flag)
-int gr_set_flag;
+switch_graphics(int gr_set_flag)
 {
     iflags.IBMgraphics = FALSE;
     iflags.DECgraphics = FALSE;
@@ -866,9 +861,7 @@ int gr_set_flag;
 
 /** Change the UTF8graphics symbol at position with codepoint "value". */
 void
-assign_utf8graphics_symbol(position, value)
-int position;
-glyph_t value;
+assign_utf8graphics_symbol(int position, glyph_t value)
 {
 #ifdef UTF8_GLYPHS
     if (position < MAXPCHARS) {
@@ -956,8 +949,7 @@ static const uchar IBM_r_oc_syms[MAXOCLASSES] = {	/* a la EPYX Rogue */
 # endif /* ASCIIGRAPH */
 
 void
-assign_rogue_graphics(is_rlevel)
-boolean is_rlevel;
+assign_rogue_graphics(boolean is_rlevel)
 {
     /* Adjust graphics display characters on Rogue levels */
 

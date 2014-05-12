@@ -11,7 +11,7 @@
 STATIC_DCL boolean FDECL(is_swallow_sym, (int));
 STATIC_DCL int FDECL(append_str, (char *, const char *));
 STATIC_DCL struct permonst * FDECL(lookat, (int, int, char *, char *));
-STATIC_DCL int FDECL(do_look, (BOOLEAN_P));
+STATIC_DCL int FDECL(do_look, (boolean));
 STATIC_DCL boolean FDECL(help_menu, (int *));
 #ifdef PORT_HELP
 extern void NDECL(port_help);
@@ -19,8 +19,7 @@ extern void NDECL(port_help);
 
 /* Returns "true" for characters that could represent a monster's stomach. */
 STATIC_OVL boolean
-is_swallow_sym(c)
-int c;
+is_swallow_sym(int c)
 {
     int i;
     for (i = S_sw_tl; i <= S_sw_br; i++)
@@ -34,9 +33,7 @@ int c;
  * It is expected that buf is of size BUFSZ.
  */
 STATIC_OVL int
-append_str(buf, new_str)
-char *buf;
-const char *new_str;
+append_str(char *buf, const char *new_str)
 {
     int space_left;	/* space remaining in buf */
 
@@ -53,9 +50,7 @@ const char *new_str;
  * If not hallucinating and the glyph is a monster, also monster data.
  */
 STATIC_OVL struct permonst *
-lookat(x, y, buf, monbuf)
-int x, y;
-char *buf, *monbuf;
+lookat(int x, int y, char *buf, char *monbuf)
 {
     register struct monst *mtmp = (struct monst *) 0;
     struct permonst *pm = (struct permonst *) 0;
@@ -303,10 +298,7 @@ char *buf, *monbuf;
  *	 Therefore, we create a copy of inp _just_ for data.base lookup.
  */
 void
-checkfile(inp, pm, user_typed_name, without_asking)
-char *inp;
-struct permonst *pm;
-boolean user_typed_name, without_asking;
+checkfile(char *inp, struct permonst *pm, boolean user_typed_name, boolean without_asking)
 {
     dlb *fp;
     char buf[BUFSZ], newstr[BUFSZ];
@@ -459,8 +451,8 @@ bad_data_file:
 const char what_is_an_unknown_object[] = "an unknown object";
 
 STATIC_OVL int
-do_look(quick)
-boolean quick;	/* use cursor && don't search for "more info" */
+do_look(boolean quick)
+              	/* use cursor && don't search for "more info" */
 {
     char    out_str[BUFSZ], look_buf[BUFSZ];
     const char *x_str, *firstmatch = 0;
@@ -763,13 +755,13 @@ boolean quick;	/* use cursor && don't search for "more info" */
 
 
 int
-dowhatis()
+dowhatis(void)
 {
     return do_look(FALSE);
 }
 
 int
-doquickwhatis()
+doquickwhatis(void)
 {
     if(iflags.num_pad)
         check_tutorial_message(QT_T_CURSOR_NUMPAD);
@@ -779,7 +771,7 @@ doquickwhatis()
 }
 
 int
-doidtrap()
+doidtrap(void)
 {
     register struct trap *trap;
     int x, y, tt;
@@ -811,9 +803,7 @@ doidtrap()
 }
 
 char *
-dowhatdoes_core(q, cbuf)
-char q;
-char *cbuf;
+dowhatdoes_core(char q, char *cbuf)
 {
     dlb *fp;
     char bufr[BUFSZ];
@@ -856,7 +846,7 @@ char *cbuf;
 }
 
 int
-dowhatdoes()
+dowhatdoes(void)
 {
     char bufr[BUFSZ];
     char q, *reslt;
@@ -904,8 +894,7 @@ static const char *help_menu_items[] = {
 };
 
 STATIC_OVL boolean
-help_menu(sel)
-int *sel;
+help_menu(int *sel)
 {
     winid tmpwin = create_nhwindow(NHW_MENU);
 #ifdef PORT_HELP
@@ -949,7 +938,7 @@ int *sel;
 }
 
 int
-dohelp()
+dohelp(void)
 {
     int sel = 0;
 
@@ -1002,7 +991,7 @@ dohelp()
 }
 
 int
-dohistory()
+dohistory(void)
 {
     display_file_area(NH_HISTORY_AREA, HISTORY, TRUE);
     return 0;

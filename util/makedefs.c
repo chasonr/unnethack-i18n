@@ -229,9 +229,7 @@ main(void)
 #else /* ! MAC */
 
 int
-main(argc, argv)
-int	argc;
-char	*argv[];
+main(int argc, char **argv)
 {
     if ( (argc != 2)
 #ifdef FILE_PREFIX
@@ -259,8 +257,7 @@ char	*argv[];
 #endif
 
 void
-do_makedefs(options)
-char	*options;
+do_makedefs(char *options)
 {
     boolean more_than_one;
 
@@ -338,8 +335,7 @@ char	*options;
 
 /* trivial text encryption routine which can't be broken with `tr' */
 static
-char *xcrypt(str)
-const char *str;
+char *xcrypt(const char *str)
 {
     /* duplicated in src/hacklib.c */
     static char buf[BUFSZ];
@@ -357,7 +353,7 @@ const char *str;
 }
 
 void
-do_rumors()
+do_rumors(void)
 {
     char	infile[60];
     long	true_rumor_size;
@@ -434,7 +430,7 @@ do_rumors()
 				)
 
 static void
-make_version()
+make_version(void)
 {
     register int i;
 
@@ -525,8 +521,7 @@ make_version()
 }
 
 static char *
-version_string(outbuf)
-char *outbuf;
+version_string(char *outbuf)
 {
     Sprintf(outbuf, "%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
 #ifdef VERSION_REVISION
@@ -539,9 +534,7 @@ char *outbuf;
 }
 
 static char *
-version_id_string(outbuf, build_date)
-char *outbuf;
-const char *build_date;
+version_id_string(char *outbuf, const char *build_date)
 {
     char subbuf[64], versbuf[64];
 
@@ -560,7 +553,7 @@ const char *build_date;
 }
 
 void
-do_date()
+do_date(void)
 {
     long clocktim = 0;
     char *c, cbuf[60], buf[BUFSZ];
@@ -628,7 +621,7 @@ do_date()
 static char save_bones_compat_buf[BUFSZ];
 
 static void
-build_savebones_compat_string()
+build_savebones_compat_string(void)
 {
 #ifdef VERSION_COMPATIBILITY
     unsigned long uver = VERSION_COMPATIBILITY;
@@ -883,7 +876,7 @@ static const char *window_opts[] = {
 };
 
 void
-do_options()
+do_options(void)
 {
     register int i, length;
     register const char *str, *indent = "    ";
@@ -942,8 +935,7 @@ do_options()
 
 /* routine to decide whether to discard something from data.base */
 static boolean
-d_filter(line)
-char *line;
+d_filter(char *line)
 {
     if (*line == '#') return TRUE;	/* ignore comment lines */
     return FALSE;
@@ -972,7 +964,7 @@ text-b/text-c		at fseek(0x01234567L + 456L)
  */
 
 void
-do_data()
+do_data(void)
 {
     char	infile[60], tempfile[60];
     boolean ok;
@@ -1072,8 +1064,7 @@ dead_data:
 
 /* routine to decide whether to discard something from oracles.txt */
 static boolean
-h_filter(line)
-char *line;
+h_filter(char *line)
 {
     static boolean skip = FALSE;
     char tag[sizeof in_line];
@@ -1116,7 +1107,7 @@ static const char *special_oracle[] = {
  */
 
 void
-do_oracles()
+do_oracles(void)
 {
     char	infile[60], tempfile[60];
     boolean in_oracle, ok;
@@ -1266,8 +1257,7 @@ static	struct deflist {
 };
 
 static int
-check_control(s)
-char	*s;
+check_control(char *s)
 {
     int	i;
 
@@ -1281,14 +1271,13 @@ char	*s;
 }
 
 static char *
-without_control(s)
-char *s;
+without_control(char *s)
 {
     return(s + 1 + strlen(deflist[check_control(in_line)].defname));
 }
 
 void
-do_dungeon()
+do_dungeon(void)
 {
     int rcnt = 0;
 
@@ -1337,8 +1326,8 @@ recheck:
 }
 
 static boolean
-ranged_attk(ptr)	/* returns TRUE if monster can attack at range */
-register struct permonst *ptr;
+ranged_attk(register struct permonst *ptr)	/* returns TRUE if monster can attack at range */
+                              
 {
     register int	i, j;
     register int atk_mask = (1<<AT_BREA) | (1<<AT_SPIT) | (1<<AT_GAZE);
@@ -1356,8 +1345,7 @@ register struct permonst *ptr;
  * determination as "experience()" to arrive at the strength.
  */
 static int
-mstrength(ptr)
-struct permonst *ptr;
+mstrength(struct permonst *ptr)
 {
     int	i, tmp2, n, tmp = ptr->mlevel;
 
@@ -1411,7 +1399,7 @@ struct permonst *ptr;
 }
 
 void
-do_monstr()
+do_monstr(void)
 {
     register struct permonst *ptr;
     register int i, j;
@@ -1443,7 +1431,7 @@ do_monstr()
 
     Fprintf(ofp,"\nvoid NDECL(monstr_init);\n");
     Fprintf(ofp,"\nvoid\n");
-    Fprintf(ofp,"monstr_init()\n");
+    Fprintf(ofp,"monstr_init(void)\n");
     Fprintf(ofp,"{\n");
     Fprintf(ofp,"    return;\n");
     Fprintf(ofp,"}\n");
@@ -1454,7 +1442,7 @@ do_monstr()
 }
 
 void
-do_permonst()
+do_permonst(void)
 {
     int	i;
     char	*c, *nam;
@@ -1507,23 +1495,20 @@ static boolean	in_msg;
 #define NO_MSG	1	/* strlen of a null line returned by fgets() */
 
 static boolean
-qt_comment(s)
-char *s;
+qt_comment(char *s)
 {
     if(s[0] == '#') return(TRUE);
     return((boolean)(!in_msg  && strlen(s) == NO_MSG));
 }
 
 static boolean
-qt_control(s)
-char *s;
+qt_control(char *s)
 {
     return((boolean)(s[0] == '%' && (s[1] == 'C' || s[1] == 'E')));
 }
 
 static int
-get_hdr (code)
-char *code;
+get_hdr (char *code)
 {
     int	i;
 
@@ -1534,8 +1519,7 @@ char *code;
 }
 
 static boolean
-new_id (code)
-char *code;
+new_id (char *code)
 {
     if(qt_hdr.n_hdr >= N_HDR) {
         Fprintf(stderr, OUT_OF_HEADERS, qt_line);
@@ -1549,8 +1533,7 @@ char *code;
 }
 
 static boolean
-known_msg(num, id)
-int num, id;
+known_msg(int num, int id)
 {
     int i;
 
@@ -1562,9 +1545,7 @@ int num, id;
 
 
 static void
-new_msg(s, num, id)
-char *s;
-int num, id;
+new_msg(char *s, int num, int id)
 {
     struct	qtmsg	*qt_msg;
 
@@ -1581,8 +1562,7 @@ int num, id;
 }
 
 static void
-do_qt_control(s)
-char *s;
+do_qt_control(char *s)
 {
     char code[BUFSZ];
     int num, id = 0;
@@ -1623,8 +1603,7 @@ char *s;
 }
 
 static void
-do_qt_text(s)
-char *s;
+do_qt_text(char *s)
 {
     if (!in_msg) {
         Fprintf(stderr, TEXT_NOT_IN_MSG, qt_line);
@@ -1634,7 +1613,7 @@ char *s;
 }
 
 static void
-adjust_qt_hdrs()
+adjust_qt_hdrs(void)
 {
     int	i, j;
     long count = 0L, hdr_offset = sizeof(int) +
@@ -1655,7 +1634,7 @@ adjust_qt_hdrs()
 }
 
 static void
-put_qt_hdrs()
+put_qt_hdrs(void)
 {
     int	i;
 
@@ -1704,7 +1683,7 @@ put_qt_hdrs()
 }
 
 void
-do_questtxt()
+do_questtxt(void)
 {
     Sprintf(filename, DATA_IN_TEMPLATE, QTXT_I_FILE);
     if(!(ifp = fopen(filename, RDTMODE))) {
@@ -1760,9 +1739,9 @@ do_questtxt()
 static	char	temp[32];
 
 static char *
-limit(name,pref)	/* limit a name to 30 characters length */
-char	*name;
-int	pref;
+limit(char *name, int pref)	/* limit a name to 30 characters length */
+    	      
+   	     
 {
     (void) strncpy(temp, name, pref ? 26 : 30);
     temp[pref ? 26 : 30] = 0;
@@ -1770,7 +1749,7 @@ int	pref;
 }
 
 void
-do_objs()
+do_objs(void)
 {
     int i, sum = 0;
     char *c, *objnam;
@@ -1901,8 +1880,7 @@ do_objs()
 }
 
 static char *
-tmpdup(str)
-const char *str;
+tmpdup(const char *str)
 {
     static char buf[128];
 
@@ -1912,8 +1890,7 @@ const char *str;
 }
 
 static char *
-eos(str)
-char *str;
+eos(char *str)
 {
     while (*str) str++;
     return str;
@@ -1925,7 +1902,7 @@ char *str;
  */
 
 void
-do_vision()
+do_vision(void)
 {
 #ifdef VISION_TABLES
     int i, j;
@@ -1990,7 +1967,7 @@ do_vision()
 #ifdef VISION_TABLES
     C_close_gen();
     C_far_gen();
-    Fprintf(ofp,"\nvoid vis_tab_init() { return; }\n");
+    Fprintf(ofp,"\nvoid vis_tab_init(void) { return; }\n");
 #endif /* VISION_TABLES */
 
     SpinCursor(3);

@@ -38,8 +38,7 @@ static unsigned oracle_cnt = 0;
 static long *oracle_loc = 0;
 
 STATIC_OVL void
-init_rumors(fp)
-dlb *fp;
+init_rumors(dlb *fp)
 {
     char line[BUFSZ];
 
@@ -64,10 +63,10 @@ dlb *fp;
  * of them contain such references anyway.
  */
 char *
-getrumor(truth, rumor_buf, exclude_cookie)
-int truth; /* 1=true, -1=false, 0=either */
-char *rumor_buf;
-boolean exclude_cookie;
+getrumor(int truth, char *rumor_buf, boolean exclude_cookie)
+           /* 1=true, -1=false, 0=either */
+                
+                       
 {
     dlb	*rumors;
     long tidbit, beginning;
@@ -137,9 +136,9 @@ boolean exclude_cookie;
 }
 
 void
-outrumor(truth, mechanism)
-int truth; /* 1=true, -1=false, 0=either */
-int mechanism;
+outrumor(int truth, int mechanism)
+           /* 1=true, -1=false, 0=either */
+              
 {
     static const char fortune_msg[] =
         "This cookie has a scrap of paper inside.";
@@ -182,8 +181,7 @@ int mechanism;
 }
 
 STATIC_OVL void
-init_oracles(fp)
-dlb *fp;
+init_oracles(dlb *fp)
 {
     register int i;
     char line[BUFSZ];
@@ -204,8 +202,7 @@ dlb *fp;
 }
 
 void
-save_oracles(fd, mode)
-int fd, mode;
+save_oracles(int fd, int mode)
 {
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
@@ -221,8 +218,7 @@ int fd, mode;
 }
 
 void
-restore_oracles(fd)
-int fd;
+restore_oracles(int fd)
 {
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
@@ -233,9 +229,7 @@ int fd;
 }
 
 void
-outoracle(special, delphi)
-boolean special;
-boolean delphi;
+outoracle(boolean special, boolean delphi)
 {
     char	line[COLNO];
     char	*endp;
@@ -325,8 +319,7 @@ register struct monst *oracl;
 #endif
 
 int
-doconsult(oracl)
-register struct monst *oracl;
+doconsult(register struct monst *oracl)
 {
 #ifdef GOLDOBJ
     long umoney = money_cnt(invent);

@@ -95,7 +95,7 @@ boolean colorflag = FALSE;			/* colors are initialized */
 int ttycolors[CLR_MAX];
 
 void
-init_ttycolor()
+init_ttycolor(void)
 {
     if (!colorflag) {
         ttycolors[CLR_RED]		= CLR_RED;
@@ -156,10 +156,10 @@ int assign_videocolors(char *colorvals)
 #endif
 
 static int
-convert_uchars(bufp,list,size)
-char *bufp; 	/* current pointer */
-uchar *list;	/* return list */
-int size;
+convert_uchars(char *bufp, uchar *list, int size)
+            	/* current pointer */
+            	/* return list */
+         
 {
     unsigned int num = 0;
     int count = 0;
@@ -212,8 +212,7 @@ int size;
 #ifdef OVLB
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
     register int i;
 #ifdef TERMLIB
@@ -474,7 +473,7 @@ int *wid, *hgt;
 /* note: at present, this routine is not part of the formal window interface */
 /* deallocate resources prior to final termination */
 void
-tty_shutdown()
+tty_shutdown(void)
 {
 #if defined(TEXTCOLOR) && defined(TERMLIB)
     kill_hilite();
@@ -484,8 +483,7 @@ tty_shutdown()
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     switch (state) {
     case -1:	/* activate keypad mode (escape sequences) */
@@ -512,7 +510,7 @@ static void NDECL(tty_decgraphics_termcap_fixup);
    so this is a convenient hook.
  */
 static void
-tty_decgraphics_termcap_fixup()
+tty_decgraphics_termcap_fixup(void)
 {
     static char ctrlN[]   = "\016";
     static char ctrlO[]   = "\017";
@@ -591,7 +589,7 @@ tty_ascgraphics_hilite_fixup()
 #endif /* PC9800 */
 
 void
-tty_start_screen()
+tty_start_screen(void)
 {
     xputs(TI);
     xputs(VS);
@@ -616,7 +614,7 @@ tty_start_screen()
 }
 
 void
-tty_end_screen()
+tty_end_screen(void)
 {
     clear_screen();
     xputs(VE);
@@ -635,8 +633,7 @@ tty_end_screen()
    in trampoli.[ch]. */
 
 void
-nocmov(x, y)
-int x,y;
+nocmov(int x, int y)
 {
     if ((int) ttyDisplay->cury > y) {
         if(UP) {
@@ -683,43 +680,31 @@ int x,y;
 }
 
 void
-cmov(x, y)
-register int x, y;
+cmov(register int x, register int y)
 {
     xputs(tgoto(nh_CM, x, y));
     ttyDisplay->cury = y;
     ttyDisplay->curx = x;
 }
 
-/* See note at OVLx ifdef above.   xputc() is a special function. */
-void
-xputc(c)
-#if defined(apollo)
-int c;
-#else
-char c;
-#endif
+int
+xputc(int c)
 {
-    (void) putchar(c);
+    return putchar(c);
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
 # ifndef TERMLIB
     (void) fputs(s, stdout);
 # else
-#  if defined(NHSTDC) || defined(ULTRIX_PROTO)
-    tputs(s, 1, (int (*)())xputc);
-#  else
     tputs(s, 1, xputc);
-#  endif
 # endif
 }
 
 void
-cl_end()
+cl_end(void)
 {
     if(CE)
         xputs(CE);
@@ -741,7 +726,7 @@ cl_end()
 #ifdef OVLB
 
 void
-clear_screen()
+clear_screen(void)
 {
     /* note: if CL is null, then termcap initialization failed,
     	so don't attempt screen-oriented I/O during final cleanup.
@@ -756,7 +741,7 @@ clear_screen()
 #ifdef OVL0
 
 void
-home()
+home(void)
 {
     if(HO)
         xputs(HO);
@@ -768,13 +753,13 @@ home()
 }
 
 void
-standoutbeg()
+standoutbeg(void)
 {
     if(SO) xputs(SO);
 }
 
 void
-standoutend()
+standoutend(void)
 {
     if(SE) xputs(SE);
 }
@@ -816,13 +801,13 @@ m_end()
 #ifdef OVLB
 
 void
-backsp()
+backsp(void)
 {
     xputs(BC);
 }
 
 void
-tty_nhbell()
+tty_nhbell(void)
 {
     if (flags.silent) return;
     (void) putchar('\007');		/* curx does not change */
@@ -834,13 +819,13 @@ tty_nhbell()
 
 #ifdef ASCIIGRAPH
 void
-graph_on()
+graph_on(void)
 {
     if (AS) xputs(AS);
 }
 
 void
-graph_off()
+graph_off(void)
 {
     if (AE) xputs(AE);
 }
@@ -864,7 +849,7 @@ static const short tmspc10[] = {		/* from termcap */
 
 /* delay 50 ms */
 void
-tty_delay_output()
+tty_delay_output(void)
 {
 #if defined(MICRO)
     register int i;
@@ -888,17 +873,9 @@ tty_delay_output()
     if(flags.null)
 # ifdef TERMINFO
         /* cbosgd!cbcephus!pds for SYS V R2 */
-#  ifdef NHSTDC
-        tputs("$<50>", 1, (int (*)())xputc);
-#  else
         tputs("$<50>", 1, xputc);
-#  endif
 # else
-#  if defined(NHSTDC) || defined(ULTRIX_PROTO)
-        tputs("50", 1, (int (*)())xputc);
-#  else
         tputs("50", 1, xputc);
-#  endif
 # endif
 
     else if(ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
@@ -919,7 +896,7 @@ tty_delay_output()
 #ifdef OVLB
 
 void
-cl_eos()			/* free after Robert Viduya */
+cl_eos(void)			/* free after Robert Viduya */
 {
     /* must only be called with curx = 1 */
 
@@ -1015,7 +992,7 @@ const int ti_map[8] = {
 };
 
 static void
-init_hilite()
+init_hilite(void)
 {
     register int c;
     char *setf, *scratch;
@@ -1195,7 +1172,7 @@ init_hilite()
 # endif /* UNIX */
 
 static void
-kill_hilite()
+kill_hilite(void)
 {
 # ifndef TOS
     register int c;
@@ -1219,8 +1196,7 @@ kill_hilite()
 static char nulstr[] = "";
 
 static char *
-s_atr2str(n)
-int n;
+s_atr2str(int n)
 {
     switch (n) {
     case ATR_ULINE:
@@ -1238,8 +1214,7 @@ int n;
 }
 
 static char *
-e_atr2str(n)
-int n;
+e_atr2str(int n)
 {
     switch (n) {
     case ATR_ULINE:
@@ -1255,8 +1230,7 @@ int n;
 
 
 void
-term_start_attr(attr)
-int attr;
+term_start_attr(int attr)
 {
     if (attr) {
         xputs(s_atr2str(attr));
@@ -1265,8 +1239,7 @@ int attr;
 
 
 void
-term_end_attr(attr)
-int attr;
+term_end_attr(int attr)
 {
     if(attr) {
         xputs(e_atr2str(attr));
@@ -1275,14 +1248,14 @@ int attr;
 
 
 void
-term_start_raw_bold()
+term_start_raw_bold(void)
 {
     xputs(nh_HI);
 }
 
 
 void
-term_end_raw_bold()
+term_end_raw_bold(void)
 {
     xputs(nh_HE);
 }
@@ -1291,15 +1264,14 @@ term_end_raw_bold()
 #ifdef TEXTCOLOR
 
 void
-term_end_color()
+term_end_color(void)
 {
     xputs(nh_HE);
 }
 
 
 void
-term_start_color(color)
-int color;
+term_start_color(int color)
 {
     if (iflags.wc2_newcolors)
         xputs(hilites[ttycolors[color]]);
@@ -1309,8 +1281,7 @@ int color;
 
 
 int
-has_color(color)
-int color;
+has_color(int color)
 {
 #ifdef X11_GRAPHICS
     /* XXX has_color() should be added to windowprocs */

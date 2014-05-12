@@ -18,8 +18,7 @@ static void make_group_attackers_flee(struct monst* mtmp);
 static void share_hp(struct monst* mon1, struct monst* mon2);
 
 boolean /* TRUE : mtmp died */
-mb_trapped(mtmp)
-register struct monst *mtmp;
+mb_trapped(register struct monst *mtmp)
 {
     if (flags.verbose) {
         if (cansee(mtmp->mx, mtmp->my))
@@ -41,8 +40,7 @@ register struct monst *mtmp;
 }
 
 STATIC_OVL void
-watch_on_duty(mtmp)
-register struct monst *mtmp;
+watch_on_duty(register struct monst *mtmp)
 {
     int	x, y;
 
@@ -81,8 +79,7 @@ register struct monst *mtmp;
 }
 
 int
-dochugw(mtmp)
-register struct monst *mtmp;
+dochugw(register struct monst *mtmp)
 {
     register int x = mtmp->mx, y = mtmp->my;
     boolean already_saw_mon = !occupation ? 0 : canspotmon(mtmp);
@@ -125,9 +122,7 @@ register struct monst *mtmp;
 }
 
 boolean
-onscary(x, y, mtmp)
-int x, y;
-struct monst *mtmp;
+onscary(int x, int y, struct monst *mtmp)
 {
     if (mtmp->isshk || mtmp->isgd || mtmp->iswiz || !mtmp->mcansee ||
             mtmp->mpeaceful || mtmp->data->mlet == S_HUMAN ||
@@ -152,9 +147,7 @@ struct monst *mtmp;
 
 /* regenerate lost hit points */
 void
-mon_regen(mon, digest_meal)
-struct monst *mon;
-boolean digest_meal;
+mon_regen(struct monst *mon, boolean digest_meal)
 {
     /* regeneration not relevant in heaven or hell mode */
     if (heaven_or_hell_mode && !hell_and_hell_mode) {
@@ -181,8 +174,7 @@ boolean digest_meal;
  * jolted awake.
  */
 STATIC_OVL int
-disturb(mtmp)
-register struct monst *mtmp;
+disturb(register struct monst *mtmp)
 {
     /*
      * + Ettins are hard to surprise.
@@ -220,11 +212,7 @@ register struct monst *mtmp;
  * if first, only adds fleetime if monster isn't already fleeing
  * if fleemsg, prints a message about new flight, otherwise, caller should */
 void
-monflee(mtmp, fleetime, first, fleemsg)
-struct monst *mtmp;
-int fleetime;
-boolean first;
-boolean fleemsg;
+monflee(struct monst *mtmp, int fleetime, boolean first, boolean fleemsg)
 {
     if (u.ustuck == mtmp) {
         if (u.uswallow)
@@ -260,9 +248,7 @@ boolean fleemsg;
 }
 
 STATIC_OVL void
-distfleeck(mtmp,inrange,nearby,scared)
-register struct monst *mtmp;
-int *inrange, *nearby, *scared;
+distfleeck(register struct monst *mtmp, int *inrange, int *nearby, int *scared)
 {
     int seescaryx, seescaryy;
 
@@ -303,8 +289,7 @@ int *inrange, *nearby, *scared;
 /* perform a special one-time action for a monster; returns -1 if nothing
    special happened, 0 if monster uses up its turn, 1 if monster is killed */
 STATIC_OVL int
-m_arrival(mon)
-struct monst *mon;
+m_arrival(struct monst *mon)
 {
     mon->mstrategy &= ~STRAT_ARRIVE;	/* always reset */
 
@@ -316,8 +301,7 @@ struct monst *mon;
  * code. --KAA
  */
 int
-dochug(mtmp)
-register struct monst *mtmp;
+dochug(register struct monst *mtmp)
 {
     register struct permonst *mdat;
     register int tmp=0;
@@ -701,8 +685,7 @@ static NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
 static NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
 
 boolean
-itsstuck(mtmp)
-register struct monst *mtmp;
+itsstuck(register struct monst *mtmp)
 {
     if (sticks(youmonst.data) && mtmp==u.ustuck && !u.uswallow) {
         pline("%s cannot escape from you!", Monnam(mtmp));
@@ -718,9 +701,7 @@ register struct monst *mtmp;
  * 3: did not move, and can't do anything else either.
  */
 int
-m_move(mtmp, after)
-register struct monst *mtmp;
-register int after;
+m_move(register struct monst *mtmp, register int after)
 {
     register int appr;
     xchar gx,gy,nix,niy,chcnt;
@@ -1398,24 +1379,21 @@ postmov:
 }
 
 boolean
-closed_door(x, y)
-register int x, y;
+closed_door(register int x, register int y)
 {
     return((boolean)(IS_DOOR(levl[x][y].typ) &&
                      (levl[x][y].doormask & (D_LOCKED | D_CLOSED))));
 }
 
 boolean
-accessible(x, y)
-register int x, y;
+accessible(register int x, register int y)
 {
     return((boolean)(ACCESSIBLE(levl[x][y].typ) && !closed_door(x, y)));
 }
 
 /* decide where the monster thinks you are standing */
 void
-set_apparxy(mtmp)
-register struct monst *mtmp;
+set_apparxy(register struct monst *mtmp)
 {
     boolean notseen, gotu;
     register int disp, mx = mtmp->mux, my = mtmp->muy;
@@ -1486,8 +1464,7 @@ found_you:
 }
 
 boolean
-can_ooze(mtmp)
-struct monst *mtmp;
+can_ooze(struct monst *mtmp)
 {
     struct obj *chain, *obj;
 
@@ -1542,8 +1519,7 @@ struct monst *mtmp;
 }
 
 static void
-make_group_attackers_flee(mtmp)
-struct monst *mtmp;
+make_group_attackers_flee(struct monst *mtmp)
 {
     struct monst* currmon;
 
@@ -1560,8 +1536,7 @@ struct monst *mtmp;
 }
 
 static void
-share_hp(mon1, mon2)
-struct monst *mon1, *mon2;
+share_hp(struct monst *mon1, struct monst *mon2)
 {
     struct monst *tmp;
     char nam[BUFSZ];

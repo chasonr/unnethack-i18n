@@ -9,8 +9,7 @@ STATIC_DCL int FDECL(cost,(struct obj *));
  * returns basecost of a scroll or a spellbook
  */
 STATIC_OVL int
-cost(otmp)
-register struct obj *otmp;
+cost(register struct obj *otmp)
 {
 
     if (otmp->oclass == SPBOOK_CLASS)
@@ -67,8 +66,7 @@ register struct obj *otmp;
 static NEARDATA const char write_on[] = { SCROLL_CLASS, SPBOOK_CLASS, 0 };
 
 int
-dowrite(pen)
-register struct obj *pen;
+dowrite(register struct obj *pen)
 {
     register struct obj *paper;
     char namebuf[BUFSZ], *nm, *bp;

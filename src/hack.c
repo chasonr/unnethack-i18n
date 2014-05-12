@@ -8,13 +8,13 @@
 
 STATIC_DCL void NDECL(maybe_wail);
 STATIC_DCL int NDECL(moverock);
-STATIC_DCL int FDECL(still_chewing,(XCHAR_P,XCHAR_P));
+STATIC_DCL int FDECL(still_chewing,(xchar,xchar));
 #ifdef SINKS
 STATIC_DCL void NDECL(dosinkfall);
 #endif
 STATIC_DCL boolean FDECL(findtravelpath, (boolean(*)(int, int)));
 STATIC_DCL boolean FDECL(monstinroom, (struct permonst *,int));
-STATIC_DCL void FDECL(move_update, (BOOLEAN_P));
+STATIC_DCL void FDECL(move_update, (boolean));
 STATIC_DCL void FDECL(struggle_sub, (const char *));
 
 static boolean door_opened;	/* set to true if door was opened during test_move */
@@ -24,9 +24,9 @@ static boolean door_opened;	/* set to true if door was opened during test_move *
 
 #ifdef DUNGEON_GROWTH
 void
-rndmappos(x,y) /* guaranteed to return a valid coord */
-xchar *x;
-xchar *y;
+rndmappos(xchar *x, xchar *y) /* guaranteed to return a valid coord */
+         
+         
 {
     if (*x >= COLNO) *x = COLNO;
     else if (*x == -1) *x = rn2(COLNO-1)+1;
@@ -50,9 +50,7 @@ static const struct herb_info {
 };
 
 long
-count_herbs_at(x,y, watery)
-xchar x,y;
-boolean watery;
+count_herbs_at(xchar x, xchar y, boolean watery)
 {
     register int dd;
     register long count = 0;
@@ -71,9 +69,7 @@ boolean watery;
 
 /* returns TRUE if a herb can grow at (x,y) */
 boolean
-herb_can_grow_at(x,y, watery)
-xchar x,y;
-boolean watery;
+herb_can_grow_at(xchar x, xchar y, boolean watery)
 {
     register struct rm *lev = &levl[x][y];
     if (inside_shop(x,y)) return FALSE;
@@ -90,9 +86,7 @@ boolean watery;
 
 /* grow herbs in water. return true if did something. */
 boolean
-grow_water_herbs(herb, x,y)
-int herb;
-xchar x,y;
+grow_water_herbs(int herb, xchar x, xchar y)
 {
     struct obj *otmp;
 
@@ -112,10 +106,7 @@ xchar x,y;
 /* grow herb on ground at (x,y), or maybe spread out.
    return true if did something. */
 boolean
-grow_herbs(herb, x,y, showmsg, update)
-int herb;
-xchar x,y;
-boolean showmsg, update;
+grow_herbs(int herb, xchar x, xchar y, boolean showmsg, boolean update)
 {
     struct obj *otmp;
 
@@ -172,11 +163,11 @@ boolean showmsg, update;
 /* moves topmost object in water at (x,y) to dir.
    return true if did something. */
 boolean
-water_current(x,y,dir,waterforce, showmsg, update)
-xchar x,y;
-int dir;
-unsigned waterforce;  /* strength of the water current */
-boolean showmsg, update;
+water_current(xchar x, xchar y, int dir, unsigned int waterforce, boolean showmsg, boolean update)
+          
+        
+                      /* strength of the water current */
+                        
 {
     struct obj *otmp;
     coord pos;
@@ -217,9 +208,7 @@ boolean showmsg, update;
 
 /* a tree at (x,y) spontaneously drops a ripe fruit */
 boolean
-drop_ripe_treefruit(x,y,showmsg, update)
-xchar x,y;
-boolean showmsg, update;
+drop_ripe_treefruit(xchar x, xchar y, boolean showmsg, boolean update)
 {
     register struct rm *lev;
 
@@ -272,8 +261,7 @@ boolean showmsg, update;
  * Creates a kind of forest, with (hopefully) most places available.
  */
 boolean
-seed_tree(x,y)
-xchar x,y;
+seed_tree(xchar x, xchar y)
 {
     coord pos, pos2;
     struct rm *lev;
@@ -316,9 +304,9 @@ xchar x,y;
 }
 
 void
-dgn_growths(showmsg, update)
-boolean showmsg; /* show messages */
-boolean update;  /* do newsym() */
+dgn_growths(boolean showmsg, boolean update)
+                 /* show messages */
+                 /* do newsym() */
 {
     int herbnum = rn2(SIZE(herb_info));
     (void) seed_tree(-1,-1);
@@ -334,8 +322,7 @@ boolean update;  /* do newsym() */
 
 /* catch up with growths when returning to a previously visited level */
 void
-catchup_dgn_growths(mvs)
-int mvs;
+catchup_dgn_growths(int mvs)
 {
     if (mvs < 0) mvs = 0;
     else if (mvs > LARGEST_INT) mvs = LARGEST_INT;
@@ -345,9 +332,7 @@ int mvs;
 #endif /* DUNGEON_GROWTH */
 
 boolean
-revive_nasty(x, y, msg)
-int x,y;
-const char *msg;
+revive_nasty(int x, int y, const char *msg)
 {
     register struct obj *otmp, *otmp2;
     struct monst *mtmp;
@@ -381,7 +366,7 @@ const char *msg;
 }
 
 STATIC_OVL int
-moverock()
+moverock(void)
 {
     register xchar rx, ry, sx, sy;
     register struct obj *otmp;
@@ -633,8 +618,7 @@ cannot_push:
  *  eating, FALSE when done.
  */
 STATIC_OVL int
-still_chewing(x,y)
-xchar x, y;
+still_chewing(xchar x, xchar y)
 {
     struct rm *lev = &levl[x][y];
     struct obj *boulder = sobj_at(BOULDER,x,y);
@@ -766,9 +750,7 @@ xchar x, y;
 }
 
 void
-movobj(obj, ox, oy)
-register struct obj *obj;
-register xchar ox, oy;
+movobj(register struct obj *obj, register xchar ox, register xchar oy)
 {
     /* optimize by leaving on the fobj chain? */
     remove_object(obj);
@@ -781,7 +763,7 @@ register xchar ox, oy;
 static NEARDATA const char fell_on_sink[] = "fell onto a sink";
 
 STATIC_OVL void
-dosinkfall()
+dosinkfall(void)
 {
     register struct obj *obj;
 
@@ -833,8 +815,8 @@ dosinkfall()
 #endif
 
 boolean
-may_dig(x,y)
-register xchar x,y;
+may_dig(register xchar x, register xchar y)
+                   
 /* intended to be called only on ROCKs */
 {
     return (boolean)(!((IS_STWALL(levl[x][y].typ) ||
@@ -844,17 +826,14 @@ register xchar x,y;
 }
 
 boolean
-may_passwall(x,y)
-register xchar x,y;
+may_passwall(register xchar x, register xchar y)
 {
     return (boolean)(!((IS_STWALL(levl[x][y].typ) || IS_TREES(levl[x][y].typ)) &&
                        (levl[x][y].wall_info & W_NONPASSWALL)));
 }
 
 boolean
-bad_rock(mdat,x,y)
-struct permonst *mdat;
-register xchar x,y;
+bad_rock(struct permonst *mdat, register xchar x, register xchar y)
 {
     return((boolean) ((In_sokoban(&u.uz) && sobj_at(BOULDER,x,y)) ||
                       (IS_ROCK(levl[x][y].typ)
@@ -863,16 +842,13 @@ register xchar x,y;
 }
 
 boolean
-invocation_pos(x, y)
-xchar x, y;
+invocation_pos(xchar x, xchar y)
 {
     return((boolean)(Invocation_lev(&u.uz) && x == inv_pos.x && y == inv_pos.y));
 }
 
 static void
-autoexplore_msg(text, mode)
-const char *text;
-int mode;
+autoexplore_msg(const char *text, int mode)
 {
     if (iflags.autoexplore) {
         char tmp[BUFSZ];
@@ -885,9 +861,7 @@ int mode;
  *  mode is one of DO_MOVE, TEST_MOVE, TEST_TRAV or TEST_TRAP
  */
 boolean
-test_move(ux, uy, dx, dy, mode)
-int ux, uy, dx, dy;
-int mode;
+test_move(int ux, int uy, int dx, int dy, int mode)
 {
     int x = ux+dx;
     int y = uy+dy;
@@ -1095,8 +1069,7 @@ testdiag:
    avoid treating traps and doors known to be locked as valid explore
    targets (although they are still valid travel intermediates). */
 static boolean
-unexplored(x, y)
-int x, y;
+unexplored(int x, int y)
 {
     int i, j, k, l;
     struct trap *ttmp = t_at(x, y);
@@ -1143,9 +1116,7 @@ int x, y;
 /** Returns a distance modified by a constant factor.
  * The lower the value the better.*/
 int
-autotravel_weighting(x, y, distance)
-int x, y;
-unsigned distance;
+autotravel_weighting(int x, int y, unsigned int distance)
 {
     if (glyph_is_object(levl[x][y].glyph)) {
         /* greedy for items */
@@ -1164,8 +1135,7 @@ unsigned distance;
  * Returns TRUE if a path was found.
  */
 static boolean
-findtravelpath(guess)
-boolean (*guess)(int, int);
+findtravelpath(boolean (*guess) (int, int))
 {
     /* if travel to adjacent, reachable location, use normal movement rules */
     if (!guess && iflags.travel1 && distmin(u.ux, u.uy, u.tx, u.ty) == 1) {
@@ -1344,8 +1314,7 @@ found:
 
 /* A function version of couldsee, so we can take a pointer to it. */
 static boolean
-couldsee_func(x, y)
-int x, y;
+couldsee_func(int x, int y)
 {
     return couldsee(x, y);
 }
@@ -1356,7 +1325,7 @@ int x, y;
  * It should only leak information about "obvious" coordinates, e.g.
  * unexplored rooms or big areas not reachable by the player. */
 static boolean
-interesting_to_explore(x,y)
+interesting_to_explore(int x, int y)
 {
     if (!goodpos(x, y, &youmonst, 0)) return FALSE;
 
@@ -1377,7 +1346,7 @@ interesting_to_explore(x,y)
 }
 
 void
-domove()
+domove(void)
 {
     register struct monst *mtmp;
     register struct rm *tmpr;
@@ -2120,8 +2089,7 @@ pull_free:
 }
 
 void
-struggle_sub(predicament)
-const char *predicament;
+struggle_sub(const char *predicament)
 {
     if (flags.verbose) {
 #ifdef STEED
@@ -2135,7 +2103,7 @@ const char *predicament;
 }
 
 void
-invocation_message()
+invocation_message(void)
 {
     /* mark the square as stepped on, whether it's the VS or not;
         don't do so when blind, though, because it would misleadingly
@@ -2192,16 +2160,14 @@ static const char * const hallu_adverb[] = {
 };
 
 void
-wounds_message(mon)
-struct monst *mon;
+wounds_message(struct monst *mon)
 {
     if (mon_wounds(mon))
         pline("%s is %s.", Monnam(mon), mon_wounds(mon));
 }
 
 char *
-mon_wounds(mon)
-struct monst *mon;
+mon_wounds(struct monst *mon)
 {
     static char buf[BUFSZ];
     boolean wounded = ((!nonliving(mon->data) ||
@@ -2238,8 +2204,7 @@ struct monst *mon;
 }
 
 void
-spoteffects(pick)
-boolean pick;
+spoteffects(boolean pick)
 {
     register struct monst *mtmp;
 
@@ -2372,9 +2337,7 @@ stillinswamp:
 }
 
 STATIC_OVL boolean
-monstinroom(mdat,roomno)
-struct permonst *mdat;
-int roomno;
+monstinroom(struct permonst *mdat, int roomno)
 {
     register struct monst *mtmp;
 
@@ -2386,9 +2349,7 @@ int roomno;
 }
 
 char *
-in_rooms(x, y, typewanted)
-register xchar x, y;
-register int typewanted;
+in_rooms(register xchar x, register xchar y, register int typewanted)
 {
     static char buf[5];
     char rno, *ptr = &buf[4];
@@ -2453,8 +2414,7 @@ register int typewanted;
 
 /* is (x,y) in a town? */
 boolean
-in_town(x, y)
-register int x, y;
+in_town(register int x, register int y)
 {
     s_level *slev = Is_special(&u.uz);
     register struct mkroom *sroom;
@@ -2477,8 +2437,7 @@ register int x, y;
 }
 
 STATIC_OVL void
-move_update(newlev)
-register boolean newlev;
+move_update(register boolean newlev)
 {
     char *ptr1, *ptr2, *ptr3, *ptr4;
 
@@ -2519,8 +2478,7 @@ register boolean newlev;
 }
 
 void
-check_special_room(newlev)
-register boolean newlev;
+check_special_room(register boolean newlev)
 {
     register struct monst *mtmp;
     char *ptr;
@@ -2661,7 +2619,7 @@ register boolean newlev;
 }
 
 int
-dopickup()
+dopickup(void)
 {
     int count;
     struct trap *traphere = t_at(u.ux, u.uy);
@@ -2754,7 +2712,7 @@ dopickup()
 /* turn around a corner if that is the only way we can proceed */
 /* do not turn left or right twice */
 void
-lookaround()
+lookaround(void)
 {
     register int x, y, i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
     register int corrct = 0, noturn = 0;
@@ -2893,7 +2851,7 @@ stop:
 /* something like lookaround, but we are not running */
 /* react only to monsters that might hit us */
 int
-monster_nearby()
+monster_nearby(void)
 {
     register int x,y;
     register struct monst *mtmp;
@@ -2918,9 +2876,7 @@ monster_nearby()
 }
 
 void
-nomul(nval, txt)
-register int nval;
-const char *txt;
+nomul(register int nval, const char *txt)
 {
     if(multi < nval) return;	/* This is a bug fix by ab@unido */
     u.uinvulnerable = FALSE;	/* Kludge to avoid ctrl-C bug -dlc */
@@ -2935,8 +2891,7 @@ const char *txt;
 
 /* called when a non-movement, multi-turn action has completed */
 void
-unmul(msg_override)
-const char *msg_override;
+unmul(const char *msg_override)
 {
     multi = 0;	/* caller will usually have done this already */
     (void) memset(multi_txt, 0, BUFSZ);
@@ -2950,7 +2905,7 @@ const char *msg_override;
 }
 
 STATIC_OVL void
-maybe_wail()
+maybe_wail(void)
 {
     static short powers[] = { TELEPORT, SEE_INVIS, POISON_RES, COLD_RES,
                               SHOCK_RES, FIRE_RES, SLEEP_RES, DISINT_RES,
@@ -2986,9 +2941,9 @@ maybe_wail()
  * Wizard mode.
  */
 void
-showdmg(n,you)
-int n; /**< amount of damage inflicted */
-boolean you; /**< true, if you are hit */
+showdmg(int n, boolean you)
+       /**< amount of damage inflicted */
+             /**< true, if you are hit */
 {
 #ifdef WIZARD
     if (iflags.showdmg && wizard && n > 0) {
@@ -3001,7 +2956,7 @@ boolean you; /**< true, if you are hit */
 }
 
 void
-check_uhpmax()
+check_uhpmax(void)
 {
     if (!heaven_or_hell_mode) return;
 
@@ -3016,9 +2971,7 @@ check_uhpmax()
 }
 
 void
-set_uhpmax(new_hpmax, poly)
-int new_hpmax;
-boolean poly;
+set_uhpmax(int new_hpmax, boolean poly)
 {
     if (!heaven_or_hell_mode || new_hpmax < 1) {
         if (!poly) u.uhpmax = new_hpmax;
@@ -3031,20 +2984,13 @@ boolean poly;
 }
 
 void
-losehp(n, knam, k_format)
-int n;
-const char *knam;
-boolean k_format;
+losehp(int n, const char *knam, boolean k_format)
 {
     losehp_how(n, knam, k_format, DIED);
 }
 
 void
-losehp_how(n, knam, k_format, how)
-int n;
-const char *knam;
-int how;
-boolean k_format;
+losehp_how(int n, const char *knam, boolean k_format, int how)
 {
     showdmg(n, TRUE);
 
@@ -3078,7 +3024,7 @@ boolean k_format;
 }
 
 int
-weight_cap()
+weight_cap(void)
 {
     register long carrcap;
 
@@ -3116,7 +3062,7 @@ static int wc;	/* current weight_cap(); valid after call to inv_weight() */
 /* returns how far beyond the normal capacity the player is currently. */
 /* inv_weight() is negative if the player is below normal capacity. */
 int
-inv_weight()
+inv_weight(void)
 {
     register struct obj *otmp = invent;
     register int wt = 0;
@@ -3162,8 +3108,7 @@ inv_weight()
  * over the normal capacity the player is loaded.  Max is 5.
  */
 int
-calc_capacity(xtra_wt)
-int xtra_wt;
+calc_capacity(int xtra_wt)
 {
     int cap, wt = inv_weight() + xtra_wt;
 
@@ -3174,13 +3119,13 @@ int xtra_wt;
 }
 
 int
-near_capacity()
+near_capacity(void)
 {
     return calc_capacity(0);
 }
 
 int
-max_capacity()
+max_capacity(void)
 {
     int wt = inv_weight();
 
@@ -3188,8 +3133,7 @@ max_capacity()
 }
 
 boolean
-check_capacity(str)
-const char *str;
+check_capacity(const char *str)
 {
     if(near_capacity() >= EXT_ENCUMBER) {
         if(str)
@@ -3202,7 +3146,7 @@ const char *str;
 }
 
 int
-inv_cnt()
+inv_cnt(void)
 {
     register struct obj *otmp = invent;
     register int ct = 0;
