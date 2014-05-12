@@ -3449,7 +3449,8 @@ doorganize()	/* inventory organizer by Del Lamb */
                 goto cleansplit;
             }
         } else
-#else if (otmp->invlet == let) {
+#else
+        if (otmp->invlet == let) {
 #endif
             adj_type = "Swapping:";
         otmp->invlet = obj->invlet;
