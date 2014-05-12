@@ -380,7 +380,7 @@ void
 yyerror(const char *s)
 {
     char *e = ((char *)s + strlen(s) - 1);
-    (void) fprintf(stderr, "%s: line %d, pos %d : %s",
+    (void) fprintf(stderr, "%s: line %d, pos %zu : %s",
                    fname, line_number,
                    token_start_pos-strlen(curr_token), s);
     if (*e != '.' && *e != '!')
@@ -699,7 +699,7 @@ add_opvars(sp_lev *sp, const char *fmt, ...)
         case 'o': {
             long i = va_arg(argp, int);
             if (i < 0 || i >= MAX_SP_OPCODES)
-                fprintf(stderr, "add_opvars: unknown opcode '%i'.\n", i);
+                fprintf(stderr, "add_opvars: unknown opcode '%li'.\n", i);
             add_opcode(sp, i, NULL);
             break;
         }
@@ -878,7 +878,7 @@ spovar2str(long int spovar)
 
     switch (spovar) {
     default:
-        lc_error("spovar2str(%li)", spovar);
+        lc_error("spovar2str(%i)", spovar);
         break;
     case SPOVAR_INT:
         n = "integer";
@@ -1527,37 +1527,37 @@ decompile_maze(int fd, sp_lev *maze)
                 case SPOVAR_NULL:
                     break;
                 case SPOVAR_COORD:
-                    snprintf(debuf, 127, "%li:\t%s\tcoord:(%i,%i)\n", i, opcodestr[tmpo.opcode],
+                    snprintf(debuf, 127, "%i:\t%s\tcoord:(%li,%li)\n", i, opcodestr[tmpo.opcode],
                              (ov->vardata.l & 0xff), ((ov->vardata.l >> 16) & 0xff));
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_REGION:
-                    snprintf(debuf, 127, "%li:\t%s\tregion:(%i,%i,%i,%i)\n", i, opcodestr[tmpo.opcode],
+                    snprintf(debuf, 127, "%i:\t%s\tregion:(%li,%li,%li,%li)\n", i, opcodestr[tmpo.opcode],
                              (ov->vardata.l & 0xff), ((ov->vardata.l >> 8) & 0xff),
                              ((ov->vardata.l >> 16) & 0xff), ((ov->vardata.l >> 24) & 0xff));
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_OBJ:
-                    snprintf(debuf, 127, "%li:\t%s\tobj:(id=%i,class=\'%c\')\n",
+                    snprintf(debuf, 127, "%i:\t%s\tobj:(id=%li,class=\'%c\')\n",
                              i, opcodestr[tmpo.opcode],
-                             SP_OBJ_TYP(ov->vardata.l), SP_OBJ_CLASS(ov->vardata.l));
+                             SP_OBJ_TYP(ov->vardata.l), (char)SP_OBJ_CLASS(ov->vardata.l));
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_MONST:
-                    snprintf(debuf, 127, "%li:\t%s\tmonster:(pm=%i, class='%c')\n", i, opcodestr[tmpo.opcode],
-                             SP_MONST_PM(ov->vardata.l), SP_MONST_CLASS(ov->vardata.l));
+                    snprintf(debuf, 127, "%i:\t%s\tmonster:(pm=%li, class='%c')\n", i, opcodestr[tmpo.opcode],
+                             SP_MONST_PM(ov->vardata.l), (char)SP_MONST_CLASS(ov->vardata.l));
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_MAPCHAR:
-                    snprintf(debuf, 127, "%li:\t%s\tmapchar:(%li,%i)\n", i, opcodestr[tmpo.opcode],
+                    snprintf(debuf, 127, "%i:\t%s\tmapchar:(%i,%i)\n", i, opcodestr[tmpo.opcode],
                              (int)SP_MAPCHAR_TYP(ov->vardata.l), (schar)SP_MAPCHAR_LIT(ov->vardata.l));
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_INT:
                     if (ov->vardata.l >= ' ' && ov->vardata.l <= '~')
-                        snprintf(debuf, 127, "%li:\t%s\tint:%li\t# '%c'\n", i, opcodestr[tmpo.opcode], ov->vardata.l, (char)ov->vardata.l);
+                        snprintf(debuf, 127, "%i:\t%s\tint:%li\t# '%c'\n", i, opcodestr[tmpo.opcode], ov->vardata.l, (char)ov->vardata.l);
                     else
-                        snprintf(debuf, 127, "%li:\t%s\tint:%li\n", i, opcodestr[tmpo.opcode], ov->vardata.l);
+                        snprintf(debuf, 127, "%i:\t%s\tint:%li\n", i, opcodestr[tmpo.opcode], ov->vardata.l);
                     Write(fd, debuf, strlen(debuf));
                     break;
                 case SPOVAR_VARIABLE:
@@ -1576,12 +1576,12 @@ decompile_maze(int fd, sp_lev *maze)
                                 }
                         if (ok) {
                             if (ov->spovartyp == SPOVAR_VARIABLE)
-                                snprintf(debuf, 127, "%li:\t%s\tvar:$%s\n", i, opcodestr[tmpo.opcode], ov->vardata.str);
+                                snprintf(debuf, 127, "%i:\t%s\tvar:$%s\n", i, opcodestr[tmpo.opcode], ov->vardata.str);
                             else
-                                snprintf(debuf, 127, "%li:\t%s\tstr:\"%s\"\n", i, opcodestr[tmpo.opcode], ov->vardata.str);
+                                snprintf(debuf, 127, "%i:\t%s\tstr:\"%s\"\n", i, opcodestr[tmpo.opcode], ov->vardata.str);
                             Write(fd, debuf, strlen(debuf));
                         } else {
-                            snprintf(debuf, 127, "%li:\t%s\tstr:", i, opcodestr[tmpo.opcode]);
+                            snprintf(debuf, 127, "%i:\t%s\tstr:", i, opcodestr[tmpo.opcode]);
                             Write(fd, debuf, strlen(debuf));
                             for (x = 0; x < size; x++) {
                                 snprintf(debuf, 127, "%02x ", ov->vardata.str[x]);
@@ -1601,7 +1601,7 @@ decompile_maze(int fd, sp_lev *maze)
             genericptr_t opdat = tmpo.opdat;
             if (opdat)
                 panic("decompile_maze: opcode (%i) has data.", tmpo.opcode);
-            snprintf(debuf, 127, "%li:\t%s\n", i, opcodestr[tmpo.opcode]);
+            snprintf(debuf, 127, "%i:\t%s\n", i, opcodestr[tmpo.opcode]);
             Write(fd, debuf, strlen(debuf));
         }
 
