@@ -65,3 +65,7 @@
 
 # /win/
 /win/*/*.o
+
+# Swap files
+.sw[a-z]
+.*.sw[a-z]
