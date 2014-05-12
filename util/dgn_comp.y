@@ -1,43 +1,43 @@
-% {
-    /*	SCCS Id: @(#)dgn_comp.c	3.4	1996/06/22	*/
-    /*	Copyright (c) 1989 by Jean-Christophe Collet */
-    /*	Copyright (c) 1990 by M. Stephenson				  */
-    /* NetHack may be freely redistributed.  See license for details. */
+%{
+/*	SCCS Id: @(#)dgn_comp.c	3.4	1996/06/22	*/
+/*	Copyright (c) 1989 by Jean-Christophe Collet */
+/*	Copyright (c) 1990 by M. Stephenson				  */
+/* NetHack may be freely redistributed.  See license for details. */
 
-    /*
-     * This file contains the Dungeon Compiler code
-     */
+/*
+ * This file contains the Dungeon Compiler code
+ */
 
-    /* In case we're using bison in AIX.  This definition must be
-     * placed before any other C-language construct in the file
-     * excluding comments and preprocessor directives (thanks IBM
-     * for this wonderful feature...).
-     *
-     * Note: some cpps barf on this 'undefined control' (#pragma).
-     * Addition of the leading space seems to prevent barfage for now,
-     * and AIX will still see the directive in its non-standard locale.
-     */
+/* In case we're using bison in AIX.  This definition must be
+ * placed before any other C-language construct in the file
+ * excluding comments and preprocessor directives (thanks IBM
+ * for this wonderful feature...).
+ *
+ * Note: some cpps barf on this 'undefined control' (#pragma).
+ * Addition of the leading space seems to prevent barfage for now,
+ * and AIX will still see the directive in its non-standard locale.
+ */
 
 #ifdef _AIX
-#pragma alloca		/* keep leading space! */
+ #pragma alloca		/* keep leading space! */
 #endif
 
 #include "config.h"
 #include "date.h"
 #include "dgn_file.h"
 
-    void FDECL(yyerror, (const char *));
-    void FDECL(yywarning, (const char *));
-    int NDECL(yylex);
-    int NDECL(yyparse);
-    int FDECL(getchain, (char *));
-    int NDECL(check_dungeon);
-    int NDECL(check_branch);
-    int NDECL(check_level);
-    void NDECL(init_dungeon);
-    void NDECL(init_branch);
-    void NDECL(init_level);
-    void NDECL(output_dgn);
+void FDECL(yyerror, (const char *));
+void FDECL(yywarning, (const char *));
+int NDECL(yylex);
+int NDECL(yyparse);
+int FDECL(getchain, (char *));
+int NDECL(check_dungeon);
+int NDECL(check_branch);
+int NDECL(check_level);
+void NDECL(init_dungeon);
+void NDECL(init_branch);
+void NDECL(init_level);
+void NDECL(output_dgn);
 
 #define Free(ptr)		free((genericptr_t)ptr)
 
@@ -50,23 +50,23 @@
 
 #define ERR		(-1)
 
-    static struct couple couple;
-    static struct tmpdungeon tmpdungeon[MAXDUNGEON];
-    static struct tmplevel tmplevel[LEV_LIMIT];
-    static struct tmpbranch tmpbranch[BRANCH_LIMIT];
+static struct couple couple;
+static struct tmpdungeon tmpdungeon[MAXDUNGEON];
+static struct tmplevel tmplevel[LEV_LIMIT];
+static struct tmpbranch tmpbranch[BRANCH_LIMIT];
 
-    static int in_dungeon = 0, n_dgns = -1, n_levs = -1, n_brs = -1;
+static int in_dungeon = 0, n_dgns = -1, n_levs = -1, n_brs = -1;
 
-    extern int fatal_error;
-    extern const char *fname;
-    extern FILE *yyin, *yyout;	/* from dgn_lex.c */
+extern int fatal_error;
+extern const char *fname;
+extern FILE *yyin, *yyout;	/* from dgn_lex.c */
 
-    %
-}
+%}
 
-%union {
-    int	i;
-    char*	str;
+%union
+{
+	int	i;
+	char*	str;
 }
 
 %token	<i>	INTEGER
@@ -79,283 +79,290 @@
 
 %%
 file		: /* nothing */
-| dungeons {
-    output_dgn();
-}
-;
+		| dungeons
+		  {
+			output_dgn();
+		  }
+		;
 
-dungeons	:
-dungeon
-| dungeons dungeon
-;
+dungeons	: dungeon
+		| dungeons dungeon
+		;
 
-dungeon		:
-dungeonline
-| dungeondesc
-| branches
-| levels
-;
+dungeon		: dungeonline
+		| dungeondesc
+		| branches
+		| levels
+		;
 
-dungeonline	:
-A_DUNGEON ':' STRING bones_tag rcouple optional_int {
-    init_dungeon();
-    Strcpy(tmpdungeon[n_dgns].name, $3);
-    tmpdungeon[n_dgns].boneschar = (char)$4;
-    tmpdungeon[n_dgns].lev.base = couple.base;
-    tmpdungeon[n_dgns].lev.rand = couple.rand;
-    tmpdungeon[n_dgns].chance = $6;
-    Free($3);
-}
-;
+dungeonline	: A_DUNGEON ':' STRING bones_tag rcouple optional_int
+		  {
+			init_dungeon();
+			Strcpy(tmpdungeon[n_dgns].name, $3);
+			tmpdungeon[n_dgns].boneschar = (char)$4;
+			tmpdungeon[n_dgns].lev.base = couple.base;
+			tmpdungeon[n_dgns].lev.rand = couple.rand;
+			tmpdungeon[n_dgns].chance = $6;
+			Free($3);
+		  }
+		;
 
 optional_int	: /* nothing */
-{
-    $$ = 0;
-}
-| INTEGER {
-    $$ = $1;
-}
-;
+		  {
+			$$ = 0;
+		  }
+		| INTEGER
+		  {
+			$$ = $1;
+		  }
+		;
 
-dungeondesc	:
-entry
-| descriptions
-| prototype
-;
+dungeondesc	: entry
+		| descriptions
+		| prototype
+		;
 
-entry		:
-ENTRY ':' INTEGER {
-    tmpdungeon[n_dgns].entry_lev = $3;
-}
-;
+entry		: ENTRY ':' INTEGER
+		  {
+			tmpdungeon[n_dgns].entry_lev = $3;
+		  }
+		;
 
-descriptions	:
-desc
-;
+descriptions	: desc
+		;
 
-desc		:
-DESCRIPTION ':' DESCRIPTOR {
-    if($<i>3 <= TOWN || $<i>3 >= D_ALIGN_CHAOTIC)
-        yyerror("Illegal description - ignoring!");
-    else
-        tmpdungeon[n_dgns].flags |= $<i>3 ;
-}
-| ALIGNMENT ':' DESCRIPTOR {
-    if($<i>3 && $<i>3 < D_ALIGN_CHAOTIC)
-        yyerror("Illegal alignment - ignoring!");
-    else
-        tmpdungeon[n_dgns].flags |= $<i>3 ;
-}
-;
+desc		: DESCRIPTION ':' DESCRIPTOR
+		  {
+			if($<i>3 <= TOWN || $<i>3 >= D_ALIGN_CHAOTIC)
+			    yyerror("Illegal description - ignoring!");
+			else
+			    tmpdungeon[n_dgns].flags |= $<i>3 ;
+		  }
+		| ALIGNMENT ':' DESCRIPTOR
+		  {
+			if($<i>3 && $<i>3 < D_ALIGN_CHAOTIC)
+			    yyerror("Illegal alignment - ignoring!");
+			else
+			    tmpdungeon[n_dgns].flags |= $<i>3 ;
+		  }
+		;
 
-prototype	:
-PROTOFILE ':' STRING {
-    Strcpy(tmpdungeon[n_dgns].protoname, $3);
-    Free($3);
-}
-;
+prototype	: PROTOFILE ':' STRING
+		  {
+			Strcpy(tmpdungeon[n_dgns].protoname, $3);
+			Free($3);
+		  }
+		;
 
-levels		:
-level1
-| level2
-| levdesc
-| chlevel1
-| chlevel2
-;
+levels		: level1
+		| level2
+		| levdesc
+		| chlevel1
+		| chlevel2
+		;
 
-level1		:
-LEVEL ':' STRING bones_tag '@' acouple {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmpdungeon[n_dgns].levels++;
-    Free($3);
-}
-| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].rndlevs = $7;
-    tmpdungeon[n_dgns].levels++;
-    Free($3);
-}
-;
+level1		: LEVEL ':' STRING bones_tag '@' acouple
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+		  }
+		| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].rndlevs = $7;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+		  }
+		;
 
-level2		:
-LEVEL ':' STRING bones_tag '@' acouple INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].chance = $7;
-    tmpdungeon[n_dgns].levels++;
-    Free($3);
-}
-| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].chance = $7;
-    tmplevel[n_levs].rndlevs = $8;
-    tmpdungeon[n_dgns].levels++;
-    Free($3);
-}
-;
+level2		: LEVEL ':' STRING bones_tag '@' acouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $7;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+		  }
+		| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $7;
+			tmplevel[n_levs].rndlevs = $8;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+		  }
+		;
 
-levdesc		:
-LEVELDESC ':' DESCRIPTOR {
-    if($<i>3 >= D_ALIGN_CHAOTIC)
-        yyerror("Illegal description - ignoring!");
-    else
-        tmplevel[n_levs].flags |= $<i>3 ;
-}
-| LEVALIGN ':' DESCRIPTOR {
-    if($<i>3 && $<i>3 < D_ALIGN_CHAOTIC)
-        yyerror("Illegal alignment - ignoring!");
-    else
-        tmplevel[n_levs].flags |= $<i>3 ;
-}
-;
+levdesc		: LEVELDESC ':' DESCRIPTOR
+		  {
+			if($<i>3 >= D_ALIGN_CHAOTIC)
+			    yyerror("Illegal description - ignoring!");
+			else
+			    tmplevel[n_levs].flags |= $<i>3 ;
+		  }
+		| LEVALIGN ':' DESCRIPTOR
+		  {
+			if($<i>3 && $<i>3 < D_ALIGN_CHAOTIC)
+			    yyerror("Illegal alignment - ignoring!");
+			else
+			    tmplevel[n_levs].flags |= $<i>3 ;
+		  }
+		;
 
-chlevel1	:
-CHLEVEL ':' STRING bones_tag STRING '+' rcouple {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].chain = getchain($5);
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    if(!check_level()) n_levs--;
-    else tmpdungeon[n_dgns].levels++;
-    Free($3);
-    Free($5);
-}
-| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].chain = getchain($5);
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].rndlevs = $8;
-    if(!check_level()) n_levs--;
-    else tmpdungeon[n_dgns].levels++;
-    Free($3);
-    Free($5);
-}
-;
+chlevel1	: CHLEVEL ':' STRING bones_tag STRING '+' rcouple
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].chain = getchain($5);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($5);
+		  }
+		| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].chain = getchain($5);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].rndlevs = $8;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($5);
+		  }
+		;
 
-chlevel2	:
-CHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].chain = getchain($5);
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].chance = $8;
-    if(!check_level()) n_levs--;
-    else tmpdungeon[n_dgns].levels++;
-    Free($3);
-    Free($5);
-}
-| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER INTEGER {
-    init_level();
-    Strcpy(tmplevel[n_levs].name, $3);
-    tmplevel[n_levs].boneschar = (char)$4;
-    tmplevel[n_levs].chain = getchain($5);
-    tmplevel[n_levs].lev.base = couple.base;
-    tmplevel[n_levs].lev.rand = couple.rand;
-    tmplevel[n_levs].chance = $8;
-    tmplevel[n_levs].rndlevs = $9;
-    if(!check_level()) n_levs--;
-    else tmpdungeon[n_dgns].levels++;
-    Free($3);
-    Free($5);
-}
-;
+chlevel2	: CHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].chain = getchain($5);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $8;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($5);
+		  }
+		| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			tmplevel[n_levs].boneschar = (char)$4;
+			tmplevel[n_levs].chain = getchain($5);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $8;
+			tmplevel[n_levs].rndlevs = $9;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($5);
+		  }
+		;
 
-branches	:
-branch
-| chbranch
-;
+branches	: branch
+		| chbranch
+		;
 
-branch		:
-BRANCH ':' STRING '@' acouple branch_type direction {
-    init_branch();
-    Strcpy(tmpbranch[n_brs].name, $3);
-    tmpbranch[n_brs].lev.base = couple.base;
-    tmpbranch[n_brs].lev.rand = couple.rand;
-    tmpbranch[n_brs].type = $6;
-    tmpbranch[n_brs].up = $7;
-    if(!check_branch()) n_brs--;
-    else tmpdungeon[n_dgns].branches++;
-    Free($3);
-}
-;
+branch		: BRANCH ':' STRING '@' acouple branch_type direction
+		  {
+			init_branch();
+			Strcpy(tmpbranch[n_brs].name, $3);
+			tmpbranch[n_brs].lev.base = couple.base;
+			tmpbranch[n_brs].lev.rand = couple.rand;
+			tmpbranch[n_brs].type = $6;
+			tmpbranch[n_brs].up = $7;
+			if(!check_branch()) n_brs--;
+			else tmpdungeon[n_dgns].branches++;
+			Free($3);
+		  }
+		;
 
-chbranch	:
-CHBRANCH ':' STRING STRING '+' rcouple branch_type direction {
-    init_branch();
-    Strcpy(tmpbranch[n_brs].name, $3);
-    tmpbranch[n_brs].chain = getchain($4);
-    tmpbranch[n_brs].lev.base = couple.base;
-    tmpbranch[n_brs].lev.rand = couple.rand;
-    tmpbranch[n_brs].type = $7;
-    tmpbranch[n_brs].up = $8;
-    if(!check_branch()) n_brs--;
-    else tmpdungeon[n_dgns].branches++;
-    Free($3);
-    Free($4);
-}
-;
+chbranch	: CHBRANCH ':' STRING STRING '+' rcouple branch_type direction
+		  {
+			init_branch();
+			Strcpy(tmpbranch[n_brs].name, $3);
+			tmpbranch[n_brs].chain = getchain($4);
+			tmpbranch[n_brs].lev.base = couple.base;
+			tmpbranch[n_brs].lev.rand = couple.rand;
+			tmpbranch[n_brs].type = $7;
+			tmpbranch[n_brs].up = $8;
+			if(!check_branch()) n_brs--;
+			else tmpdungeon[n_dgns].branches++;
+			Free($3);
+			Free($4);
+		  }
+		;
 
 branch_type	: /* nothing */
-{
-    $$ = TBR_STAIR;	/* two way stair */
-}
-| STAIR {
-    $$ = TBR_STAIR;	/* two way stair */
-}
-| NO_UP {
-    $$ = TBR_NO_UP;	/* no up staircase */
-}
-| NO_DOWN {
-    $$ = TBR_NO_DOWN;	/* no down staircase */
-}
-| PORTAL {
-    $$ = TBR_PORTAL;	/* portal connection */
-}
-;
+		  {
+			$$ = TBR_STAIR;	/* two way stair */
+		  }
+		| STAIR
+		  {
+			$$ = TBR_STAIR;	/* two way stair */
+		  }
+		| NO_UP
+		  {
+			$$ = TBR_NO_UP;	/* no up staircase */
+		  }
+		| NO_DOWN
+		  {
+			$$ = TBR_NO_DOWN;	/* no down staircase */
+		  }
+		| PORTAL
+		  {
+			$$ = TBR_PORTAL;	/* portal connection */
+		  }
+		;
 
 direction	: /* nothing */
-{
-    $$ = 0;	/* defaults to down */
-}
-| UP_OR_DOWN {
-    $$ = $1;
-}
-;
+		  {
+			$$ = 0;	/* defaults to down */
+		  }
+		| UP_OR_DOWN
+		  {
+			$$ = $1;
+		  }
+		;
 
-bones_tag	:
-STRING {
-    char *p = $1;
-    if (strlen(p) != 1) {
-        if (strcmp(p, "none") != 0)
-            yyerror("Bones marker must be a single char, or \"none\"!");
-        *p = '\0';
-    }
-    $$ = *p;
-    Free(p);
-}
-;
+bones_tag	: STRING
+		  {
+			char *p = $1;
+			if (strlen(p) != 1) {
+			    if (strcmp(p, "none") != 0)
+		   yyerror("Bones marker must be a single char, or \"none\"!");
+			    *p = '\0';
+			}
+			$$ = *p;
+			Free(p);
+		  }
+		;
 
 /*
  *	acouple rules:
@@ -374,22 +381,22 @@ STRING {
  *	    during dungeon load, range is always *added* to the base,
  *	    therefore range + base(converted) must not exceed MAXLEVEL.
  */
-acouple		: '('
-INTEGER ',' INTEGER ')' {
-    if ($2 < -MAXLEVEL || $2 > MAXLEVEL) {
-        yyerror("Abs base out of dlevel range - zeroing!");
-        couple.base = couple.rand = 0;
-    } else if ($4 < -1 ||
-    (($2 < 0) ? (MAXLEVEL + $2 + $4 + 1) > MAXLEVEL :
-    ($2 + $4) > MAXLEVEL)) {
-        yyerror("Abs range out of dlevel range - zeroing!");
-        couple.base = couple.rand = 0;
-    } else {
-        couple.base = $2;
-        couple.rand = $4;
-    }
-}
-;
+acouple		: '(' INTEGER ',' INTEGER ')'
+		  {
+			if ($2 < -MAXLEVEL || $2 > MAXLEVEL) {
+			    yyerror("Abs base out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else if ($4 < -1 ||
+				(($2 < 0) ? (MAXLEVEL + $2 + $4 + 1) > MAXLEVEL :
+					($2 + $4) > MAXLEVEL)) {
+			    yyerror("Abs range out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else {
+			    couple.base = $2;
+			    couple.rand = $4;
+			}
+		  }
+		;
 
 /*
  *	rcouple rules:
@@ -411,17 +418,17 @@ INTEGER ',' INTEGER ')' {
  *	    There is no practical way of specifying "between here and the
  *	    nth / nth last level".
  */
-rcouple		: '('
-INTEGER ',' INTEGER ')' {
-    if ($2 < -MAXLEVEL || $2 > MAXLEVEL) {
-        yyerror("Rel base out of dlevel range - zeroing!");
-        couple.base = couple.rand = 0;
-    } else {
-        couple.base = $2;
-        couple.rand = $4;
-    }
-}
-;
+rcouple		: '(' INTEGER ',' INTEGER ')'
+		  {
+			if ($2 < -MAXLEVEL || $2 > MAXLEVEL) {
+			    yyerror("Rel base out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else {
+			    couple.base = $2;
+			    couple.rand = $4;
+			}
+		  }
+		;
 %%
 
 void

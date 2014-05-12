@@ -1,8 +1,8 @@
-% {
-    /*	SCCS Id: @(#)dgn_lex.c	3.4	2002/03/27	*/
-    /*	Copyright (c) 1989 by Jean-Christophe Collet */
-    /*	Copyright (c) 1990 by M. Stephenson	     */
-    /* NetHack may be freely redistributed.  See license for details. */
+%{
+/*	SCCS Id: @(#)dgn_lex.c	3.4	2002/03/27	*/
+/*	Copyright (c) 1989 by Jean-Christophe Collet */
+/*	Copyright (c) 1990 by M. Stephenson	     */
+/* NetHack may be freely redistributed.  See license for details. */
 
 #define DGN_COMP
 
@@ -10,28 +10,28 @@
 #include "dgn_comp.h"
 #include "dgn_file.h"
 
-    /*
-     * Most of these don't exist in flex, yywrap is macro and
-     * yyunput is properly declared in flex.skel.
-     */
+/*
+ * Most of these don't exist in flex, yywrap is macro and
+ * yyunput is properly declared in flex.skel.
+ */
 #if !defined(FLEX_SCANNER) && !defined(FLEXHACK_SCANNER)
-    int FDECL(yyback, (int *,int));
-    int NDECL(yylook);
-    int NDECL(yyinput);
-    int NDECL(yywrap);
-    int NDECL(yylex);
-    /* Traditional lexes let yyunput() and yyoutput() default to int;
-     * newer ones may declare them as void since they don't return
-     * values.  For even more fun, the lex supplied as part of the
-     * newer unbundled compiler for SunOS 4.x adds the void declarations
-     * (under __STDC__ or _cplusplus ifdefs -- otherwise they remain
-     * int) while the bundled lex and the one with the older unbundled
-     * compiler do not.  To detect this, we need help from outside --
-     * sys/unix/Makefile.utl.
-     *
-     * Digital UNIX is difficult and still has int in spite of all
-     * other signs.
-     */
+int FDECL(yyback, (int *,int));
+int NDECL(yylook);
+int NDECL(yyinput);
+int NDECL(yywrap);
+int NDECL(yylex);
+	/* Traditional lexes let yyunput() and yyoutput() default to int;
+	 * newer ones may declare them as void since they don't return
+	 * values.  For even more fun, the lex supplied as part of the
+	 * newer unbundled compiler for SunOS 4.x adds the void declarations
+	 * (under __STDC__ or _cplusplus ifdefs -- otherwise they remain
+	 * int) while the bundled lex and the one with the older unbundled
+	 * compiler do not.  To detect this, we need help from outside --
+	 * sys/unix/Makefile.utl.
+	 *
+	 * Digital UNIX is difficult and still has int in spite of all
+	 * other signs.
+	 */
 # if defined(NeXT) || defined(SVR4) || defined(_AIX32)
 #  define VOIDYYPUT
 # endif
@@ -49,11 +49,11 @@
 #  undef VOIDYYPUT
 # endif
 # ifdef VOIDYYPUT
-    void FDECL(yyunput, (int));
-    void FDECL(yyoutput, (int));
+void FDECL(yyunput, (int));
+void FDECL(yyoutput, (int));
 # else
-    int FDECL(yyunput, (int));
-    int FDECL(yyoutput, (int));
+int FDECL(yyunput, (int));
+int FDECL(yyoutput, (int));
 # endif
 #endif	/* !FLEX_SCANNER && !FLEXHACK_SCANNER */
 
@@ -64,19 +64,18 @@
 #endif
 
 
-    void FDECL(init_yyin, (FILE *));
-    void FDECL(init_yyout, (FILE *));
+void FDECL(init_yyin, (FILE *));
+void FDECL(init_yyout, (FILE *));
 
-    /* this doesn't always get put in dgn_comp.h
-     * (esp. when using older versions of bison)
-     */
+/* this doesn't always get put in dgn_comp.h
+ * (esp. when using older versions of bison)
+ */
 
-    extern YYSTYPE yylval;
+extern YYSTYPE yylval;
 
-    int line_number = 1;
+int line_number = 1;
 
-    %
-}
+%}
 %%
 DUNGEON		return(A_DUNGEON);
 up		{ yylval.i=1; return(UP_OR_DOWN); }
@@ -108,9 +107,9 @@ CHAINLEVEL	return(CHLEVEL);
 RNDCHLEVEL	return(RNDCHLEVEL);
 [-0-9]+		{ yylval.i=atoi(yytext); return(INTEGER); }
 \"[^"]*\"	{ yytext[yyleng-1] = 0; /* Discard the trailing \" */
-yylval.str = (char *) alloc(strlen(yytext+1)+1);
-Strcpy(yylval.str, yytext+1); /* Discard the first \" */
-return(STRING); }
+		  yylval.str = (char *) alloc(strlen(yytext+1)+1);
+		  Strcpy(yylval.str, yytext+1); /* Discard the first \" */
+		  return(STRING); }
 ^#.*\n		{ line_number++; }
 \r?\n		{ line_number++; }
 [ \t]+		;	/* skip trailing tabs & spaces */
@@ -122,17 +121,17 @@ void init_yyin( input_f )
 FILE *input_f;
 {
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
-if (yyin)
-yyrestart(input_f);
-else
+    if (yyin)
+        yyrestart(input_f);
+    else
 #endif
-yyin = input_f;
+        yyin = input_f;
 }
 /* analogous routine (for completeness) */
 void init_yyout( output_f )
 FILE *output_f;
 {
-yyout = output_f;
+    yyout = output_f;
 }
 
 /*dgn_comp.l*/
