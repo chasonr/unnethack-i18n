@@ -1,5 +1,21 @@
-General information about UnNetHack
-===================================
+General information about UnNetHack-i18n
+========================================
+
+NetHack-i18n (http://www.sourceforge.net/projects/nethack-i18n/) has been a
+worthwhile project for me, and not just for the I18N aspect.  It provides
+several new user interfaces and bug fixes to the original NetHack.
+
+Here I present UnNetHack-i18n, my new project to bring a similar I18N effort
+to UnNetHack and perhaps to apply the lessons learned from that project.
+
+Enjoy.
+
+-- Ray Chason
+
+============================================================================
+
+(The following is Patric Mueller's original README for UnNetHack; "I" refers
+to him.)
 
 UnNetHack is a fork of NetHack, originally based on NetHack version 3.4.3.
 
