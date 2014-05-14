@@ -205,8 +205,7 @@ fopen_datafile_area(const char *filearea, const char *filename, const char *mode
 #endif
 #else	/* FILE_AREAS */
 FILE *
-fopen_datafile(filename, mode)
-const char *filename, *mode;
+fopen_datafile(const char *filename, const char *mode)
 {
     return fopen(filename, mode);
 }

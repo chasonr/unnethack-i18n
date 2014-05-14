@@ -97,7 +97,7 @@ void dummy_init_nhwindows(int* argc, char** argv)
    the process. You need to fill in pl_character[0].
 */
 void
-dummy_player_selection()
+dummy_player_selection(void)
 {
 #if 0
     int n, i, sel;
@@ -318,7 +318,7 @@ dummy_player_selection()
 
 
 /* Ask the user for a player name. */
-void dummy_askname()
+void dummy_askname(void)
 {
     fprintf(stdout, "What is your name? ");
     char *ret = fgets(plname, sizeof(plname), stdin);
@@ -332,7 +332,7 @@ void dummy_askname()
 /* Does window event processing (e.g. exposure events).
    A noop for the tty and X window-ports.
 */
-void dummy_get_nh_event()
+void dummy_get_nh_event(void)
 {
     printf("dummy_get_nh_event\n");
 }
@@ -355,7 +355,7 @@ void dummy_suspend_nhwindows(const char *str)
 
 
 /* Restore the windows after being suspended. */
-void dummy_resume_nhwindows()
+void dummy_resume_nhwindows(void)
 {
     /* Do Nothing. */
     printf("dummy_resume_nhwindows\n");
@@ -410,7 +410,7 @@ void dummy_clear_nhwindow(winid wid)
                 -- Calling display_nhwindow(WIN_MESSAGE,???) will do a
                    --more--, if necessary, in the tty window-port.
 */
-void dummy_display_nhwindow(winid wid, BOOLEAN_P block)
+void dummy_display_nhwindow(winid wid, boolean block)
 {
     printf("dummy_display_nhwindow(%s, %d)\n", winid2str(wid), block);
 }
@@ -465,7 +465,7 @@ void dummy_putstr(winid wid, int attr, const char *text)
 /* Display the file named str.  Complain about missing files
                    iff complain is TRUE.
 */
-void dummy_display_file(const char *filename,BOOLEAN_P must_exist)
+void dummy_display_file(const char *filename,boolean must_exist)
 {
     printf("dummy_display_file(%s, %d)\n", filename, must_exist);
     dlb *f;
@@ -532,12 +532,12 @@ add_menu(windid window, int glyph, const anything identifier,
                    menu is displayed, set preselected to TRUE.
 */
 void dummy_add_menu(winid wid, int glyph, int cnt, const ANY_P * identifier,
-                    CHAR_P accelerator, CHAR_P group_accel, int attr,
-                    const char *str, BOOLEAN_P presel)
+                    char accelerator, char group_accel, int attr,
+                    const char *str, boolean presel)
 {
     /* Do Nothing */
-    printf("dummy_add_menu(%s, %d, %d, %d, %c, %c, %d, %s, %d\n", winid2str(wid),
-           glyph, cnt, (int)identifier, accelerator, group_accel, attr, str, presel);
+    printf("dummy_add_menu(%s, %d, %d, %ld, %c, %c, %d, %s, %d\n", winid2str(wid),
+           glyph, cnt, (long)identifier, accelerator, group_accel, attr, str, presel);
 }
 
 /*
@@ -600,7 +600,7 @@ int dummy_select_menu(winid wid, int how, MENU_ITEM_P **selected)
     -- Merely calls display_inventory() for window-ports that leave the
 	window up, otherwise empty.
 */
-void dummy_update_inventory()
+void dummy_update_inventory(void)
 {
     /* Do Nothing */
     printf("dummy_update_inventory\n");
@@ -611,7 +611,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    all channels are caught up to here.  Can be an empty call
                    for the moment
 */
-void dummy_mark_synch()
+void dummy_mark_synch(void)
 {
     /* Do nothing */
     printf("dummy_mark_synch\n");
@@ -623,7 +623,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                 -- May also deal with exposure events etc. so that the
                    display is OK when return from wait_synch().
 */
-void dummy_wait_synch()
+void dummy_wait_synch(void)
 {
     /* Do nothing */
     printf("dummy_wait_synch\n");
@@ -647,7 +647,7 @@ print_glyph(window, x, y, glyph)
                    port wants (symbol, font, color, attributes, ...there's
                    a 1-1 map between glyphs and distinct things on the map).
 */
-void dummy_print_glyph(winid wid,XCHAR_P x,XCHAR_P y,int glyph)
+void dummy_print_glyph(winid wid,xchar x,xchar y,int glyph)
 {
     if (wid != -1) {
         printf("winid %d; x %d, y %d, glyph: %d\n",
@@ -679,7 +679,7 @@ void dummy_raw_print_bold(const char *str)
     printf("dummy_raw_print_bold\n*%s*\n", str);
 }
 
-static int dummy_getchar()
+static int dummy_getchar(void)
 {
     char input[256];
     char *rets = NULL;
@@ -696,7 +696,7 @@ int nhgetch()   -- Returns a single character input from the user.
                    will be the routine the OS provides to read a character.
                    Returned character _must_ be non-zero.
 */
-int dummy_nhgetch()
+int dummy_nhgetch(void)
 {
     printf("dummy_nhgetch\n");
     int ret = dummy_getchar();
@@ -764,7 +764,7 @@ int dummy_nh_poskey(int *x, int *y, int *mod)
 nhbell()        -- Beep at user.  [This will exist at least until sounds are
                    redone, since sounds aren't attributable to windows anyway.]
 */
-void dummy_nhbell()
+void dummy_nhbell(void)
 {
     printf("BEEP!\n");
 }
@@ -774,7 +774,7 @@ doprev_message()
                 -- Display previous messages.  Used by the ^P command.
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
-int dummy_doprev_message()
+int dummy_doprev_message(void)
 {
     /* Do Nothing.  They can read old messages using the scrollbar. */
     return 0;
@@ -800,7 +800,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char dummy_yn_function(const char *question, const char *choices,
-                       CHAR_P def)
+                       char def)
 {
     // TODO
     printf("dummy_yn_function %s\n", question);
@@ -850,7 +850,7 @@ int get_ext_cmd(void)
 	       An index into extcmdlist[] is returned on a successful
 	       selection, -1 otherwise.
 */
-int dummy_get_ext_cmd()
+int dummy_get_ext_cmd(void)
 {
     char cmd[255];
     int i;
@@ -884,7 +884,7 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
 	       Conceptually, this is similar to wait_synch() followed
 	       by a nap(50ms), but allows asynchronous operation.
 */
-void dummy_delay_output()
+void dummy_delay_output(void)
 {
     // TODO
     /* Do Nothing */
@@ -898,7 +898,7 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
 	       example.  If your window-port does not need this function
 	       just declare an empty function.
 */
-void dummy_start_screen()
+void dummy_start_screen(void)
 {
     /* Do Nothing */
     printf("dummy_start_screen\n");
@@ -908,7 +908,7 @@ void dummy_start_screen()
 end_screen()    -- Only used on Unix tty ports, but must be declared for
 	       completeness.  The complement of start_screen().
 */
-void dummy_end_screen()
+void dummy_end_screen(void)
 {
     /* Do Nothing */
     printf("dummy_end_screen\n");

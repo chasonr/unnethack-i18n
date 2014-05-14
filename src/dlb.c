@@ -447,11 +447,9 @@ dlb_cleanup(void)
 
 dlb *
 #ifndef FILE_AREAS
-dlb_fopen(name, mode)
-const char *name, *mode;
+dlb_fopen(const char *name, const char *mode)
 #else
 dlb_fopen_area(const char *area, const char *name, const char *mode)
-                               
 #endif
 {
     FILE *fp;

@@ -40,7 +40,6 @@ static char lisp_current_accelerator;
 
 /* Helper structures to map menu id's to nethack anything's */
 static lisp_menu_item_t lisp_menu_item_list[1000];
-static int lisp_menu_list_size = 1000;
 static int lisp_menu_list_num;
 
 extern char *enc_stat[];
@@ -349,8 +348,7 @@ struct window_procs lisp_procs = {
   while (0)
 
 static const char*
-attr_to_string(attr)
-int attr;
+attr_to_string(int attr)
 {
     switch (attr) {
     case ATR_NONE:
@@ -372,8 +370,7 @@ int attr;
 }
 
 static const char*
-special_glyph_to_string(special)
-unsigned special;
+special_glyph_to_string(unsigned int special)
 {
     switch (special) {
     case MG_CORPSE:
@@ -396,30 +393,7 @@ unsigned special;
 }
 
 static const char*
-wintype_to_string(type)
-int type;
-{
-    switch (type) {
-    case NHW_MAP:
-        return "nhw-map";
-    case NHW_MESSAGE:
-        return "nhw-message";
-    case NHW_STATUS:
-        return "nhw-status";
-    case NHW_MENU:
-        return "nhw-menu";
-    case NHW_TEXT:
-        return "nhw-text";
-    default:
-        fprintf (stderr, "Invalid window code\n");
-        exit (EXIT_FAILURE);
-        break;
-    }
-}
-
-static const char*
-how_to_string (how)
-int how;
+how_to_string (int how)
 {
     switch (how) {
     case PICK_NONE:
@@ -435,9 +409,7 @@ int how;
 }
 
 static int
-read_int (prompt, i)
-const char* prompt;
-int *i;
+read_int (const char *prompt, int *i)
 {
     char line[BUFSZ];
     int rv;
@@ -450,9 +422,7 @@ int *i;
 }
 
 static int
-read_string (prompt, str)
-const char* prompt;
-char **str;
+read_string (const char *prompt, char **str)
 {
     char* rv;
     int len;
@@ -495,10 +465,7 @@ char **str;
 
 
 static int
-read_command (prompt, cmd, count)
-const char *prompt;
-char *cmd;
-char *count;
+read_command (const char *prompt, char *cmd, char *count)
 {
     char *buf;
     int rv;
@@ -513,8 +480,7 @@ char *count;
 }
 
 void
-bail(mesg)
-const char *mesg;
+bail(const char *mesg)
 {
     clearlocks ();
     lisp_exit_nhwindows (mesg);
@@ -523,13 +489,13 @@ const char *mesg;
 }
 
 void
-win_lisp_init ()
+win_lisp_init (void)
 {
     /* Code to be executed on startup. */
 }
 
 void
-lisp_player_selection ()
+lisp_player_selection (void)
 {
     int i, k, n;
     char pick4u = 'n', thisch, lastch = 0;
@@ -840,7 +806,7 @@ give_up:	/* Quit */
 
 /* Reads from standard in, the player's name. */
 void
-lisp_askname ()
+lisp_askname (void)
 {
     char *line;
     lisp_cmd ("askname",);
@@ -852,30 +818,26 @@ lisp_askname ()
 
 /* This is a noop for tty and X, so should it be a noop for us too? */
 void
-lisp_get_nh_event ()
+lisp_get_nh_event (void)
 {
     /*   lisp_cmd ("get-event",); */
 }
 
 /* Global Functions */
 void
-lisp_raw_print(str)
-const char *str;
+lisp_raw_print(const char *str)
 {
     lisp_cmd ("raw-print", lisp_string (str));
 }
 
 void
-lisp_raw_print_bold(str)
-const char *str;
+lisp_raw_print_bold(const char *str)
 {
     lisp_cmd ("raw-print-bold", lisp_string (str));
 }
 
 void
-lisp_curs(window, x, y)
-winid window;
-int x, y;
+lisp_curs(winid window, int x, int y)
 {
     if (window == WIN_MAP)
         lisp_cmd ("curs",
@@ -889,7 +851,7 @@ int x, y;
 
 /* Send the options to the lisp process */
 static void
-get_options()
+get_options(void)
 {
     lisp_cmd ("options",
               lisp_boolean(iflags.cbreak);	/* in cbreak mode, rogue format */
@@ -918,7 +880,7 @@ get_options()
 }
 
 static void
-generate_status_line ()
+generate_status_line (void)
 {
     /* Ripped from botl.c */
     int hp, hpmax;
@@ -1061,10 +1023,7 @@ generate_status_line ()
 }
 
 void
-lisp_putstr(window, attr, str)
-winid window;
-int attr;
-const char *str;
+lisp_putstr(winid window, int attr, const char *str)
 {
     static char statline1[BUFSZ] = "";
     if (window == WIN_STATUS) {
@@ -1086,8 +1045,7 @@ const char *str;
 }
 
 void
-lisp_start_menu(window)
-winid window;
+lisp_start_menu(winid window)
 {
     lisp_menu_list_num = 0;
     lisp_current_accelerator = 'a';
@@ -1095,16 +1053,16 @@ winid window;
 }
 
 void
-lisp_add_menu(window, glyph, cnt, identifier, ch, gch, attr, str, preselected)
-winid window;		/* window to use, must be of type NHW_MENU */
-int glyph;			/* glyph to display with item (unused) */
-int cnt;                    /* max number of times this item can be selected */
-const anything *identifier;	/* what to return if selected */
-char ch;			/* keyboard accelerator (0 = pick our own) */
-char gch;			/* group accelerator (0 = no group) */
-int attr;			/* attribute for string (like tty_putstr()) */
-const char *str;		/* menu string */
-boolean preselected;	/* item is marked as selected */
+lisp_add_menu(winid window, int glyph, int cnt, const anything *identifier, char ch, char gch, int attr, const char *str, boolean preselected)
+             		/* window to use, must be of type NHW_MENU */
+          			/* glyph to display with item (unused) */
+                            /* max number of times this item can be selected */
+                           	/* what to return if selected */
+        			/* keyboard accelerator (0 = pick our own) */
+         			/* group accelerator (0 = no group) */
+         			/* attribute for string (like tty_putstr()) */
+                		/* menu string */
+                    	/* item is marked as selected */
 {
     if (identifier->a_void) {
         lisp_menu_item_list[lisp_menu_list_num].identifier = *identifier;
@@ -1137,9 +1095,9 @@ boolean preselected;	/* item is marked as selected */
 }
 
 void
-lisp_end_menu(window, prompt)
-winid window;	/* menu to use */
-const char *prompt;	/* prompt to for menu */
+lisp_end_menu(winid window, const char *prompt)
+             	/* menu to use */
+                   	/* prompt to for menu */
 {
     lisp_cmd ("end-menu",
               lisp_int (window);
@@ -1147,9 +1105,7 @@ const char *prompt;	/* prompt to for menu */
 }
 
 static int
-lisp_get_menu_identifier(ch, identifier)
-char ch;
-anything *identifier;
+lisp_get_menu_identifier(char ch, anything *identifier)
 {
     int i;
 
@@ -1164,10 +1120,7 @@ anything *identifier;
 }
 
 int
-lisp_select_menu(window, how, menu_list)
-winid window;
-int how;
-menu_item **menu_list;
+lisp_select_menu(winid window, int how, menu_item **menu_list)
 {
     const char *delim = "() \n";
     char *list;
@@ -1197,8 +1150,8 @@ menu_item **menu_list;
     /* Start with some memory so realloc doesn't fail. */
     *menu_list = malloc (sizeof (menu_item));
     if (*menu_list == NULL) {
-        panic ("Memory allocation failure; cannot get %u bytes",
-               sizeof (menu_item));
+        panic ("Memory allocation failure; cannot get %lu bytes",
+               (unsigned long)sizeof (menu_item));
     }
     size = 0;
 
@@ -1206,8 +1159,8 @@ menu_item **menu_list;
         /* Make more room in the array for the new item */
         size++;
         if ((*menu_list = realloc (*menu_list, size * sizeof (menu_item))) == NULL) {
-            panic ("Memory allocation failure; cannot get %u bytes",
-                   size * sizeof (menu_item));
+            panic ("Memory allocation failure; cannot get %lu bytes",
+                   (unsigned long)(size * sizeof (menu_item)));
         }
 
         /* assign the item ID */
@@ -1228,10 +1181,7 @@ menu_item **menu_list;
 
 /* This is a tty-specific hack. Do we need it? */
 char
-lisp_message_menu(let, how, mesg)
-char let;
-int how;
-const char *mesg;
+lisp_message_menu(char let, int how, const char *mesg)
 {
     lisp_cmd ("message-menu",
               lisp_int (let);
@@ -1241,8 +1191,7 @@ const char *mesg;
 }
 
 static int
-lisp_get_cmd(str)
-const char *str;
+lisp_get_cmd(const char *str)
 {
     int i;
 
@@ -1255,8 +1204,7 @@ const char *str;
 }
 
 static int
-lisp_get_ext_cmd_id (str)
-const char *str;
+lisp_get_ext_cmd_id (const char *str)
 {
     int i;
 
@@ -1299,7 +1247,7 @@ const char *str;
 /* } */
 
 int
-lisp_nhgetch()
+lisp_nhgetch(void)
 {
     /* multi is not 0 if this  */
     static char count_buf[BUFSIZ] = "";
@@ -1362,12 +1310,11 @@ lisp_nhgetch()
     } else {
         impossible ("Impossible command type: %d", cmd_index[cmd].type);
     }
-    return NULL;
+    return 0;
 }
 
 int
-lisp_nh_poskey(x, y, mod)
-int *x, *y, *mod;
+lisp_nh_poskey(int *x, int *y, int *mod)
 {
     /*    char scratch[256]; */
 
@@ -1391,7 +1338,7 @@ static int winid_list_max = 0;
 
 /* returns index into winid_list that can be used. */
 static int
-find_empty_cell ()
+find_empty_cell (void)
 {
     int i;
 
@@ -1433,7 +1380,7 @@ add_winid (winid n)
 }
 
 static winid
-get_unique_winid ()
+get_unique_winid (void)
 {
     winid i;
 
@@ -1461,7 +1408,7 @@ return_winid (winid n)
 }
 
 static void
-init_winid_list ()
+init_winid_list (void)
 {
     winid_list_max = 10;
     winid_list_len = 0;
@@ -1472,8 +1419,7 @@ init_winid_list ()
 /* Prints a create_nhwindow function and expects from stdin the id of
    this new window as a number. */
 winid
-lisp_create_nhwindow(type)
-int type;
+lisp_create_nhwindow(int type)
 {
     winid id = get_unique_winid();
 
@@ -1505,8 +1451,7 @@ int type;
 }
 
 void
-lisp_clear_nhwindow(window)
-winid window;
+lisp_clear_nhwindow(winid window)
 {
     if (window == WIN_MESSAGE)
         lisp_cmd ("clear-message",);
@@ -1518,9 +1463,7 @@ winid window;
 }
 
 void
-lisp_display_nhwindow(window, blocking)
-winid window;
-boolean blocking;
+lisp_display_nhwindow(winid window, boolean blocking)
 {
     /* don't send display messages for anything but menus */
     char *dummy;
@@ -1545,8 +1488,7 @@ boolean blocking;
 }
 
 void
-lisp_destroy_nhwindow(window)
-winid window;
+lisp_destroy_nhwindow(winid window)
 {
     if ((window != WIN_STATUS)
             && (window != WIN_MESSAGE)
@@ -1557,33 +1499,33 @@ winid window;
 }
 
 void
-lisp_update_inventory()
+lisp_update_inventory(void)
 {
     lisp_cmd ("update-inventory",);
 }
 
 int
-lisp_doprev_message()
+lisp_doprev_message(void)
 {
     lisp_cmd ("doprev-message",);
     return 0;
 }
 
 void
-lisp_nhbell()
+lisp_nhbell(void)
 {
     lisp_cmd ("nhbell",);
 }
 
 /* Can be an empty call says window.doc. */
 void
-lisp_mark_synch()
+lisp_mark_synch(void)
 {
     /* lisp_cmd ("mark-sync",); */
 }
 
 void
-lisp_wait_synch()
+lisp_wait_synch(void)
 {
     lisp_cmd ("wait-synch",);
 }
@@ -1591,7 +1533,7 @@ lisp_wait_synch()
 /* Since nethack will never be suspended, we need not worry about this
    function. */
 void
-lisp_resume_nhwindows()
+lisp_resume_nhwindows(void)
 {
     return;
 }
@@ -1599,24 +1541,20 @@ lisp_resume_nhwindows()
 /* Since nethack will never be suspended, we need not worry about this
    function. */
 void
-lisp_suspend_nhwindows(str)
-const char *str;
+lisp_suspend_nhwindows(const char *str)
 {
     return;
 }
 
 /* All keys are defined in emacs, so number_pad makes no sense. */
 void
-lisp_number_pad(state)
-int state;
+lisp_number_pad(int state)
 {
     return;
 }
 
 void
-lisp_init_nhwindows(argcp,argv)
-int* argcp;
-char** argv;
+lisp_init_nhwindows(int *argcp, char **argv)
 {
     int i;
 
@@ -1643,14 +1581,13 @@ char** argv;
 }
 
 void
-lisp_exit_nhwindows (str)
-const char *str;
+lisp_exit_nhwindows (const char *str)
 {
     lisp_cmd ("exit-nhwindows ", lisp_string (str));
 }
 
 void
-lisp_delay_output()
+lisp_delay_output(void)
 {
     char *dummy;
     lisp_cmd ("delay-output",);
@@ -1659,9 +1596,7 @@ lisp_delay_output()
 }
 
 void
-lisp_getlin(question, input)
-const char *question;
-char *input;
+lisp_getlin(const char *question, char *input)
 {
     char *tmp;
     lisp_cmd ("getlin", lisp_string (question));
@@ -1671,7 +1606,7 @@ char *input;
 }
 
 int
-lisp_get_ext_cmd()
+lisp_get_ext_cmd(void)
 {
     /*    int cmd; */
     /*    int i; */
@@ -1691,13 +1626,10 @@ lisp_get_ext_cmd()
 
 void
 #ifdef FILE_AREAS
-lisp_display_file(farea, fname, complain)
-const char *farea;
+lisp_display_file(const char *farea, const char *fname, boolean complain)
 #else
-lisp_display_file(fname, complain)
+lisp_display_file(const char *fname, boolean complain)
 #endif
-const char *fname;
-boolean complain;
 {
     lisp_cmd ("display-file",
               lisp_string (fname);
@@ -1705,10 +1637,7 @@ boolean complain;
 }
 
 char
-lisp_yn_function(ques, choices, def)
-const char *ques;
-const char *choices;
-char def;
+lisp_yn_function(const char *ques, const char *choices, char def)
 {
     int answer;
 
@@ -1778,10 +1707,7 @@ char *features;
 #define warn_color(n) def_warnsyms[n].color
 
 void
-lisp_print_glyph(window, x, y, glyph)
-winid window;
-xchar x, y;
-int glyph;
+lisp_print_glyph(winid window, xchar x, xchar y, int glyph)
 {
     glyph_t ch;
     int	    color;
@@ -1829,9 +1755,7 @@ int glyph;
 
 #ifdef CLIPPING
 void
-lisp_cliparound(x, y)
-int x;
-int y;
+lisp_cliparound(int x, int y)
 {
     /* as far as I can tell, the x and y values here are exactly the
        ones given by the next lisp_curs call, so its redundant
@@ -1841,26 +1765,17 @@ int y;
 }
 #endif
 
-void lisp_start_screen()
+void lisp_start_screen(void)
 {
     return;    /* called from setftty() in unixtty.c */
 }
-void lisp_end_screen()
+void lisp_end_screen(void)
 {
     return;    /* called from settty() in unixtty.c */
 }
 
-static void
-get_death_text (buf)
-char buf[BUFSZ];
-{
-
-}
-
 void
-lisp_outrip(window, how)
-winid window;
-int how;
+lisp_outrip(winid window, int how)
 {
     lisp_cmd ("outrip",
               lisp_int (window);

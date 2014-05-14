@@ -28,18 +28,18 @@ E void FDECL(lisp_suspend_nhwindows, (const char *));
 E void NDECL(lisp_resume_nhwindows);
 E winid FDECL(lisp_create_nhwindow, (int));
 E void FDECL(lisp_clear_nhwindow, (winid));
-E void FDECL(lisp_display_nhwindow, (winid, BOOLEAN_P));
+E void FDECL(lisp_display_nhwindow, (winid, boolean));
 E void FDECL(lisp_destroy_nhwindow, (winid));
 E void FDECL(lisp_curs, (winid,int,int));
 E void FDECL(lisp_putstr, (winid, int, const char *));
 #ifdef FILE_AREAS
-E void FDECL(lisp_display_file, (const char *, const char *, BOOLEAN_P));
+E void FDECL(lisp_display_file, (const char *, const char *, boolean));
 #else
-E void FDECL(lisp_display_file, (const char *, BOOLEAN_P));
+E void FDECL(lisp_display_file, (const char *, boolean));
 #endif
 E void FDECL(lisp_start_menu, (winid));
 E void FDECL(lisp_add_menu, (winid, int, int, const ANY_P *,
-                             CHAR_P, CHAR_P, int, const char *, BOOLEAN_P));
+                             char, char, int, const char *, boolean));
 E void FDECL(lisp_end_menu, (winid, const char *));
 E int FDECL(lisp_select_menu, (winid, int, MENU_ITEM_P **));
 E char FDECL(lisp_message_menu, (char, int, const char *mesg));
@@ -52,14 +52,14 @@ E void FDECL(lisp_cliparound, (int, int));
 #ifdef POSITIONBAR
 E void FDECL(lisp_update_positionbar, (char *));
 #endif
-E void FDECL(lisp_print_glyph, (winid,XCHAR_P,XCHAR_P,int));
+E void FDECL(lisp_print_glyph, (winid,xchar,xchar,int));
 E void FDECL(lisp_raw_print, (const char *));
 E void FDECL(lisp_raw_print_bold, (const char *));
 E int NDECL(lisp_nhgetch);
 E int FDECL(lisp_nh_poskey, (int *, int *, int *));
 E void NDECL(lisp_nhbell);
 E int NDECL(lisp_doprev_message);
-E char FDECL(lisp_yn_function, (const char *, const char *, CHAR_P));
+E char FDECL(lisp_yn_function, (const char *, const char *, char));
 E void FDECL(lisp_getlin, (const char *,char *));
 E int NDECL(lisp_get_ext_cmd);
 E void FDECL(lisp_number_pad, (int));

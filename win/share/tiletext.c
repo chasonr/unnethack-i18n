@@ -34,8 +34,7 @@ static void FDECL(write_txttile, (FILE *, pixel(*)[TILE_X]));
 "%[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789] = (%d, %d, %d) "
 
 static void
-read_text_colormap(txtfile)
-FILE *txtfile;
+read_text_colormap(FILE *txtfile)
 {
     int i, r, g, b;
     char c[2];
@@ -57,8 +56,7 @@ FILE *txtfile;
 #undef FORMAT_STRING
 
 static boolean
-write_text_colormap(txtfile)
-FILE *txtfile;
+write_text_colormap(FILE *txtfile)
 {
     int i;
     char c;
@@ -83,9 +81,7 @@ FILE *txtfile;
 }
 
 static boolean
-read_txttile(txtfile, pixels)
-FILE *txtfile;
-pixel (*pixels)[TILE_X];
+read_txttile(FILE *txtfile, pixel (*pixels)[16])
 {
     int ph, i, j, k;
     char buf[BUFSZ], ttype[BUFSZ];
@@ -166,9 +162,7 @@ pixel (*pixels)[TILE_X];
 }
 
 static void
-write_txttile(txtfile, pixels)
-FILE *txtfile;
-pixel (*pixels)[TILE_X];
+write_txttile(FILE *txtfile, pixel (*pixels)[16])
 {
     const char *p;
     const char *type;
@@ -211,7 +205,7 @@ pixel (*pixels)[TILE_X];
 
 /* initialize main colormap from globally accessed ColorMap */
 void
-init_colormap()
+init_colormap(void)
 {
     int i;
 
@@ -225,7 +219,7 @@ init_colormap()
 
 /* merge new colors from ColorMap into MainColorMap */
 void
-merge_colormap()
+merge_colormap(void)
 {
     int i, j;
 
@@ -251,9 +245,7 @@ merge_colormap()
 }
 
 boolean
-fopen_text_file(filename, type)
-const char *filename;
-const char *type;
+fopen_text_file(const char *filename, const char *type)
 {
     const char *p;
     int i;
@@ -307,22 +299,20 @@ const char *type;
 }
 
 boolean
-read_text_tile(pixels)
-pixel (*pixels)[TILE_X];
+read_text_tile(pixel (*pixels)[16])
 {
     return(read_txttile(tile_file, pixels));
 }
 
 boolean
-write_text_tile(pixels)
-pixel (*pixels)[TILE_X];
+write_text_tile(pixel (*pixels)[16])
 {
     write_txttile(tile_file, pixels);
     return TRUE;
 }
 
 int
-fclose_text_file()
+fclose_text_file(void)
 {
     int ret;
 

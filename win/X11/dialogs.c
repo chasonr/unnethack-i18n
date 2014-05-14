@@ -82,11 +82,7 @@ static const char cancel_accelerators[] =
  *	an optional cancel button
  */
 Widget
-CreateDialog(parent, name, okay_callback, cancel_callback)
-Widget parent;
-String name;
-XtCallbackProc okay_callback;
-XtCallbackProc cancel_callback;
+CreateDialog(Widget parent, String name, XtCallbackProc okay_callback, XtCallbackProc cancel_callback)
 {
     Widget form, prompt, response, okay, cancel;
     Arg args[20];
@@ -243,9 +239,7 @@ Widget w;
 
 /* set the prompt.  This is used to put error information in the prompt */
 void
-SetDialogPrompt(w, newprompt)
-Widget w;
-String newprompt;
+SetDialogPrompt(Widget w, String newprompt)
 {
     Arg args[1];
     Widget label;
@@ -257,8 +251,7 @@ String newprompt;
 
 /* get what the user typed; caller must free the response */
 String
-GetDialogResponse(w)
-Widget w;
+GetDialogResponse(Widget w)
 {
     Arg args[1];
     Widget response;
@@ -273,9 +266,7 @@ Widget w;
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 /* set the default reponse */
 void
-SetDialogResponse(w, s)
-Widget w;
-String s;
+SetDialogResponse(Widget w, String s)
 {
     Arg args[4];
     Widget response;
@@ -320,9 +311,9 @@ Widget w;
 
 /* position popup window under the cursor */
 void
-positionpopup(w, bottom)
-Widget w;
-boolean bottom;	/* position y on bottom? */
+positionpopup(Widget w, boolean bottom)
+         
+               	/* position y on bottom? */
 {
     Arg args[3];
     Cardinal num_args;

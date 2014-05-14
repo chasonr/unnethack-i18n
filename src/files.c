@@ -1473,9 +1473,7 @@ struct flock sflock; /* for unlocking, same as above */
 #ifndef FILE_AREAS
 
 STATIC_OVL char *
-make_lockname(filename, lockname)
-const char *filename;
-char *lockname;
+make_lockname(const char *filename, char *lockname)
 {
 #if (defined(macintosh) && (defined(__SC__) || defined(__MRC__))) || defined(__MWERKS__)
 # pragma unused(filename,lockname)
@@ -1512,14 +1510,8 @@ char *lockname;
 boolean
 #ifdef FILE_AREAS
 lock_file(const char *filearea, const char *filename, int retryct)
-                     
-                     
-            
 #else
-                                         
-                     
-                
-            
+lock_file(const char *filename, int whichprefix, int retryct)
 #endif
 {
 #if (defined(macintosh) && (defined(__SC__) || defined(__MRC__))) || defined(__MWERKS__)

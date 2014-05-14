@@ -55,11 +55,7 @@ static Widget FDECL(create_ripout_widget, (Widget));
 
 /*ARGSUSED*/
 void
-delete_text(w, event, params, num_params)
-Widget w;
-XEvent *event;
-String *params;
-Cardinal *num_params;
+delete_text(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     struct xwindow *wp;
     struct text_info_t *text_info;
@@ -83,11 +79,7 @@ Cardinal *num_params;
  */
 /*ARGSUSED*/
 void
-dismiss_text(w, event, params, num_params)
-Widget w;
-XEvent *event;
-String *params;
-Cardinal *num_params;
+dismiss_text(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     struct xwindow *wp;
     struct text_info_t *text_info;
@@ -106,11 +98,7 @@ Cardinal *num_params;
 
 /* Dismiss when a non-modifier key pressed. */
 void
-key_dismiss_text(w, event, params, num_params)
-Widget w;
-XEvent *event;
-String *params;
-Cardinal *num_params;
+key_dismiss_text(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     char ch = key_event_to_char((XKeyEvent *) event);
     if (ch) dismiss_text(w, event, params, num_params);
@@ -132,10 +120,10 @@ Cardinal *num_params;
 
 /* ARGSUSED */
 void
-add_to_text_window(wp, attr, str)
-struct xwindow *wp;
-int attr;	/* currently unused */
-const char *str;
+add_to_text_window(struct xwindow *wp, int attr, const char *str)
+                   
+         	/* currently unused */
+                
 {
     struct text_info_t *text_info = wp->text_information;
     int width;
@@ -149,9 +137,7 @@ const char *str;
 }
 
 void
-display_text_window(wp, blocking)
-struct xwindow *wp;
-boolean blocking;
+display_text_window(struct xwindow *wp, boolean blocking)
 {
     struct text_info_t *text_info;
     Arg args[8];
@@ -243,8 +229,7 @@ boolean blocking;
 
 
 void
-create_text_window(wp)
-struct xwindow *wp;
+create_text_window(struct xwindow *wp)
 {
     struct text_info_t *text_info;
     Arg args[8];
@@ -326,8 +311,7 @@ struct xwindow *wp;
 }
 
 void
-destroy_text_window(wp)
-struct xwindow *wp;
+destroy_text_window(struct xwindow *wp)
 {
     /* Don't need to pop down, this only called from dismiss_text(). */
 
@@ -350,8 +334,7 @@ struct xwindow *wp;
 }
 
 void
-clear_text_window(wp)
-struct xwindow *wp;
+clear_text_window(struct xwindow *wp)
 {
     clear_text_buffer(&wp->text_information->text);
 }
@@ -361,10 +344,7 @@ struct xwindow *wp;
 
 /* Append a line to the text buffer. */
 void
-append_text_buffer(tb, str, concat)
-struct text_buffer *tb;
-const char *str;
-boolean concat;
+append_text_buffer(struct text_buffer *tb, const char *str, boolean concat)
 {
     char *copy;
     int length;
@@ -419,8 +399,7 @@ boolean concat;
 
 /* Initialize text buffer. */
 void
-init_text_buffer(tb)
-struct text_buffer *tb;
+init_text_buffer(struct text_buffer *tb)
 {
     tb->text	  = (char *) alloc(START_SIZE);
     tb->text[0]   = '\0';
@@ -431,8 +410,7 @@ struct text_buffer *tb;
 
 /* Empty the text buffer */
 void
-clear_text_buffer(tb)
-struct text_buffer *tb;
+clear_text_buffer(struct text_buffer *tb)
 {
     tb->text_last = 0;
     tb->text[0]   = '\0';
@@ -441,8 +419,7 @@ struct text_buffer *tb;
 
 /* Free up allocated memory. */
 void
-free_text_buffer(tb)
-struct text_buffer *tb;
+free_text_buffer(struct text_buffer *tb)
 {
     free(tb->text);
     tb->text = (char *) 0;

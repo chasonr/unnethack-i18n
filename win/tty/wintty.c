@@ -2183,12 +2183,9 @@ tty_putstr(winid window, int attr, const char *str)
 void
 #ifdef FILE_AREAS
 tty_display_file(const char *farea, const char *fname, boolean complain)
-                  
 #else
-                                 
+tty_display_file(const char *fname, boolean complain)
 #endif
-                  
-                 
 {
 #ifdef DEF_PAGER			/* this implies that UNIX is defined */
     {

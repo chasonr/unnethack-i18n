@@ -37,7 +37,7 @@
 
 static struct line_element *FDECL(get_previous, (struct line_element *));
 static void FDECL(set_circle_buf, (struct mesg_info_t *,int));
-static char *FDECL(split, (char *,XFontStruct *,DIMENSION_P));
+static char *FDECL(split, (char *,XFontStruct *,Dimension));
 static void FDECL(add_line, (struct mesg_info_t *,const char *));
 static void FDECL(redraw_message_window, (struct xwindow *));
 static void FDECL(mesg_check_size_change, (struct xwindow *));
@@ -52,8 +52,7 @@ static char mesg_translations[] =
 
 /* Move the message window's vertical scrollbar's slider to the bottom. */
 void
-set_message_slider(wp)
-struct xwindow *wp;
+set_message_slider(struct xwindow *wp)
 {
     Widget scrollbar;
     float top;
@@ -68,10 +67,10 @@ struct xwindow *wp;
 
 
 void
-create_message_window(wp, create_popup, parent)
-struct xwindow *wp;			/* window pointer */
-boolean create_popup;
-Widget parent;
+create_message_window(struct xwindow *wp, boolean create_popup, Widget parent)
+                   			/* window pointer */
+                     
+              
 {
     Arg args[8];
     Cardinal num_args;
@@ -207,8 +206,7 @@ Widget parent;
 
 
 void
-destroy_message_window(wp)
-struct xwindow *wp;
+destroy_message_window(struct xwindow *wp)
 {
     if (wp->popup) {
         nh_XtPopdown(wp->popup);
@@ -228,8 +226,7 @@ struct xwindow *wp;
 
 /* Redraw message window if new lines have been added. */
 void
-display_message_window(wp)
-struct xwindow *wp;
+display_message_window(struct xwindow *wp)
 {
     if (wp->mesg_information->dirty) redraw_message_window(wp);
 }
@@ -240,9 +237,7 @@ struct xwindow *wp;
  * rendering of the text is too long for the window.
  */
 void
-append_message(wp, str)
-struct xwindow *wp;
-const char *str;
+append_message(struct xwindow *wp, const char *str)
 {
     char *mark, *remainder, buf[BUFSZ];
 
@@ -265,8 +260,7 @@ const char *str;
  * element.
  */
 static struct line_element *
-get_previous(mark)
-struct line_element *mark;
+get_previous(struct line_element *mark)
 {
     struct line_element *curr;
 
@@ -285,9 +279,7 @@ struct line_element *mark;
  * are no longer used.
  */
 static void
-set_circle_buf(mesg_info, count)
-struct mesg_info_t *mesg_info;
-int count;
+set_circle_buf(struct mesg_info_t *mesg_info, int count)
 {
     int i;
     struct line_element *tail, *curr, *head;
@@ -360,10 +352,10 @@ int count;
  * not, back up from the end by words until we find a place to split.
  */
 static char *
-split(s, fs, pixel_width)
-char *s;
-XFontStruct *fs;		/* Font for the window. */
-Dimension pixel_width;
+split(char *s, XFontStruct *fs, Dimension pixel_width)
+        
+                		/* Font for the window. */
+                      
 {
     char save, *end, *remainder;
 
@@ -392,9 +384,7 @@ Dimension pixel_width;
  * one.
  */
 static void
-add_line(mesg_info, s)
-struct mesg_info_t *mesg_info;
-const char *s;
+add_line(struct mesg_info_t *mesg_info, const char *s)
 {
     register struct line_element *curr = mesg_info->head;
     register int new_line_length = strlen(s);
@@ -423,8 +413,7 @@ const char *s;
  * line above this saved pointer.
  */
 void
-set_last_pause(wp)
-struct xwindow *wp;
+set_last_pause(struct xwindow *wp)
 {
     register struct mesg_info_t *mesg_info = wp->mesg_information;
 
@@ -452,8 +441,7 @@ struct xwindow *wp;
 
 
 static void
-redraw_message_window(wp)
-struct xwindow *wp;
+redraw_message_window(struct xwindow *wp)
 {
     struct mesg_info_t *mesg_info = wp->mesg_information;
     register struct line_element *curr;
@@ -504,8 +492,7 @@ struct xwindow *wp;
  * move the vertical slider to the bottom.
  */
 static void
-mesg_check_size_change(wp)
-struct xwindow *wp;
+mesg_check_size_change(struct xwindow *wp)
 {
     struct mesg_info_t *mesg_info = wp->mesg_information;
     Arg arg[2];
@@ -532,10 +519,10 @@ struct xwindow *wp;
 /* Event handler for message window expose events. */
 /*ARGSUSED*/
 static void
-mesg_exposed(w, client_data, widget_data)
-Widget w;
-XtPointer client_data;	/* unused */
-XtPointer widget_data;	/* expose event from Window widget */
+mesg_exposed(Widget w, XtPointer client_data, XtPointer widget_data)
+         
+                      	/* unused */
+                      	/* expose event from Window widget */
 {
     XExposeEvent *event = (XExposeEvent *) widget_data;
 
@@ -562,9 +549,7 @@ XtPointer widget_data;	/* expose event from Window widget */
 
 
 static void
-get_gc(w, mesg_info)
-Widget w;
-struct mesg_info_t *mesg_info;
+get_gc(Widget w, struct mesg_info_t *mesg_info)
 {
     XGCValues values;
     XtGCMask mask = GCFunction | GCForeground | GCBackground | GCFont;
@@ -594,9 +579,7 @@ struct mesg_info_t *mesg_info;
  */
 /* ARGSUSED */
 static void
-mesg_resized(w, client_data, call_data)
-Widget w;
-XtPointer call_data, client_data;
+mesg_resized(Widget w, XtPointer client_data, XtPointer call_data)
 {
     Arg args[4];
     Cardinal num_args;

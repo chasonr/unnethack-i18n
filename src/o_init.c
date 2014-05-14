@@ -27,7 +27,7 @@ extern short glyph2tile[];	/* from tile.c */
  * another routine.
  */
 STATIC_OVL void
-shuffle_tiles()
+shuffle_tiles(void)
 {
     int i;
     short tmp_tilemap[NUM_OBJECTS];
