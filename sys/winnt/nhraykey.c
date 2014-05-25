@@ -256,8 +256,7 @@ int FDECL(process_keystroke2, (HANDLE,INPUT_RECORD *ir, boolean *valid));
 static int FDECL(is_altseq, (unsigned long shiftstate));
 
 static int
-is_altseq(shiftstate)
-unsigned long shiftstate;
+is_altseq(unsigned long shiftstate)
 {
     /* We need to distinguish the Alt keys from the AltGr key.
      * On NT-based Windows, AltGr signals as right Alt and left Ctrl together;
@@ -279,16 +278,15 @@ unsigned long shiftstate;
 }
 
 int __declspec(dllexport) __stdcall
-ProcessKeystroke(hConIn, ir, valid, numberpad, portdebug)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-boolean *valid;
-boolean numberpad;
-int portdebug;
+ProcessKeystroke(
+        HANDLE hConIn,
+        INPUT_RECORD *ir,
+        boolean *valid,
+        boolean numberpad,
+        int portdebug)
 {
-    int metaflags = 0, k = 0;
     int keycode, vk;
-    unsigned char ch, pre_ch, mk = 0;
+    unsigned char ch, pre_ch;
     unsigned short int scan;
     unsigned long shiftstate;
     int altseq = 0;
@@ -369,7 +367,7 @@ int portdebug;
     if (portdebug) {
         char buf[BUFSZ];
         Sprintf(buf,
-                "PORTDEBUG: ch=%u, scan=%u, vk=%d, pre=%d, shiftstate=0x%X (ESC to end)\n",
+                "PORTDEBUG: ch=%u, scan=%u, vk=%d, pre=%d, shiftstate=0x%lX (ESC to end)\n",
                 ch, scan, vk, pre_ch, shiftstate);
         fprintf(stdout, "\n%s", buf);
     }
@@ -377,10 +375,7 @@ int portdebug;
     return ch;
 }
 
-int process_keystroke2(hConIn, ir, valid)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-boolean *valid;
+int process_keystroke2(HANDLE hConIn, INPUT_RECORD *ir, boolean *valid)
 {
     /* Use these values for the numeric keypad */
     static const char keypad_nums[] = "789-456+1230.";
@@ -442,13 +437,14 @@ boolean *valid;
 }
 
 int __declspec(dllexport) __stdcall
-CheckInput(hConIn, ir, count, numpad, mode, mod, cc)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-DWORD *count;
-int *mod;
-boolean numpad;
-coord *cc;
+CheckInput(
+        HANDLE hConIn,
+        INPUT_RECORD *ir,
+        DWORD *count,
+        boolean numpad,
+        int mode,
+        int *mod,
+        coord *cc)
 {
     int ch;
     boolean valid = 0, done = 0;
@@ -508,9 +504,7 @@ coord *cc;
 }
 
 int __declspec(dllexport) __stdcall
-NHkbhit(hConIn, ir)
-HANDLE hConIn;
-INPUT_RECORD *ir;
+NHkbhit(HANDLE hConIn, INPUT_RECORD *ir)
 {
     int done = 0;	/* true =  "stop searching"        */
     int retval;	/* true =  "we had a match"        */
@@ -561,8 +555,7 @@ INPUT_RECORD *ir;
 
 
 int __declspec(dllexport) __stdcall
-SourceWhere(buf)
-char **buf;
+SourceWhere(char **buf)
 {
     if (!buf) return 0;
     *buf = where_to_get_source;
@@ -570,8 +563,7 @@ char **buf;
 }
 
 int __declspec(dllexport) __stdcall
-SourceAuthor(buf)
-char **buf;
+SourceAuthor(char **buf)
 {
     if (!buf) return 0;
     *buf = author;
@@ -579,9 +571,7 @@ char **buf;
 }
 
 int __declspec(dllexport) __stdcall
-KeyHandlerName(buf, full)
-char **buf;
-int full;
+KeyHandlerName(char **buf, int full)
 {
     if (!buf) return 0;
     if (full) *buf = dllname;

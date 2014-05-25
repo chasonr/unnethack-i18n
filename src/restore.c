@@ -405,7 +405,6 @@ restgamestate(register int fd, unsigned int *stuckid, unsigned int *steedid)
 {
     /* discover is actually flags.explore */
     boolean remember_discover = discover;
-    struct obj *otmp;
     int uid;
 
     mread(fd, (genericptr_t) &uid, sizeof uid);
@@ -1076,7 +1075,7 @@ static NEARDATA short inrunlength = -1;
 static NEARDATA int mreadfd;
 
 static int
-mgetc()
+mgetc(void)
 {
     if (inbufp >= inbufsz) {
         inbufsz = read(mreadfd, (genericptr_t)inbuf, sizeof inbuf);
@@ -1092,7 +1091,7 @@ mgetc()
 }
 
 void
-minit()
+minit(void)
 {
     inbufsz = 0;
     inbufp = 0;
@@ -1100,10 +1099,7 @@ minit()
 }
 
 int
-mread(fd, buf, len)
-int fd;
-genericptr_t buf;
-register unsigned len;
+mread(int fd, genericptr_t buf, register unsigned len)
 {
     /*register int readlen = 0;*/
     if (fd < 0) error("Restore error; mread attempting to read file %d.", fd);

@@ -205,9 +205,7 @@ static  long		*end_ptr		= &randtbl[ DEG_3 + 1 ];
  */
 
 void
-srandom( x )
-
-unsigned		x;
+srandom(unsigned x)
 {
     register  int		i;
 
@@ -243,11 +241,10 @@ unsigned		x;
  */
 
 char  *
-initstate( seed, arg_state, n )
-
-unsigned		seed;			/* seed for R. N. G. */
-char		*arg_state;		/* pointer to state array */
-int			n;			/* # bytes of state info */
+initstate(
+        unsigned seed,			/* seed for R. N. G. */
+        char    *arg_state,		/* pointer to state array */
+        int      n)			/* # bytes of state info */
 {
     register  char		*ostate		= (char *)( &state[ -1 ] );
 
@@ -308,9 +305,7 @@ int			n;			/* # bytes of state info */
  */
 
 char  *
-setstate( arg_state )
-
-char		*arg_state;
+setstate( char *arg_state )
 {
     register  long		*new_state	= (long *)arg_state;
     register  int		type		= new_state[0]%MAX_TYPES;
@@ -361,7 +356,7 @@ char		*arg_state;
  */
 
 long
-random()
+random(void)
 {
     long		i;
 

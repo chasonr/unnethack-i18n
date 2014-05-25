@@ -164,9 +164,7 @@ char bmpname[128];
 FILE *fp;
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     int i, j;
 
@@ -248,8 +246,7 @@ char *argv[];
 
 
 static void
-build_bmfh(pbmfh)
-BITMAPFILEHEADER *pbmfh;
+build_bmfh(BITMAPFILEHEADER *pbmfh)
 {
     pbmfh->bfType = leshort(0x4D42);
     pbmfh->bfSize = lelong(BMPFILESIZE);
@@ -260,8 +257,7 @@ BITMAPFILEHEADER *pbmfh;
 }
 
 static void
-build_bmih(pbmih)
-BITMAPINFOHEADER *pbmih;
+build_bmih(BITMAPINFOHEADER *pbmih)
 {
     WORD cClrBits;
     int w,h;
@@ -310,8 +306,7 @@ BITMAPINFOHEADER *pbmih;
 }
 
 static void
-build_bmptile(pixels)
-pixel (*pixels)[TILE_X];
+build_bmptile(pixel (*pixels)[TILE_X])
 {
     int cur_x, cur_y, cur_color;
     int x,y;

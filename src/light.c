@@ -116,7 +116,7 @@ del_light_source(int type, genericptr_t id)
             return;
         }
     }
-    impossible("del_light_source: not found type=%d, id=0x%lx", type, (long)id);
+    impossible("del_light_source: not found type=%d, id=%p", type, id);
 }
 
 /* Mark locations that are temporarily lit via mobile light sources. */

@@ -142,7 +142,7 @@ STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_PTR int NDECL(wiz_mazewalkmap);
 extern char SpLev_Map[COLNO][ROWNO];
 STATIC_PTR int NDECL(wiz_showkills);	/* showborn patch */
-#ifdef SHOW_BORN
+#if defined(SHOW_BORN) || defined(WIZARD)
 extern void FDECL(list_vanquished, (int, boolean, boolean)); /* showborn patch */
 #endif /* SHOW_BORN */
 #if defined(__BORLANDC__) && !defined(_WIN32)
@@ -2883,7 +2883,7 @@ extern void NDECL(win32con_handler_info);
 # endif
 
 int
-wiz_port_debug()
+wiz_port_debug(void)
 {
     int n, k;
     winid win;

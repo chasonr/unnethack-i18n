@@ -48,18 +48,17 @@ WIN32_FIND_DATA ffd;
  */
 
 int def_kbhit(void);
-int (*nt_kbhit)() = def_kbhit;
+int (*nt_kbhit)(void) = def_kbhit;
 
 char
-switchar()
+switchar(void)
 {
     /* Could not locate a WIN32 API call for this- MJA */
     return '-';
 }
 
 long
-freediskspace(path)
-char *path;
+freediskspace(char *path)
 {
     char tmppath[4];
     DWORD SectorsPerCluster = 0;
@@ -83,8 +82,7 @@ char *path;
  * Functions to get filenames using wildcards
  */
 int
-findfirst(path)
-char *path;
+findfirst(char *path)
 {
     if (ffhandle) {
         FindClose(ffhandle);
@@ -96,20 +94,19 @@ char *path;
 }
 
 int
-findnext()
+findnext(void)
 {
     return FindNextFile(ffhandle,&ffd) ? 1 : 0;
 }
 
 char *
-foundfile_buffer()
+foundfile_buffer(void)
 {
     return &ffd.cFileName[0];
 }
 
 long
-filesize(file)
-char *file;
+filesize(char *file)
 {
     if (findfirst(file)) {
         return ((long)ffd.nFileSizeLow);
@@ -121,8 +118,7 @@ char *file;
  * Chdrive() changes the default drive.
  */
 void
-chdrive(str)
-char *str;
+chdrive(char *str)
 {
     char *ptr;
     char drive;
@@ -132,20 +128,8 @@ char *str;
     }
 }
 
-static int
-max_filename()
-{
-    DWORD maxflen;
-    int status=0;
-
-    status = GetVolumeInformation((LPTSTR)0,(LPTSTR)0, 0
-                                  ,(LPDWORD)0,&maxflen,(LPDWORD)0,(LPTSTR)0,0);
-    if (status) return maxflen;
-    else return 0;
-}
-
 int
-def_kbhit()
+def_kbhit(void)
 {
     return 0;
 }
@@ -155,12 +139,11 @@ def_kbhit()
  */
 
 void
-nt_regularize(s)	/* normalize file name */
-register char *s;
+nt_regularize(register char *s)	/* normalize file name */
 {
     register unsigned char *lp;
 
-    for (lp = s; *lp; lp++)
+    for (lp = (unsigned char *)s; *lp; lp++)
         if ( *lp == '?' || *lp == '"' || *lp == '\\' ||
                 *lp == '/' || *lp == '>' || *lp == '<'  ||
                 *lp == '*' || *lp == '|' || *lp == ':'  || (*lp > 127))
@@ -170,8 +153,7 @@ register char *s;
 /*
  * This is used in nhlan.c to implement some of the LAN_FEATURES.
  */
-char *get_username(lan_username_size)
-int *lan_username_size;
+char *get_username(int *lan_username_size)
 {
     static TCHAR username_buffer[BUFSZ];
     unsigned int status;
@@ -186,7 +168,7 @@ int *lan_username_size;
 }
 
 # if 0
-char *getxxx()
+char *getxxx(void)
 {
     char     szFullPath[MAX_PATH] = "";
     HMODULE  hInst = NULL;  	/* NULL gets the filename of this module */
@@ -201,25 +183,23 @@ char *getxxx()
 /*VARARGS1*/
 void
 error VA_DECL(const char *,s)
-char buf[BUFSZ];
-VA_START(s);
-VA_INIT(s, const char *);
-/* error() may get called before tty is initialized */
-if (iflags.window_inited) end_screen();
-if (!strncmpi(windowprocs.name, "tty", 3))
-{
-    buf[0] = '\n';
-    (void) vsprintf(&buf[1], s, VA_ARGS);
-    Strcat(buf, "\n");
-    msmsg(buf);
-} else
-{
-    (void) vsprintf(buf, s, VA_ARGS);
-    Strcat(buf, "\n");
-    raw_printf(buf);
-}
-VA_END();
-exit(EXIT_FAILURE);
+    char buf[BUFSZ];
+    VA_START(s);
+    VA_INIT(s, const char *);
+    /* error() may get called before tty is initialized */
+    if (iflags.window_inited) end_screen();
+    if (!strncmpi(windowprocs.name, "tty", 3)) {
+        buf[0] = '\n';
+        (void) vsprintf(&buf[1], s, VA_ARGS);
+        Strcat(buf, "\n");
+        msmsg(buf);
+    } else {
+        (void) vsprintf(buf, s, VA_ARGS);
+        Strcat(buf, "\n");
+        raw_printf(buf);
+    }
+    VA_END();
+    exit(EXIT_FAILURE);
 }
 #endif
 
@@ -232,7 +212,7 @@ void Delay(int ms)
 extern void NDECL(backsp);
 #endif
 
-void win32_abort()
+void win32_abort(void)
 {
 #ifdef WIZARD
     if (wizard) {
@@ -269,11 +249,11 @@ static char interjection_buf[INTERJECTION_TYPES][1024];
 static int interjection[INTERJECTION_TYPES];
 
 void
-interject_assistance(num, interjection_type, ptr1, ptr2)
-int num;
-int interjection_type;
-genericptr_t ptr1;
-genericptr_t ptr2;
+interject_assistance(
+        int num,
+        int interjection_type,
+        genericptr_t ptr1,
+        genericptr_t ptr2)
 {
     switch(num) {
     case 1: {
@@ -314,8 +294,7 @@ genericptr_t ptr2;
 }
 
 void
-interject(interjection_type)
-int interjection_type;
+interject(int interjection_type)
 {
     if (interjection_type >= 0 && interjection_type < INTERJECTION_TYPES)
         msmsg(interjection_buf[interjection_type]);

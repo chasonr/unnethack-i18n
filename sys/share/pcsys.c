@@ -59,7 +59,7 @@ extern int GUILaunched;    /* from nttty.c */
 #if defined(MICRO) || defined(WIN32)
 
 void
-flushout()
+flushout(void)
 {
     (void) fflush(stdout);
     return;
@@ -76,7 +76,7 @@ static const char *COMSPEC =
 
 # ifdef SHELL
 int
-dosh()
+dosh(void)
 {
     extern char orgdir[];
     char *comspec;
@@ -139,8 +139,7 @@ dosh()
 # ifdef MFLOPPY
 
 void
-eraseall(path, files)
-const char *path, *files;
+eraseall(const char *path, const char *files)
 {
     char buf[PATHLEN];
     char *foundfile;
@@ -159,8 +158,7 @@ const char *path, *files;
  * Rewritten for version 3.3 to be faster
  */
 void
-copybones(mode)
-int mode;
+copybones(int mode)
 {
     char from[PATHLEN], to[PATHLEN], last[13];
     char *frompath, *topath;
@@ -249,7 +247,7 @@ error_copying:
 }
 
 void
-playwoRAMdisk()
+playwoRAMdisk(void)
 {
     int c;
 
@@ -270,8 +268,7 @@ playwoRAMdisk()
 }
 
 int
-saveDiskPrompt(start)
-int start;
+saveDiskPrompt(int start)
 {
     char buf[BUFSIZ], *bp;
     char qbuf[QBUFSZ];
@@ -308,7 +305,7 @@ int start;
 
 /* Return 1 if the record file was found */
 STATIC_OVL boolean
-record_exists()
+record_exists(void)
 {
     FILE *fp;
 
@@ -327,7 +324,7 @@ record_exists()
 #  ifdef MFLOPPY
 /* Return 1 if the comspec was found */
 STATIC_OVL boolean
-comspec_exists()
+comspec_exists(void)
 {
     int fd;
     char *comspec;
@@ -347,7 +344,7 @@ comspec_exists()
 /* Prompt for game disk, then check for record file.
  */
 void
-gameDiskPrompt()
+gameDiskPrompt(void)
 {
     if (flags.asksavedisk) {
         if (record_exists() && comspec_exists())
@@ -374,8 +371,7 @@ gameDiskPrompt()
  * be room for the \
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 
@@ -394,8 +390,7 @@ boolean getreturn_enabled;
 #endif
 
 void
-getreturn(str)
-const char *str;
+getreturn(const char *str)
 {
 #ifdef WIN32
     if (!getreturn_enabled) return;
@@ -439,8 +434,7 @@ return;
 #endif
 
 FILE *
-fopenp(name, mode)
-const char *name, *mode;
+fopenp(const char *name, const char *mode)
 {
     char buf[BUFSIZ], *bp, *pp, lastch = 0;
     FILE *fp;
@@ -487,8 +481,7 @@ const char *name, *mode;
 }
 
 #if defined(MICRO) || defined(WIN32) || defined(OS2)
-void nethack_exit(code)
-int code;
+void nethack_exit(int code)
 {
     msexit();
     exit(code);
@@ -500,7 +493,7 @@ int code;
 extern boolean run_from_desktop;	/* set in pcmain.c */
 #endif
 
-static void msexit()
+static void msexit(void)
 {
 #ifdef CHDIR
     extern char orgdir[];

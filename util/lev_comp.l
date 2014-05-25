@@ -80,6 +80,13 @@ void FDECL(savetoken, (char *));
 void NDECL(newline);
 void FDECL(advancepos, (char *));
 
+extern void VDECL(lc_error, (const char *, ...));
+extern void FDECL(yyerror, (const char *));
+extern int NDECL(yyparse);
+extern int FDECL(is_core_func, (char *));
+extern int FDECL(core_func_idx, (char *));
+extern char FDECL(core_func_retval, (int));
+
 /*
  * This doesn't always get put in lev_comp.h
  * (esp. when using older versions of bison).
@@ -464,7 +471,6 @@ handle_varstring_method(void)
 {
     struct lc_vardefs *vd;
     char *idx = index(yytext, '.');
-    long r;
 
     if (!idx) return handle_varstring_check();
     *idx = '\0';
@@ -473,7 +479,6 @@ handle_varstring_method(void)
     if ((vd = vardef_defined(variable_definitions, yytext, 1))) {
         long mth;
         long l = vd->var_type;
-        long a = ((l & SPOVAR_ARRAY) == SPOVAR_ARRAY);
         long rval;
         if ((rval = method_defined(idx, l, &mth))) {
             yylval.meth.varstr = strdup(yytext);

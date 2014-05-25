@@ -36,8 +36,7 @@ static int NDECL(eraseoldlocks);
 
 #if 0
 int
-uptodate(fd)
-int fd;
+uptodate(int fd)
 {
 # ifdef WANT_GETHDATE
     if(fstat(fd, &buf)) {
@@ -75,7 +74,7 @@ int fd;
 
 #ifdef PC_LOCKING
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     register int i;
 
@@ -98,7 +97,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     register int fd, c, ci, ct, ern;
     char tbuf[BUFSZ];
@@ -262,12 +261,11 @@ gotlock:
 
 # ifndef WIN32
 void
-regularize(s)
+regularize(register char *s)
 /*
  * normalize file name - we don't like .'s, /'s, spaces, and
  * lots of other things
  */
-register char *s;
 {
     register char *lp;
 

@@ -1539,7 +1539,7 @@ dump_screen(void)
             }
             /* Warning in case there's no crash */
             if (strlen(tmpbuf) > BUFSIZE_PER_SQUARE) {
-                warning("tmpbuf > %d: %zd, %s", BUFSIZE_PER_SQUARE, strlen(tmpbuf), tmpbuf);
+                warning("tmpbuf > %d: %lu, %s", BUFSIZE_PER_SQUARE, (unsigned long)strlen(tmpbuf), tmpbuf);
             }
             /* HTML map */
             Strcat(html_buf, tmpbuf);

@@ -384,7 +384,7 @@ fopen_datafile(const char *filename, const char *mode, int prefix)
 #ifdef MFLOPPY
 /* Set names for bones[] and lock[] */
 void
-set_lock_and_bones()
+set_lock_and_bones(void)
 {
     if (!ramdisk) {
         Strcpy(levels, permbones);
@@ -570,9 +570,7 @@ clearlocks(void)
 
 #ifdef HOLD_LOCKFILE_OPEN
 STATIC_OVL int
-open_levelfile_exclusively(name, lev, oflag)
-const char *name;
-int lev, oflag;
+open_levelfile_exclusively(const char *name, int lev, int oflag)
 {
     int reslt, fd;
     if (!lftrack.init) {
@@ -605,7 +603,7 @@ int lev, oflag;
 }
 
 void
-really_close()
+really_close(void)
 {
     int fd = lftrack.fd;
     lftrack.nethack_thinks_it_is_open = FALSE;
@@ -616,8 +614,7 @@ really_close()
 }
 
 int
-close(fd)
-int fd;
+close(int fd)
 {
     if (lftrack.fd == fd) {
         really_close();	/* close it, but reopen it to hold it */
@@ -632,7 +629,7 @@ int fd;
 #ifdef WHEREIS_FILE
 /** Set the filename for the whereis file. */
 void
-set_whereisfile()
+set_whereisfile(void)
 {
     char *p = (char *) strstr(whereis_file, "%n");
     if (p) {
@@ -655,8 +652,7 @@ set_whereisfile()
 
 /** Write out information about current game to plname.whereis. */
 void
-write_whereis(playing)
-boolean playing; /**< True if game is running.  */
+write_whereis(boolean playing) /**< True if game is running.  */
 {
     FILE* fp;
     char whereis_work[511];
@@ -704,20 +700,19 @@ boolean playing; /**< True if game is running.  */
 
 /** Signal handler to update whereis information. */
 void
-signal_whereis(sig_unused)
-int sig_unused;
+signal_whereis(int sig_unused)
 {
     touch_whereis();
 }
 
 void
-touch_whereis()
+touch_whereis(void)
 {
     write_whereis(TRUE);
 }
 
 void
-delete_whereis()
+delete_whereis(void)
 {
     write_whereis(FALSE);
 }
@@ -839,7 +834,7 @@ create_bonesfile(d_level *lev, char **bonesid, char *errbuf)
 #ifdef MFLOPPY
 /* remove partial bonesfile in process of creation */
 void
-cancel_bonesfile()
+cancel_bonesfile(void)
 {
     const char *tempname;
 
@@ -1157,8 +1152,7 @@ restore_saved_game(void)
 #if defined(UNIX) && defined(QT_GRAPHICS)
 /*ARGSUSED*/
 static char*
-plname_from_file(filename)
-const char* filename;
+plname_from_file(const char *filename)
 {
 #ifdef STORE_PLNAME_IN_FILE
     int fd;
@@ -1682,7 +1676,6 @@ lock_file_area(const char *filearea, const char *filename, int retryct)
 /* unlock file, which must be currently locked by lock_file */
 void
 unlock_file(const char *filename)
-                     
 #if defined(macintosh) && (defined(__SC__) || defined(__MRC__))
 # pragma unused(filename)
 #endif
@@ -1977,9 +1970,7 @@ gi_error:
 
 #ifdef NOCWD_ASSUMPTIONS
 STATIC_OVL void
-adjust_prefix(bufp, prefixid)
-char *bufp;
-int prefixid;
+adjust_prefix(char *bufp, int prefixid)
 {
     char *ptr;
 
@@ -2339,8 +2330,7 @@ parse_config_line(FILE *fp, char *buf, char *tmp_ramdisk, char *tmp_levels, bool
 
 #ifdef USER_SOUNDS
 boolean
-can_read_file(filename)
-const char *filename;
+can_read_file(const char *filename)
 {
     return (access(filename, 4) == 0);
 }
@@ -2655,7 +2645,7 @@ paniclog(const char *type, const char *reason)
         if (lfile) {
             (void) fprintf(lfile, "%s %08ld, %ld %s: %s %s\n",
                            version_string(buf), yyyymmdd((time_t)0L),
-                           u.ubirthday, (plname[0] ? plname : "(none)"),
+                           (long)u.ubirthday, (plname[0] ? plname : "(none)"),
                            type, reason);
             (void) fclose(lfile);
         }
@@ -2671,7 +2661,7 @@ paniclog(const char *type, const char *reason)
 
 /* ----------  BEGIN INTERNAL RECOVER ----------- */
 boolean
-recover_savefile()
+recover_savefile(void)
 {
     int gfd, lfd, sfd;
     int lev, savelev, hpid;
@@ -2808,8 +2798,7 @@ recover_savefile()
 }
 
 boolean
-copy_bytes(ifd, ofd)
-int ifd, ofd;
+copy_bytes(int ifd, int ofd)
 {
     char buf[BUFSIZ];
     int nfrom, nto;

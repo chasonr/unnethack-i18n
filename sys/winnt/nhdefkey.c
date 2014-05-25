@@ -100,16 +100,16 @@ static const struct pad {
 static BYTE KeyState[256];
 
 int __declspec(dllexport) __stdcall
-ProcessKeystroke(hConIn,ir, valid, numberpad, portdebug)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-boolean *valid;
-boolean numberpad;
-int portdebug;
+ProcessKeystroke(
+        HANDLE hConIn,
+        INPUT_RECORD *ir,
+        boolean *valid,
+        boolean numberpad,
+        int portdebug)
 {
-    int metaflags = 0, k = 0;
+    int k = 0;
     int keycode, vk;
-    unsigned char ch, pre_ch, mk = 0;
+    unsigned char ch, pre_ch;
     unsigned short int scan;
     unsigned long shiftstate;
     int altseq = 0;
@@ -184,7 +184,7 @@ int portdebug;
     if (portdebug) {
         char buf[BUFSZ];
         Sprintf(buf,
-                "PORTDEBUG (%s): ch=%u, sc=%u, vk=%d, pre=%d, sh=0x%X, ta=%d (ESC to end)",
+                "PORTDEBUG (%s): ch=%u, sc=%u, vk=%d, pre=%d, sh=0x%lX, ta=%d (ESC to end)",
                 shortdllname, ch, scan, vk, pre_ch, shiftstate, k);
         fprintf(stdout, "\n%s", buf);
     }
@@ -194,9 +194,7 @@ int portdebug;
 
 
 int __declspec(dllexport) __stdcall
-NHkbhit(hConIn, ir)
-HANDLE hConIn;
-INPUT_RECORD *ir;
+NHkbhit(HANDLE hConIn, INPUT_RECORD *ir)
 {
     int done = 0;	/* true =  "stop searching"        */
     int retval;	/* true =  "we had a match"        */
@@ -246,14 +244,14 @@ INPUT_RECORD *ir;
 }
 
 int __declspec(dllexport) __stdcall
-CheckInput(hConIn, ir, count, numpad, mode, mod, cc)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-DWORD *count;
-boolean numpad;
-int mode;
-int *mod;
-coord *cc;
+CheckInput(
+        HANDLE hConIn,
+        INPUT_RECORD *ir,
+        DWORD *count,
+        boolean numpad,
+        int mode,
+        int *mod,
+        coord *cc)
 {
     int ch;
     boolean valid = 0, done = 0;
@@ -294,8 +292,7 @@ coord *cc;
 }
 
 int __declspec(dllexport) __stdcall
-SourceWhere(buf)
-char **buf;
+SourceWhere(char **buf)
 {
     if (!buf) return 0;
     *buf = where_to_get_source;
@@ -303,8 +300,7 @@ char **buf;
 }
 
 int __declspec(dllexport) __stdcall
-SourceAuthor(buf)
-char **buf;
+SourceAuthor(char **buf)
 {
     if (!buf) return 0;
     *buf = author;
@@ -312,9 +308,7 @@ char **buf;
 }
 
 int __declspec(dllexport) __stdcall
-KeyHandlerName(buf, full)
-char **buf;
-int full;
+KeyHandlerName(char **buf, int full)
 {
     if (!buf) return 0;
     if (full) *buf = dllname;

@@ -618,8 +618,7 @@ static NEARDATA boolean compressing = FALSE;
 }*/
 
 STATIC_OVL void
-bputc(c)
-int c;
+bputc(int c)
 {
 #ifdef MFLOPPY
     bytes_counted++;
@@ -635,8 +634,7 @@ int c;
 
 /*ARGSUSED*/
 void
-bufon(fd)
-int fd;
+bufon(int fd)
 {
     compressing = TRUE;
     return;
@@ -644,8 +642,7 @@ int fd;
 
 /*ARGSUSED*/
 void
-bufoff(fd)
-int fd;
+bufoff(int fd)
 {
     if (outbufp) {
         outbufp = 0;
@@ -657,8 +654,7 @@ int fd;
 }
 
 void
-bflush(fd)  /* flush run and buffer */
-register int fd;
+bflush(register int fd)  /* flush run and buffer */
 {
     bwritefd = fd;
     if (outrunlength >= 0) {	/* flush run */
@@ -682,10 +678,7 @@ register int fd;
 }
 
 void
-bwrite(fd, loc, num)
-int fd;
-genericptr_t loc;
-register unsigned num;
+bwrite(int fd, genericptr_t loc, register unsigned num)
 {
     register unsigned char *bp = (unsigned char *)loc;
 
@@ -720,8 +713,7 @@ register unsigned num;
 }
 
 void
-bclose(fd)
-int fd;
+bclose(int fd)
 {
     bufoff(fd);
     (void) close(fd);

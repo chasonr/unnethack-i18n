@@ -94,9 +94,7 @@ extern unsigned _stklen;
  */
 #ifndef MSWIN_GRAPHICS
 int
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     pcmain(argc,argv);
 #ifdef LAN_FEATURES
@@ -112,9 +110,7 @@ char *argv[];
 #ifdef OVL1
 
 void
-pcmain(argc,argv)
-int argc;
-char *argv[];
+pcmain(int argc, char *argv[])
 {
 
     register int fd;
@@ -457,9 +453,7 @@ not_recovered:
 }
 
 STATIC_OVL void
-process_options(argc, argv)
-int argc;
-char *argv[];
+process_options(int argc, char *argv[])
 {
     int i;
 
@@ -590,7 +584,7 @@ char *argv[];
 }
 
 STATIC_OVL void
-nhusage()
+nhusage(void)
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
 
@@ -634,9 +628,7 @@ nhusage()
 
 #ifdef CHDIR
 void
-chdirx(dir, wr)
-char *dir;
-boolean wr;
+chdirx(char *dir, boolean wr)
 {
 # ifdef AMIGA
     static char thisdir[] = "";
@@ -665,7 +657,7 @@ boolean wr;
 #ifdef PORT_HELP
 # if defined(MSDOS) || defined(WIN32)
 void
-port_help()
+port_help(void)
 {
     /* display port specific help file */
     display_file( PORT_HELP, 1 );
@@ -683,8 +675,7 @@ port_help()
 #define EXEPATHBUFSZ 256
 char exepathbuf[EXEPATHBUFSZ];
 
-char *exepath(str)
-char *str;
+char *exepath(char *str)
 {
     char *tmp, *tmp2;
     int bsize;

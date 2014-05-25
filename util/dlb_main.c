@@ -529,11 +529,11 @@ write_dlb_directory(int out, int nfiles, libdir *ld, long int slen, long int dir
 
     sprintf(buf,"%3ld %8ld %8ld %8ld %8ld\n",
             (long) DLB_VERS,	    /* version of dlb file */
-            (long) nfiles+1,	    /* # of entries (includes directory) */
+            (long) nfiles+1L,	    /* # of entries (includes directory) */
             /* string length + room for nulls */
-            (long) slen+strlen(DLB_DIRECTORY)+nfiles+1,
+            (long) (slen+strlen(DLB_DIRECTORY)+nfiles+1),
             (long) dir_size,	    /* start of first file */
-            (long) flen+dir_size);  /* total file size */
+            (long) (flen+dir_size)); /* total file size */
     Write(out, buf, strlen(buf));
 
     /* write each file entry */

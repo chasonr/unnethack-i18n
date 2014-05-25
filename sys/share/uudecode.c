@@ -77,14 +77,13 @@ static char sccsid[] = "@(#)uudecode.c	5.5 (Berkeley) 7/6/88";
 #endif
 
 static void decode(FILE *, FILE *);
-static void outdec(char *, FILE *, int);
+static void outdec(const char *, FILE *, int);
 
 /* single-character decode */
 #define DEC(c)	(((c) - ' ') & 077)
 
-int main(argc, argv)
-int argc;
-char **argv;
+int
+main(int argc, char **argv)
 {
     FILE *in, *out;
     int mode;
@@ -122,11 +121,10 @@ char **argv;
     /* handle ~user/file format */
     if (dest[0] == '~') {
         char *sl;
-        struct passwd *getpwnam();
         struct passwd *user;
-        char dnbuf[100], *index(), *strcat(), *strcpy();
+        char dnbuf[100];
 
-        sl = index(dest, '/');
+        sl = strchr(dest, '/');
         if (sl == NULL) {
             fprintf(stderr, "Illegal ~user\n");
             exit(3);
@@ -172,10 +170,8 @@ char **argv;
 /*
  * copy from in to out, decoding as you go along.
  */
-void
-decode(in, out)
-FILE *in;
-FILE *out;
+static void
+decode(FILE *in, FILE *out)
 {
     char buf[80];
     char *bp;
@@ -210,11 +206,8 @@ FILE *out;
  * be output to file f.  n is used to tell us not to
  * output all of them at the end of the file.
  */
-void
-outdec(p, f, n)
-char *p;
-FILE *f;
-int n;
+static void
+outdec(const char *p, FILE *f, int n)
 {
     int c1, c2, c3;
 
@@ -228,26 +221,3 @@ int n;
     if (n >= 3)
         putc(c3, f);
 }
-
-#if !defined(MSDOS) && !defined(VMS) && !defined(WIN32)
-/*
- * Return the ptr in sp at which the character c appears;
- * NULL if not found
- */
-
-#ifndef NULL
-#define	NULL	0
-#endif
-
-char *
-index(sp, c)
-register char *sp, c;
-{
-    do {
-        if (*sp == c)
-            return(sp);
-    } while (*sp++);
-    return(NULL);
-}
-#endif
-
