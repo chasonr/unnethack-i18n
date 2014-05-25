@@ -41,13 +41,13 @@
 # Set to anything else (or undefine) for a "release" version
 # You can set your debug options below.
 
-DEBUG = Y
+DEBUG = N
 
 cc     = gcc
 rc     = windres
 link   = gcc
 
-cflags = -mms-bitfields
+cflags = -mms-bitfields -DHAVE_STDINT_H -DHAVE_INTTYPES_H -Wall -Wold-style-definition -DGCC_WARN
 lflags  =
 ifeq  "$(DEBUG)" "Y"
 cdebug = -g
@@ -115,15 +115,15 @@ OBJ = o
 # the lower two.
 #
 
-DO_YACC = YACC_MSG
-DO_LEX  = LEX_MSG
-#DO_YACC  = YACC_ACT
-#DO_LEX   = LEX_ACT
+#DO_YACC = YACC_MSG
+#DO_LEX  = LEX_MSG
+DO_YACC  = YACC_ACT
+DO_LEX   = LEX_ACT
 
 # - Specify your yacc and lex programs (or work-alikes) here.
 
-#YACC   = bison -y
-YACC   = byacc
+YACC   = bison -y
+#YACC   = byacc
 #YACC   = yacc
 
 #LEX    = lex
@@ -136,9 +136,9 @@ LEX     = flex
 FLEXSKEL =
 #FLEXSKEL = -S../tools/flex.ske
 
-YTABC   = y_tab.c
-YTABH   = y_tab.h
-LEXYYC  = lexyy.c
+YTABC   = y.tab.c
+YTABH   = y.tab.h
+LEXYYC  = lex.yy.c
 
 #
 # Optional high-quality BSD random number generation routines
@@ -269,7 +269,7 @@ $(OBJ)/%.o : $(NTSYS)/%.c
 	$(cc) $(CFLAGS)  -o$@  $<
 
 $(INCL)/%.h : $(NTSYS)/%.h
-	@copy $< $@
+	@cp $< $@
 
 #==========================================
 # Rules for files in util
@@ -286,10 +286,10 @@ $(OBJ)/%.o : $(WSHR)/%.c
 	$(cc) $(CFLAGS)  -o$@ $<
 
 $(INCL)/%.h : $(WSHR)/%.h
-	@copy $< $@
+	@cp $< $@
 
 #{$(WSHR)}.txt{$(DAT)}.txt:
-#	@copy $< $@
+#	@cp $< $@
 
 #==========================================
 # Rules for files in win/tty
@@ -328,17 +328,17 @@ U  = $(UTIL)/
 
 MAKESRC        = $(U)makedefs.c
 
-SPLEVSRC       = $(U)lev_yacc.c  $(U)lev_$(LEX).c $(U)lev_main.c  $(U)panic.c
+SPLEVSRC       = $(U)lev_yacc.c  $(U)lev_lex.c $(U)lev_main.c  $(U)panic.c
 
-DGNCOMPSRC     = $(U)dgn_yacc.c  $(U)dgn_$(LEX).c $(U)dgn_main.c
+DGNCOMPSRC     = $(U)dgn_yacc.c  $(U)dgn_lex.c $(U)dgn_main.c
 
 MAKEOBJS       = $(O)makedefs.o $(O)monst.o $(O)objects.o
 
-SPLEVOBJS      = $(O)lev_yacc.o  $(O)lev_$(LEX).o $(O)lev_main.o \
+SPLEVOBJS      = $(O)lev_yacc.o  $(O)lev_lex.o $(O)lev_main.o \
 	$(O)alloc.o   $(O)decl.o      $(O)drawing.o \
 	$(O)monst.o   $(O)objects.o   $(O)panic.o
 
-DGNCOMPOBJS    = $(O)dgn_yacc.o  $(O)dgn_$(LEX).o $(O)dgn_main.o \
+DGNCOMPOBJS    = $(O)dgn_yacc.o  $(O)dgn_lex.o $(O)dgn_main.o \
 	$(O)alloc.o   $(O)panic.o
 
 RECOVOBJS      = $(O)recover.o
@@ -389,8 +389,8 @@ VOBJ23 = $(O)teleport.o $(O)timeout.o  $(O)topten.o   $(O)track.o
 VOBJ24 = $(O)trap.o     $(O)u_init.o   $(O)uhitm.o    $(O)vault.o
 VOBJ25 = $(O)vis_tab.o  $(O)vision.o   $(O)weapon.o   $(O)were.o
 VOBJ26 = $(O)wield.o    $(O)windows.o  $(O)wizard.o   $(O)worm.o
-VOBJ27 = $(O)worn.o     $(O)write.o    $(O)zap.o
-VOBJ28 = $(O)dump.o     $(O)livelog.o  $(O)tutorial.o
+VOBJ27 = $(O)worn.o     $(O)write.o    $(O)zap.o      $(O)unicode.o
+VOBJ28 = $(O)dump.o     $(O)livelog.o  $(O)tutorial.o $(O)mksheol.o
 
 DLBOBJ = $(O)dlb.o
 
@@ -466,12 +466,6 @@ GAMEFILE = $(GAMEDIR)/$(GAME).exe
 #=============== TARGETS ==================
 #==========================================
 
-# Since DOS doesn't allow / as path separator, and GCC doesn't allow \ as
-# path separator, we must change all pathnames when performing DOS commands.
-# This is done by blindly applying $(subst /,\, ...) on every command.
-# Where any command contain / for another reason (switch char, or echoing
-# comment lines to lev/dungeon files) a little more care is taken.
-
 #
 #  The default make target (so just typing 'nmake' is useful).
 #
@@ -497,25 +491,25 @@ install: graphicschk $(GAME) $(O)install.tag
 $(O)install.tag:  $(DAT)/data    $(DAT)/rumors    $(DAT)/dungeon \
 	       $(DAT)/oracles $(DAT)/quest.dat $(O)sp_lev.tag $(DLB)
 ifeq  "$(USE_DLB)" "Y"
-	$(subst /,\,copy nhdat                $(GAMEDIR))
-	$(subst /,\,copy $(DAT)/license       $(GAMEDIR))
-	$(subst /,\,copy $(DAT)/opthelp       $(GAMEDIR))
+	cp nhdat                $(GAMEDIR)
+	cp $(DAT)/license       $(GAMEDIR)
+	cp $(DAT)/opthelp       $(GAMEDIR)
 else
-	$(subst /,\,copy $(DAT)/*.            $(GAMEDIR))
-	$(subst /,\,copy $(DAT)/*.dat         $(GAMEDIR))
-	$(subst /,\,copy $(DAT)/*.lev         $(GAMEDIR))
-	$(subst /,\,if exist $(GAMEDIR)/makefile del $(GAMEDIR)/makefile)
+	cp $(DAT)/*.            $(GAMEDIR)
+	cp $(DAT)/*.dat         $(GAMEDIR)
+	cp $(DAT)/*.lev         $(GAMEDIR)
+	rm -f $(GAMEDIR)/Makefile
 endif
-	$(subst /,\,if exist $(DOC)/guidebook.txt copy $(DOC)/guidebook.txt $(GAMEDIR)/Guidebook.txt)
-	$(subst /,\,if exist $(DOC)/nethack.txt copy $(DOC)/nethack.txt $(GAMEDIR)/NetHack.txt)
-	$(subst /,\,copy $(NTSYS)/defaults.nh   $(GAMEDIR)/defaults.nh)
-	$(subst /,\,echo install done > $@)
+	if [ -f $(DOC)/guidebook.txt ]; then cp $(DOC)/guidebook.txt $(GAMEDIR)/Guidebook.txt; fi
+	if [ -f $(DOC)/nethack.txt ]; then cp $(DOC)/nethack.txt $(GAMEDIR)/NetHack.txt; fi
+	cp $(NTSYS)/defaults.nh   $(GAMEDIR)/defaults.nh
+	echo install done > $@
 
-#  copy $(NTSYS)/winnt.hlp    $(GAMEDIR)
+#  cp $(NTSYS)/winnt.hlp    $(GAMEDIR)
 
 recover: $(U)recover.exe
-	$(subst /,\,if exist $(U)recover.exe copy $(U)recover.exe  $(GAMEDIR))
-	$(subst /,\,if exist $(DOC)/recover.txt copy $(DOC)/recover.txt $(GAMEDIR)/recover.txt)
+	if [ -f $(U)recover.exe ]; then cp $(U)recover.exe  $(GAMEDIR); fi
+	if [ -f $(DOC)/recover.txt ]; then cp $(DOC)/recover.txt $(GAMEDIR)/recover.txt; fi
 
 $(O)sp_lev.tag: $(O)utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	 $(DAT)/endgame.des $(DAT)/gehennom.des $(DAT)/knox.des   \
@@ -528,44 +522,43 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	 $(DAT)/blkmar.des  $(DAT)/heck.des     $(DAT)/nymph.des \
 	 $(DAT)/town-1.des  $(DAT)/town-2.des \
 	 $(DAT)/convict.des
-	$(subst /,\,$(U)lev_comp $(DAT)/bigroom.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/blkmar.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/castle.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/endgame.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/gehennom.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/heck.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/knox.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/mines.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/medusa.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/nymph.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/oracle.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/sokoban.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/tower.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/town-1.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/town-2.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/yendor.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/arch.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/barb.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/caveman.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/healer.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/knight.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/monk.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/priest.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/ranger.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/rogue.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/samurai.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/tourist.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/valkyrie.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/wizard.des)
-	$(subst /,\,$(U)lev_comp $(DAT)/convict.des)
-	$(subst /,\,copy *.lev $(DAT))
-	$(subst /,\,del *.lev)
-	$(subst /,\,echo sp_levs done > $(O)sp_lev.tag)
+	$(U)lev_comp $(DAT)/bigroom.des
+	$(U)lev_comp $(DAT)/blkmar.des
+	$(U)lev_comp $(DAT)/castle.des
+	$(U)lev_comp $(DAT)/endgame.des
+	$(U)lev_comp $(DAT)/gehennom.des
+	$(U)lev_comp $(DAT)/heck.des
+	$(U)lev_comp $(DAT)/knox.des
+	$(U)lev_comp $(DAT)/mines.des
+	$(U)lev_comp $(DAT)/medusa.des
+	$(U)lev_comp $(DAT)/nymph.des
+	$(U)lev_comp $(DAT)/oracle.des
+	$(U)lev_comp $(DAT)/sokoban.des
+	$(U)lev_comp $(DAT)/tower.des
+	$(U)lev_comp $(DAT)/town-1.des
+	$(U)lev_comp $(DAT)/town-2.des
+	$(U)lev_comp $(DAT)/yendor.des
+	$(U)lev_comp $(DAT)/arch.des
+	$(U)lev_comp $(DAT)/barb.des
+	$(U)lev_comp $(DAT)/caveman.des
+	$(U)lev_comp $(DAT)/healer.des
+	$(U)lev_comp $(DAT)/knight.des
+	$(U)lev_comp $(DAT)/monk.des
+	$(U)lev_comp $(DAT)/priest.des
+	$(U)lev_comp $(DAT)/ranger.des
+	$(U)lev_comp $(DAT)/rogue.des
+	$(U)lev_comp $(DAT)/samurai.des
+	$(U)lev_comp $(DAT)/tourist.des
+	$(U)lev_comp $(DAT)/valkyrie.des
+	$(U)lev_comp $(DAT)/wizard.des
+	$(U)lev_comp $(DAT)/convict.des
+	mv *.lev $(DAT)
+	echo sp_levs done > $(O)sp_lev.tag
 
 $(O)utility.tag: $(INCL)/date.h $(INCL)/onames.h $(INCL)/pm.h \
 	 $(SRC)/monstr.c $(SRC)/vis_tab.c $(U)lev_comp.exe $(INCL)/vis_tab.h \
 	 $(U)dgn_comp.exe $(TILEUTIL16)
-	$(subst /,\,@echo utilities made >$@)
+	@echo utilities made >$@
 	@echo utilities made.
 
 tileutil: $(U)gif2txt.exe $(U)gif2tx32.exe $(U)txt2ppm.exe
@@ -586,9 +579,9 @@ endif
 #  The main target.
 #==========================================
 $(O)gamedir.tag:
-	$(subst /,\,@if not exist $(GAMEDIR)/*.* echo creating directory $(GAMEDIR))
-	$(subst /,\,@if not exist $(GAMEDIR)/*.* mkdir $(GAMEDIR))
-	$(subst /,\,@echo directory created > $@)
+	@if [ ! -d $(GAMEDIR) ]; then echo creating directory $(GAMEDIR); fi
+	@if [ ! -d $(GAMEDIR) ]; then mkdir $(GAMEDIR); fi
+	@echo directory created > $@
 
 ifeq  "$(GRAPHICAL)" "Y"
 $(GAMEFILE) : $(ALLOBJ) $(NHRES) $(O)gamedir.tag
@@ -598,7 +591,7 @@ $(GAMEFILE) : $(ALLOBJ) $(NHRES) $(O)gamedir.tag \
 endif
 	@echo Linking....
 	@$(link) $(lflags) -o$@ $(ALLOBJ) $(NHRES) $(WINPLIBS)
-	$(subst /,\,@if exist $(O)install.tag del $(O)install.tag)
+	rm -f $(O)install.tag
 
 
 $(O)nhdefkey.o:
@@ -626,7 +619,7 @@ $(GAMEDIR)/nhraykey.dll : $(O)nhraykey.o $(O)gamedir.tag
 		-Wl,--add-stdcall-alias -o $@ $<
 
 $(GAME)_.ico : $(NTSYS)/$(GAME).ico
-	$(subst /,\,@copy $(NTSYS)/$(GAME).ico $@)
+	@cp $(NTSYS)/$(GAME).ico $@
 
 #==========================================
 # Create directory for holding object files
@@ -638,7 +631,7 @@ ifeq  "$(GRAPHICAL)" "Y"
 	@echo NOTE: This build will include tile support.
 	@echo ----
 endif
-	$(subst /,\,@echo graphicschk > graphicschk)
+	@echo graphicschk > graphicschk
 
 #
 #  Secondary Targets.
@@ -662,28 +655,28 @@ $(O)makedefs.o: $(CONFIG_H) $(INCL)/monattk.h $(INCL)/monflag.h \
 #
 
 $(INCL)/date.h $(OPTIONS_FILE): $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -v)
+	$(U)makedefs -v
 
 #$(OPTIONS_FILE): $(U)makedefs.exe
-#	$(subst /,\,$(U)makedefs -v)
+#	$(U)makedefs -v
 
 $(INCL)/onames.h : $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -o)
+	$(U)makedefs -o
 
 $(INCL)/pm.h : $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -p)
+	$(U)makedefs -p
 
 #$(INCL)/trap.h : $(U)makedefs.exe
 #  $(U)makedefs -t
 
 $(SRC)/monstr.c: $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -m)
+	$(U)makedefs -m
 
 $(INCL)/vis_tab.h: $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -z)
+	$(U)makedefs -z
 
 $(SRC)/vis_tab.c: $(U)makedefs.exe
-	$(subst /,\,$(U)makedefs -z)
+	$(U)makedefs -z
 
 #==========================================
 # uudecode utility and uuencoded targets
@@ -695,42 +688,42 @@ $(U)uudecode.exe: $(O)uudecode.o
 $(O)uudecode.o: $(SSYS)/uudecode.c
 
 $(NTSYS)/NetHack.ico : $(U)uudecode.exe $(NTSYS)/nhico.uu
-	$(subst /,\,$(U)uudecode.exe $(NTSYS)/nhico.uu)
-	$(subst /,\,copy NetHack.ico $@)
-	del NetHack.ico
+	$(U)uudecode.exe $(NTSYS)/nhico.uu
+	cp NetHack.ico $@
+	rm NetHack.ico
 
 $(WIN32)/NetHack.ico : $(NTSYS)/NetHack.ico
-	$(subst /,\,copy $< $@)
+	cp $< $@
 
 $(WIN32)/mnsel.bmp: $(U)uudecode.exe $(WIN32)/mnsel.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/mnsel.uu)
-	$(subst /,\,copy mnsel.bmp $@)
-	del mnsel.bmp
+	$(U)uudecode.exe $(WIN32)/mnsel.uu
+	cp mnsel.bmp $@
+	rm mnsel.bmp
 
 $(WIN32)/mnselcnt.bmp: $(U)uudecode.exe $(WIN32)/mnselcnt.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/mnselcnt.uu)
-	$(subst /,\,copy mnselcnt.bmp $@)
-	del mnselcnt.bmp
+	$(U)uudecode.exe $(WIN32)/mnselcnt.uu
+	cp mnselcnt.bmp $@
+	rm mnselcnt.bmp
 
 $(WIN32)/mnunsel.bmp: $(U)uudecode.exe $(WIN32)/mnunsel.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/mnunsel.uu)
-	$(subst /,\,copy mnunsel.bmp $@)
-	del mnunsel.bmp
+	$(U)uudecode.exe $(WIN32)/mnunsel.uu
+	cp mnunsel.bmp $@
+	rm mnunsel.bmp
 
 $(WIN32)/petmark.bmp: $(U)uudecode.exe $(WIN32)/petmark.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/petmark.uu)
-	$(subst /,\,copy petmark.bmp $@)
-	del petmark.bmp
+	$(U)uudecode.exe $(WIN32)/petmark.uu
+	cp petmark.bmp $@
+	rm petmark.bmp
 
 $(WIN32)/rip.bmp: $(U)uudecode.exe $(WIN32)/rip.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/rip.uu)
-	$(subst /,\,copy rip.bmp $@)
-	del rip.bmp
+	$(U)uudecode.exe $(WIN32)/rip.uu
+	cp rip.bmp $@
+	rm rip.bmp
 
 $(WIN32)/splash.bmp: $(U)uudecode.exe $(WIN32)/splash.uu
-	$(subst /,\,$(U)uudecode.exe $(WIN32)/splash.uu)
-	$(subst /,\,copy splash.bmp $@)
-	del splash.bmp
+	$(U)uudecode.exe $(WIN32)/splash.uu
+	cp splash.bmp $@
+	rm splash.bmp
 
 
 #==========================================
@@ -746,9 +739,9 @@ $(U)lev_comp.exe: $(SPLEVOBJS)
 $(O)lev_yacc.o: $(HACK_H)   $(SP_LEV_H) $(INCL)/lev_comp.h $(U)lev_yacc.c
 	$(cc) $(LEVCFLAGS) -o$@ $(U)lev_yacc.c
 
-$(O)lev_$(LEX).o: $(HACK_H)   $(INCL)/lev_comp.h $(SP_LEV_H) \
-	$(U)lev_$(LEX).c
-	$(cc) $(LEVCFLAGS) -o$@ $(U)lev_$(LEX).c
+$(O)lev_lex.o: $(HACK_H)   $(INCL)/lev_comp.h $(SP_LEV_H) \
+	$(U)lev_lex.c
+	$(cc) $(LEVCFLAGS) -o$@ $(U)lev_lex.c
 
 $(O)lev_main.o:   $(U)lev_main.c $(HACK_H)   $(SP_LEV_H)
 	$(cc) $(LEVCFLAGS) -o$@ $(U)lev_main.c
@@ -756,11 +749,9 @@ $(O)lev_main.o:   $(U)lev_main.c $(HACK_H)   $(SP_LEV_H)
 
 $(U)lev_yacc.c $(INCL)/lev_comp.h : $(U)lev_comp.y
 ifeq  "$(DO_YACC)" "YACC_ACT"
-	$(subst /,\,$(YACC) -d $(U)lev_comp.y)
-	$(subst /,\,copy $(YTABC) $(U)lev_yacc.c)
-	$(subst /,\,copy $(YTABH) $(INCL)/lev_comp.h)
-	$(subst /,\,@del $(YTABC))
-	$(subst /,\,@del $(YTABH))
+	$(YACC) -d $(U)lev_comp.y
+	mv $(YTABC) $(U)lev_yacc.c
+	mv $(YTABH) $(INCL)/lev_comp.h
 
 else
 	@echo $(U)lev_comp.y has changed.
@@ -768,24 +759,23 @@ else
 	@echo ---
 	@echo For now, we will copy the prebuilt lev_yacc.c and
 	@echo lev_comp.h from $(SSYS) into $(UTIL) and use them.
-	$(subst /,\,@copy $(SSYS)/lev_yacc.c $(U)lev_yacc.c >nul)
-	$(subst /,\,@copy $(SSYS)/lev_comp.h $(INCL)/lev_comp.h >nul)
-	$(subst /,\,echo.>>$(U)lev_yacc.c)
-	$(subst /,\,echo.>>$(INCL)/lev_comp.h)
+	@cp $(SSYS)/lev_yacc.c $(U)lev_yacc.c >nul
+	@cp $(SSYS)/lev_comp.h $(INCL)/lev_comp.h >nul
+	touch $(U)lev_yacc.c
+	touch $(INCL)/lev_comp.h
 endif
 
-$(U)lev_$(LEX).c: $(U)lev_comp.l
+$(U)lev_lex.c: $(U)lev_comp.l
 ifeq  "$(DO_LEX)" "LEX_ACT"
-	$(subst /,\,$(LEX) $(FLEXSKEL) $(U)lev_comp.l)
-	$(subst /,\,copy $(LEXYYC) $@)
-	$(subst /,\,@del $(LEXYYC))
+	$(LEX) $(FLEXSKEL) $(U)lev_comp.l
+	mv $(LEXYYC) $@
 else
 	@echo $(U)lev_comp.l has changed. To update $@ run $(LEX).
 	@echo ---
 	@echo For now, we will copy the prebuilt lev_lex.c
 	@echo from $(SSYS) into $(UTIL) and use it.
-	$(subst /,\,@copy $(SSYS)/lev_lex.c $@ >nul)
-	$(subst /,\,echo.>>$@)
+	@cp $(SSYS)/lev_lex.c $@ >nul
+	touch $@
 endif
 
 #==========================================
@@ -800,44 +790,41 @@ $(U)dgn_comp.exe: $(DGNCOMPOBJS)
 $(O)dgn_yacc.o:   $(HACK_H)   $(DGN_FILE_H) $(INCL)/dgn_comp.h $(U)dgn_yacc.c
 	$(cc) $(LEVCFLAGS) -o$@ $(U)dgn_yacc.c
 
-$(O)dgn_$(LEX).o: $(HACK_H)   $(DGN_FILE_H)  $(INCL)/dgn_comp.h \
-	 $(U)dgn_$(LEX).c
-	$(cc) $(LEVCFLAGS) -o$@ $(U)dgn_$(LEX).c
+$(O)dgn_lex.o: $(HACK_H)   $(DGN_FILE_H)  $(INCL)/dgn_comp.h \
+	 $(U)dgn_lex.c
+	$(cc) $(LEVCFLAGS) -o$@ $(U)dgn_lex.c
 
 $(O)dgn_main.o:   $(HACK_H) $(U)dgn_main.c
 	$(cc) $(LEVCFLAGS) -o$@ $(U)dgn_main.c
 
 $(U)dgn_yacc.c $(INCL)/dgn_comp.h : $(U)dgn_comp.y
 ifeq  "$(DO_YACC)" "YACC_ACT"
-	$(subst /,\,$(YACC) -d $(U)dgn_comp.y)
-	$(subst /,\,copy $(YTABC) $(U)dgn_yacc.c)
-	$(subst /,\,copy $(YTABH) $(INCL)/dgn_comp.h)
-	$(subst /,\,@del $(YTABC))
-	$(subst /,\,@del $(YTABH))
+	$(YACC) -d $(U)dgn_comp.y
+	mv $(YTABC) $(U)dgn_yacc.c
+	mv $(YTABH) $(INCL)/dgn_comp.h
 else
 	@echo $(U)dgn_comp.y has changed. To update dgn_yacc.c and
 	@echo $(INCL)/dgn_comp.h run $(YACC).
 	@echo ---
 	@echo For now, we will copy the prebuilt $(U)dgn_yacc.c and
 	@echo dgn_comp.h from $(SSYS) into $(UTIL) and use them.
-	$(subst /,\,@copy $(SSYS)/dgn_yacc.c $(U)dgn_yacc.c >nul)
-	$(subst /,\,@copy $(SSYS)/dgn_comp.h $(INCL)/dgn_comp.h >nul)
-	$(subst /,\,echo.>>$(U)dgn_yacc.c)
-	$(subst /,\,echo.>>$(INCL)/dgn_comp.h)
+	@cp $(SSYS)/dgn_yacc.c $(U)dgn_yacc.c >nul
+	@cp $(SSYS)/dgn_comp.h $(INCL)/dgn_comp.h >nul
+	touch $(U)dgn_yacc.c
+	touch $(INCL)/dgn_comp.h
 endif
 
-$(U)dgn_$(LEX).c: $(U)dgn_comp.l
+$(U)dgn_lex.c: $(U)dgn_comp.l
 ifeq  "$(DO_LEX)" "LEX_ACT"
-	$(subst /,\,$(LEX) $(FLEXSKEL) $(U)dgn_comp.l)
-	$(subst /,\,copy $(LEXYYC) $@)
-	$(subst /,\,@del $(LEXYYC))
+	$(LEX) $(FLEXSKEL) $(U)dgn_comp.l
+	mv $(LEXYYC) $@
 else
 	@echo $(U)dgn_comp.l has changed. To update $@ run $(LEX).
 	@echo ---
 	@echo For now, we will copy the prebuilt dgn_lex.c
 	@echo from $(SSYS) into $(UTIL) and use it.
-	$(subst /,\,@copy $(SSYS)/dgn_lex.c $@ >nul)
-	$(subst /,\,echo.>>$@)
+	@cp $(SSYS)/dgn_lex.c $@ >nul
+	touch $@
 endif
 
 #==========================================
@@ -845,9 +832,9 @@ endif
 #==========================================
 
 $(O)obj.tag:
-	$(subst /,\,@if not exist $(OBJ)/*.* echo creating directory $(OBJ))
-	$(subst /,\,@if not exist $(OBJ)/*.* mkdir $(OBJ))
-	$(subst /,\,@echo directory created > $@)
+	@if [ ! -d $(OBJ) ]; then echo creating directory $(OBJ); fi
+	@if [ ! -d $(OBJ) ]; then mkdir $(OBJ); fi
+	@echo directory created > $@
 
 
 #==========================================
@@ -859,7 +846,7 @@ $(O)obj.tag:
 #===========================================
 
 $(INCL)/win32api.h: $(NTSYS)/win32api.h
-	$(subst /,\,copy $(NTSYS)/win32api.h $@)
+	cp $(NTSYS)/win32api.h $@
 
 
 #==========================================
@@ -877,30 +864,30 @@ $(O)dlb_main.o: $(UTIL)/dlb_main.c $(INCL)/config.h $(INCL)/dlb.h
 	$(cc) $(CFLAGS) -o$@ $(UTIL)/dlb_main.c
 
 $(DAT)/porthelp: $(NTSYS)/porthelp
-	$(subst /,\,@copy $(NTSYS)/porthelp $@ >nul)
+	@cp $(NTSYS)/porthelp $@ >nul
 
 nhdat:  $(U)dlb_main.exe $(DAT)/data $(DAT)/oracles $(OPTIONS_FILE) \
 	 $(DAT)/quest.dat $(DAT)/rumors $(DAT)/help $(DAT)/hh $(DAT)/cmdhelp \
 	 $(DAT)/history $(DAT)/opthelp $(DAT)/wizhelp $(DAT)/dungeon \
 	 $(DAT)/porthelp $(DAT)/license $(O)sp_lev.tag
-	$(subst /,\,echo data >$(DAT)/dlb.lst)
-	$(subst /,\,echo oracles >>$(DAT)/dlb.lst)
-	$(subst /,\,if exist $(DAT)/options echo options >>$(DAT)/dlb.lst)
-	$(subst /,\,if exist $(DAT)/ttyoptions echo ttyoptions >>$(DAT)/dlb.lst)
-	$(subst /,\,if exist $(DAT)/guioptions echo guioptions >>$(DAT)/dlb.lst)
-	$(subst /,\,if exist $(DAT)/porthelp echo porthelp >>$(DAT)/dlb.lst)
-	$(subst /,\,echo quest.dat >>$(DAT)/dlb.lst)
-	$(subst /,\,echo rumors >>$(DAT)/dlb.lst)
-	$(subst /,\,echo help >>$(DAT)/dlb.lst)
-	$(subst /,\,echo hh >>$(DAT)/dlb.lst)
-	$(subst /,\,echo cmdhelp >>$(DAT)/dlb.lst)
-	$(subst /,\,echo history >>$(DAT)/dlb.lst)
-	$(subst /,\,echo opthelp >>$(DAT)/dlb.lst)
-	$(subst /,\,echo wizhelp >>$(DAT)/dlb.lst)
-	$(subst /,\,echo dungeon >>$(DAT)/dlb.lst)
-	$(subst /,\,echo license >>$(DAT)/dlb.lst)
-	dir /l /b /-p $(subst /,\,$(DAT)/*.lev >>$(DAT)/dlb.lst)
-	$(subst /,\,$(U)dlb_main CcIf $(DAT) dlb.lst $(SRC)/nhdat)
+	echo data >$(DAT)/dlb.lst
+	echo oracles >>$(DAT)/dlb.lst
+	if [ -f $(DAT)/options ]; then echo options >>$(DAT)/dlb.lst; fi
+	if [ -f $(DAT)/ttyoptions ]; then echo ttyoptions >>$(DAT)/dlb.lst; fi
+	if [ -f $(DAT)/guioptions ]; then echo guioptions >>$(DAT)/dlb.lst; fi
+	if [ -f $(DAT)/porthelp ]; then echo porthelp >>$(DAT)/dlb.lst; fi
+	echo quest.dat >>$(DAT)/dlb.lst
+	echo rumors >>$(DAT)/dlb.lst
+	echo help >>$(DAT)/dlb.lst
+	echo hh >>$(DAT)/dlb.lst
+	echo cmdhelp >>$(DAT)/dlb.lst
+	echo history >>$(DAT)/dlb.lst
+	echo opthelp >>$(DAT)/dlb.lst
+	echo wizhelp >>$(DAT)/dlb.lst
+	echo dungeon >>$(DAT)/dlb.lst
+	echo license >>$(DAT)/dlb.lst
+	(cd $(DAT) && ls *.lev) >>$(DAT)/dlb.lst
+	$(U)dlb_main CcIf $(DAT) dlb.lst $(SRC)/nhdat
 
 #==========================================
 #  Recover Utility
@@ -968,10 +955,10 @@ $(U)txt2ppm.exe: $(PPMWRITERS) $(TEXT_IO)
 ifeq  "$(GRAPHICAL)" "Y"
 $(TILEBMP16): $(TILEUTIL16) $(TILEFILES)
 	@echo Creating 16x16 binary tile files (this may take some time)
-	$(subst /,\,@$(U)tile2bmp $(TILEBMP16))
+	@$(U)tile2bmp $(TILEBMP16)
 #$(TILEBMP32): $(TILEUTIL32) $(TILEFILES32)
 #	@echo Creating 32x32 binary tile files (this may take some time)
-#	$(subst /,\,@$(U)til2bm32 $(TILEBMP32))
+#	@$(U)til2bm32 $(TILEBMP32)
 else
 $(TILEBMP16):
 $(TILEBMP32):
@@ -996,74 +983,87 @@ $(O)til2bm32.o: $(WSHR)/til2bm32.c $(HACK_H) $(TILE_H) $(INCL)/win32api.h
 #==========================================
 
 spotless: clean
-	$(subst /,\,if exist graphicschk       del graphicschk)
-	$(subst /,\,if exist $(INCL)/date.h    del $(INCL)/date.h)
-	$(subst /,\,if exist $(INCL)/onames.h  del $(INCL)/onames.h)
-	$(subst /,\,if exist $(INCL)/pm.h      del $(INCL)/pm.h)
-	$(subst /,\,if exist $(INCL)/vis_tab.h del $(INCL)/vis_tab.h)
-	$(subst /,\,if exist $(SRC)/vis_tab.c  del $(SRC)/vis_tab.c)
-	$(subst /,\,if exist $(SRC)/tile.c     del $(SRC)/tile.c)
-	$(subst /,\,if exist $(U)*.lnk         del $(U)*.lnk)
-	$(subst /,\,if exist $(U)*.map         del $(U)*.map)
-	$(subst /,\,if exist $(DAT)/data       del $(DAT)/data)
-	$(subst /,\,if exist $(DAT)/rumors     del $(DAT)/rumors)
-	$(subst /,\,if exist $(DAT)/???-fil?.lev      del $(DAT)/???-fil?.lev)
-	$(subst /,\,if exist $(DAT)/???-goal.lev      del $(DAT)/???-goal.lev)
-	$(subst /,\,if exist $(DAT)/???-loca.lev      del $(DAT)/???-loca.lev)
-	$(subst /,\,if exist $(DAT)/???-strt.lev      del $(DAT)/???-strt.lev)
-	$(subst /,\,if exist $(DAT)/air.lev      del $(DAT)/air.lev)
-	$(subst /,\,if exist $(DAT)/asmodeus.lev      del $(DAT)/asmodeus.lev)
-	$(subst /,\,if exist $(DAT)/astral.lev   del $(DAT)/astral.lev)
-	$(subst /,\,if exist $(DAT)/baalz.lev    del $(DAT)/baalz.lev)
-	$(subst /,\,if exist $(DAT)/bigrm-*.lev  del $(DAT)/bigrm-*.lev)
-	$(subst /,\,if exist $(DAT)/castle.lev   del $(DAT)/castle.lev)
-	$(subst /,\,if exist $(DAT)/data    del $(DAT)/data)
-	$(subst /,\,if exist $(DAT)/dungeon      del $(DAT)/dungeon)
-	$(subst /,\,if exist $(DAT)/dungeon.pdf  del $(DAT)/dungeon.pdf)
-	$(subst /,\,if exist $(DAT)/earth.lev    del $(DAT)/earth.lev)
-	$(subst /,\,if exist $(DAT)/fakewiz?.lev      del $(DAT)/fakewiz?.lev)
-	$(subst /,\,if exist $(DAT)/fire.lev     del $(DAT)/fire.lev)
-	$(subst /,\,if exist $(DAT)/juiblex.lev  del $(DAT)/juiblex.lev)
-	$(subst /,\,if exist $(DAT)/knox.lev     del $(DAT)/knox.lev)
-	$(subst /,\,if exist $(DAT)/medusa-?.lev      del $(DAT)/medusa-?.lev)
-	$(subst /,\,if exist $(DAT)/mine*.lev    del $(DAT)/mine*.lev)
-	$(subst /,\,if exist $(DAT)/options      del $(DAT)/options)
-	$(subst /,\,if exist $(DAT)/ttyoptions   del $(DAT)/ttyoptions)
-	$(subst /,\,if exist $(DAT)/guioptions   del $(DAT)/guioptions)
-	$(subst /,\,if exist $(DAT)/oracle.lev   del $(DAT)/oracle.lev)
-	$(subst /,\,if exist $(DAT)/oracles      del $(DAT)/oracles)
-	$(subst /,\,if exist $(DAT)/orcus.lev    del $(DAT)/orcus.lev)
-	$(subst /,\,if exist $(DAT)/rumors  del $(DAT)/rumors)
-	$(subst /,\,if exist $(DAT)/quest.dat    del $(DAT)/quest.dat)
-	$(subst /,\,if exist $(DAT)/sanctum.lev  del $(DAT)/sanctum.lev)
-	$(subst /,\,if exist $(DAT)/soko?-?.lev  del $(DAT)/soko?-?.lev)
-	$(subst /,\,if exist $(DAT)/tower?.lev   del $(DAT)/tower?.lev)
-	$(subst /,\,if exist $(DAT)/valley.lev   del $(DAT)/valley.lev)
-	$(subst /,\,if exist $(DAT)/water.lev    del $(DAT)/water.lev)
-	$(subst /,\,if exist $(DAT)/wizard?.lev  del $(DAT)/wizard?.lev)
-	$(subst /,\,if exist $(O)sp_lev.tag     del $(O)sp_lev.tag)
-	$(subst /,\,if exist $(SRC)/monstr.c    del $(SRC)/monstr.c)
-	$(subst /,\,if exist $(SRC)/vis_tab.c   del $(SRC)/vis_tab.c)
-	$(subst /,\,if exist $(U)recover.exe    del $(U)recover.exe)
-	$(subst /,\,if exist $(DAT)/dlb.lst      del $(DAT)/dlb.lst)
-	$(subst /,\,if exist nhdat.         del nhdat.)
-	$(subst /,\,if exist $(O)install.tag    del $(O)install.tag)
-	$(subst /,\,if exist $(O)obj.tag    del $(O)obj.tag)
-	$(subst /,\,if exist $(O)gamedir.tag    del $(O)gamedir.tag)
+	rm -f graphicschk
+	rm -f $(INCL)/date.h
+	rm -f $(INCL)/onames.h
+	rm -f $(INCL)/pm.h
+	rm -f $(INCL)/vis_tab.h
+	rm -rf $(INCL)/dgn_comp.h
+	rm -rf $(INCL)/lev_comp.h
+	rm -rf $(INCL)/win32api.h
+	rm -f $(SRC)/vis_tab.c
+	rm -f $(SRC)/tile.c
+	rm -f $(U)*.lnk
+	rm -f $(U)*.map
+	rm -f $(DAT)/data
+	rm -f $(DAT)/rumors
+	rm -f $(DAT)/???-fil?.lev
+	rm -f $(DAT)/???-goal.lev
+	rm -f $(DAT)/???-loca.lev
+	rm -f $(DAT)/???-strt.lev
+	rm -f $(DAT)/air.lev
+	rm -f $(DAT)/asmodeus.lev
+	rm -f $(DAT)/astral.lev
+	rm -f $(DAT)/baalz.lev
+	rm -f $(DAT)/bigrm-*.lev
+	rm -f $(DAT)/castle.lev
+	rm -f $(DAT)/data
+	rm -f $(DAT)/dungeon
+	rm -f $(DAT)/dungeon.pdf
+	rm -f $(DAT)/earth.lev
+	rm -f $(DAT)/fakewiz?.lev
+	rm -f $(DAT)/fire.lev
+	rm -f $(DAT)/juiblex.lev
+	rm -f $(DAT)/knox.lev
+	rm -f $(DAT)/medusa-?.lev
+	rm -f $(DAT)/mine*.lev
+	rm -f $(DAT)/options
+	rm -f $(DAT)/ttyoptions
+	rm -f $(DAT)/guioptions
+	rm -f $(DAT)/oracle.lev
+	rm -f $(DAT)/oracles
+	rm -f $(DAT)/orcus.lev
+	rm -f $(DAT)/rumors
+	rm -f $(DAT)/quest.dat
+	rm -f $(DAT)/sanctum.lev
+	rm -f $(DAT)/soko?-?.lev
+	rm -f $(DAT)/tower?.lev
+	rm -f $(DAT)/valley.lev
+	rm -f $(DAT)/water.lev
+	rm -f $(DAT)/wizard?.lev
+	rm -f $(O)sp_lev.tag
+	rm -f $(SRC)/monstr.c
+	rm -f $(SRC)/vis_tab.c
+	rm -f $(U)recover.exe
+	rm -f $(DAT)/dlb.lst
+	rm -f nhdat
+	rm -f $(O)install.tag
+	rm -f $(O)obj.tag
+	rm -f $(O)gamedir.tag
+	rm -f $(DAT)/porthelp
+	rm -f $(U)dgn_lex.c
+	rm -f $(U)lev_lex.c
+	rm -f $(U)dgn_yacc.c
+	rm -f $(U)lev_yacc.c
 ifneq "$(OBJ)" ""
-	$(subst /,\,rmdir $(OBJ)) /s /Q
+	rm -rf $(OBJ)
 endif
 
 clean:
-	$(subst /,\,if exist $(O)*.o del $(O)*.o)
-	$(subst /,\,if exist $(O)utility.tag   del $(O)utility.tag)
-	$(subst /,\,if exist $(U)makedefs.exe  del $(U)makedefs.exe)
-	$(subst /,\,if exist $(U)lev_comp.exe  del $(U)lev_comp.exe)
-	$(subst /,\,if exist $(U)dgn_comp.exe  del $(U)dgn_comp.exe)
-	$(subst /,\,if exist $(SRC)/*.lnk      del $(SRC)/*.lnk)
-	$(subst /,\,if exist $(SRC)/*.map      del $(SRC)/*.map)
-	$(subst /,\,if exist $(TILEBMP16)      del $(TILEBMP16))
-	$(subst /,\,if exist $(TILEBMP32)      del $(TILEBMP32))
+	rm -f $(O)*.o
+	rm -f $(O)utility.tag
+	rm -f $(U)makedefs.exe
+	rm -f $(U)lev_comp.exe
+	rm -f $(U)dgn_comp.exe
+	rm -f $(SRC)/*.lnk
+	rm -f $(SRC)/*.map
+	rm -f $(TILEBMP16)
+	rm -f $(TILEBMP32)
+	rm -f $(WIN32)/NetHack.ico
+	rm -f $(NTSYS)/NetHack.ico
+	rm -f $(U)dlb_main.exe
+	rm -f $(U)tile2bmp.exe
+	rm -f $(U)uudecode.exe
 
 #===================================================================
 # OTHER DEPENDENCIES
@@ -1074,20 +1074,20 @@ clean:
 #
 
 $(DAT)/data: $(O)utility.tag    $(DATABASE)
-	$(subst /,\,$(U)makedefs -d)
+	$(U)makedefs -d
 
 $(DAT)/rumors: $(O)utility.tag    $(DAT)/rumors.tru   $(DAT)/rumors.fal
-	$(subst /,\,$(U)makedefs -r)
+	$(U)makedefs -r
 
 $(DAT)/quest.dat: $(O)utility.tag  $(DAT)/quest.txt
-	$(subst /,\,$(U)makedefs -q)
+	$(U)makedefs -q
 
 $(DAT)/oracles: $(O)utility.tag    $(DAT)/oracles.txt
-	$(subst /,\,$(U)makedefs -h)
+	$(U)makedefs -h
 
 $(DAT)/dungeon: $(O)utility.tag  $(DAT)/dungeon.def
-	$(subst /,\,$(U)makedefs -e)
-	$(subst /,\,$(U)dgn_comp $(DAT)/dungeon.pdf)
+	$(U)makedefs -e
+	$(U)dgn_comp $(DAT)/dungeon.pdf
 
 #
 # NT dependencies
@@ -1267,6 +1267,7 @@ $(O)dogmove.o: dogmove.c $(HACK_H) $(INCL)/mfndpos.h $(INCL)/edog.h
 $(O)dokick.o: dokick.c $(HACK_H) $(INCL)/eshk.h
 $(O)dothrow.o: dothrow.c $(HACK_H) $(INCL)/edog.h
 $(O)drawing.o: drawing.c $(HACK_H) $(INCL)/tcap.h
+$(O)dump.o: dump.c $(HACK_H) $(INCL)/date.h
 $(O)dungeon.o: dungeon.c $(HACK_H) $(INCL)/dgn_file.h $(INCL)/dlb.h
 $(O)eat.o: eat.c $(HACK_H)
 $(O)end.o: end.c $(HACK_H) $(INCL)/eshk.h $(INCL)/dlb.h
@@ -1294,6 +1295,7 @@ $(O)mkmap.o: mkmap.c $(HACK_H) $(INCL)/sp_lev.h
 $(O)mkmaze.o: mkmaze.c $(HACK_H) $(INCL)/sp_lev.h $(INCL)/lev.h
 $(O)mkobj.o: mkobj.c $(HACK_H)
 $(O)mkroom.o: mkroom.c $(HACK_H)
+$(O)mksheol.o: mksheol.c $(HACK_H)
 $(O)mon.o: mon.c $(HACK_H) $(INCL)/mfndpos.h $(INCL)/edog.h
 $(O)mondata.o: mondata.c $(HACK_H) $(INCL)/eshk.h $(INCL)/epri.h
 $(O)monmove.o: monmove.c $(HACK_H) $(INCL)/mfndpos.h $(INCL)/artifact.h \
@@ -1346,6 +1348,7 @@ $(O)track.o: track.c $(HACK_H)
 $(O)trap.o: trap.c $(HACK_H)
 $(O)u_init.o: u_init.c $(HACK_H)
 $(O)uhitm.o: uhitm.c $(HACK_H)
+$(O)unicode.o: unicode.c $(HACK_H)
 $(O)vault.o: vault.c $(HACK_H) $(INCL)/vault.h
 $(O)version.o: version.c $(HACK_H) $(INCL)/date.h $(INCL)/patchlevel.h
 $(O)vision.o: vision.c $(HACK_H) $(INCL)/vis_tab.h
