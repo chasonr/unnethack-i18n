@@ -42,7 +42,7 @@ void mswin_init_splashfonts(HWND hWnd)
     ReleaseDC(hWnd, hdc);
 }
 
-void mswin_destroy_splashfonts()
+void mswin_destroy_splashfonts(void)
 {
     DeleteObject (version_splash_font);
 }
@@ -178,15 +178,15 @@ HGDIOBJ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
     return fnt;
 }
 
-UINT mswin_charset()
+UINT mswin_charset(void)
 {
     CHARSETINFO cis;
     if( iflags.IBMgraphics )
-        if( TranslateCharsetInfo((DWORD*)GetOEMCP(), &cis, TCI_SRCCODEPAGE) )
+        if( TranslateCharsetInfo((DWORD*)(INT_PTR)GetOEMCP(), &cis, TCI_SRCCODEPAGE) )
             return cis.ciCharset;
         else
             return OEM_CHARSET;
-    else if( TranslateCharsetInfo((DWORD*)GetACP(), &cis, TCI_SRCCODEPAGE) )
+    else if( TranslateCharsetInfo((DWORD*)(INT_PTR)GetACP(), &cis, TCI_SRCCODEPAGE) )
         return cis.ciCharset;
     else
         return ANSI_CHARSET;

@@ -13,7 +13,7 @@
 
 PNHWinApp GetNHApp(void);
 
-BOOL CALLBACK NHSplashWndProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK NHSplashWndProc(HWND, UINT, WPARAM, LPARAM);
 
 #define SPLASH_WIDTH		440
 #define SPLASH_HEIGHT  322
@@ -171,7 +171,7 @@ void mswin_display_splash_window (BOOL show_ver)
     mswin_destroy_splashfonts();
 }
 
-BOOL CALLBACK NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HDC hdc;
     switch (message) {
@@ -190,7 +190,6 @@ BOOL CALLBACK NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
         RECT rt;
         HDC hdcBitmap;
         HANDLE OldBitmap;
-        HANDLE OldFont;
         PAINTSTRUCT ps;
 
         hdc = BeginPaint (hWnd, &ps);
@@ -215,7 +214,6 @@ BOOL CALLBACK NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
         rt.bottom = rt.top = SPLASH_VERSION_Y;
         Sprintf (VersionString, "%d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
                  PATCHLEVEL);
-        OldFont = SelectObject(hdc, version_splash_font);
         DrawText (hdc, VersionString, strlen(VersionString), &rt,
                   DT_LEFT | DT_NOPREFIX | DT_CALCRECT);
         DrawText (hdc, VersionString, strlen(VersionString), &rt,

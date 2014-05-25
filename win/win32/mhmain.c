@@ -28,7 +28,7 @@ static void		register_main_window_class(void);
 static int		menuid2mapmode(int menuid);
 static int		mapmode2menuid(int map_mode);
 
-HWND mswin_init_main_window ()
+HWND mswin_init_main_window(void)
 {
     static int run_once = 0;
     HWND ret;
@@ -81,7 +81,7 @@ HWND mswin_init_main_window ()
     return ret;
 }
 
-void register_main_window_class()
+void register_main_window_class(void)
 {
     WNDCLASS wcex;
 
@@ -184,7 +184,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         if( !data ) panic("out of memory");
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
-        SetWindowLong(hWnd, GWL_USERDATA, (LONG)data);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)data);
 
         GetNHApp()->hMainWnd = hWnd;
         break;
@@ -194,7 +194,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         break;
 
     case WM_KEYDOWN: {
-        data = (PNHMainWindow)GetWindowLong(hWnd, GWL_USERDATA);
+        data = (PNHMainWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
         /* translate arrow keys into nethack commands */
         switch (wParam) {
@@ -490,8 +490,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
            WM_QUIT somehow */
 
         /* clean up */
-        free( (PNHMainWindow)GetWindowLong(hWnd, GWL_USERDATA) );
-        SetWindowLong(hWnd, GWL_USERDATA, (LONG)0);
+        free( (PNHMainWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA) );
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)0);
 
         // PostQuitMessage(0);
         exit(1);
@@ -549,10 +549,8 @@ void mswin_layout_main_window(HWND changed_child)
     POINT map_org;
     SIZE map_size;
     HWND wnd_status, wnd_msg;
-    PNHMainWindow  data;
 
     GetClientRect(GetNHApp()->hMainWnd, &client_rt);
-    data = (PNHMainWindow)GetWindowLong(GetNHApp()->hMainWnd, GWL_USERDATA);
 
     /* get sizes of child windows */
     wnd_status = mswin_hwnd_from_winid(WIN_STATUS);
@@ -695,12 +693,11 @@ void mswin_layout_main_window(HWND changed_child)
 
 LRESULT onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
-    int wmId, wmEvent;
+    int wmId;
     PNHMainWindow  data;
 
-    data = (PNHMainWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMainWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     wmId    = LOWORD(wParam);
-    wmEvent = HIWORD(wParam);
 
     // Parse the menu selections:
     switch (wmId) {
@@ -857,7 +854,7 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
-void mswin_menu_check_intf_mode()
+void mswin_menu_check_intf_mode(void)
 {
     HMENU hMenu = GetMenu(GetNHApp()->hMainWnd);
 
@@ -874,7 +871,7 @@ void mswin_select_map_mode(int mode)
     winid map_id;
 
     map_id = WIN_MAP;
-    data = (PNHMainWindow)GetWindowLong(GetNHApp()->hMainWnd, GWL_USERDATA);
+    data = (PNHMainWindow)GetWindowLongPtr(GetNHApp()->hMainWnd, GWLP_USERDATA);
 
     /* override for Rogue level */
 #ifdef REINCARNATION
@@ -954,4 +951,19 @@ int	mapmode2menuid(int map_mode)
     for( p = _menu2mapmode; p->mapMode!=-1; p++ )
         if(p->mapMode==map_mode ) return p->menuID;
     return -1;
+}
+
+void
+term_start_attr(int attrib)
+{
+}
+
+void
+term_end_attr(int attrib)
+{
+}
+
+void
+term_end_color(void)
+{
 }

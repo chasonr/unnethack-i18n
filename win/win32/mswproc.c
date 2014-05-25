@@ -700,7 +700,7 @@ void mswin_suspend_nhwindows(const char *str)
 
 
 /* Restore the windows after being suspended. */
-void mswin_resume_nhwindows()
+void mswin_resume_nhwindows(void)
 {
     logDebug("mswin_resume_nhwindows()\n");
     return;
@@ -1161,7 +1161,7 @@ int mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected)
     -- Merely calls display_inventory() for window-ports that leave the
 	window up, otherwise empty.
 */
-void mswin_update_inventory()
+void mswin_update_inventory(void)
 {
     logDebug("mswin_update_inventory()\n");
 }
@@ -1171,7 +1171,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    all channels are caught up to here.  Can be an empty call
                    for the moment
 */
-void mswin_mark_synch()
+void mswin_mark_synch(void)
 {
     logDebug("mswin_mark_synch()\n");
 }
@@ -1182,7 +1182,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                 -- May also deal with exposure events etc. so that the
                    display is OK when return from wait_synch().
 */
-void mswin_wait_synch()
+void mswin_wait_synch(void)
 {
     logDebug("mswin_wait_synch()\n");
 }
@@ -1273,7 +1273,7 @@ int nhgetch()   -- Returns a single character input from the user.
                    will be the routine the OS provides to read a character.
                    Returned character _must_ be non-zero.
 */
-int mswin_nhgetch()
+int mswin_nhgetch(void)
 {
     PMSNHEvent event;
     int key = 0;
@@ -1328,7 +1328,7 @@ int mswin_nh_poskey(int *x, int *y, int *mod)
 nhbell()        -- Beep at user.  [This will exist at least until sounds are
                    redone, since sounds aren't attributable to windows anyway.]
 */
-void mswin_nhbell()
+void mswin_nhbell(void)
 {
     logDebug("mswin_nhbell()\n");
 }
@@ -1338,7 +1338,7 @@ doprev_message()
                 -- Display previous messages.  Used by the ^P command.
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
-int mswin_doprev_message()
+int mswin_doprev_message(void)
 {
     logDebug("mswin_doprev_message()\n");
     SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL, MAKEWPARAM(SB_LINEUP, 0), (LPARAM)NULL);
@@ -1583,7 +1583,7 @@ int get_ext_cmd(void)
 	       An index into extcmdlist[] is returned on a successful
 	       selection, -1 otherwise.
 */
-int mswin_get_ext_cmd()
+int mswin_get_ext_cmd(void)
 {
     int ret;
     logDebug("mswin_get_ext_cmd()\n");
@@ -1679,18 +1679,18 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
 	       Conceptually, this is similar to wait_synch() followed
 	       by a nap(50ms), but allows asynchronous operation.
 */
-void mswin_delay_output()
+void mswin_delay_output(void)
 {
     logDebug("mswin_delay_output()\n");
     Sleep(50);
 }
 
-void mswin_change_color()
+void mswin_change_color(void)
 {
     logDebug("mswin_change_color()\n");
 }
 
-char *mswin_get_color_string()
+char *mswin_get_color_string(void)
 {
     logDebug("mswin_get_color_string()\n");
     return( "" );
@@ -1703,7 +1703,7 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
 	       example.  If your window-port does not need this function
 	       just declare an empty function.
 */
-void mswin_start_screen()
+void mswin_start_screen(void)
 {
     /* Do Nothing */
     logDebug("mswin_start_screen()\n");
@@ -1713,7 +1713,7 @@ void mswin_start_screen()
 end_screen()    -- Only used on Unix tty ports, but must be declared for
 	       completeness.  The complement of start_screen().
 */
-void mswin_end_screen()
+void mswin_end_screen(void)
 {
     /* Do Nothing */
     logDebug("mswin_end_screen()\n");
@@ -1898,7 +1898,7 @@ void mswin_preference_update(const char *pref)
 }
 
 
-void mswin_main_loop()
+void mswin_main_loop(void)
 {
     MSG msg;
 
@@ -2103,7 +2103,7 @@ logDebug(const char *fmt, ...)
 #define INTFKEY "Interface"
 
 void
-mswin_read_reg()
+mswin_read_reg(void)
 {
     HKEY key;
     DWORD size;
@@ -2139,7 +2139,7 @@ mswin_read_reg()
 }
 
 void
-mswin_write_reg()
+mswin_write_reg(void)
 {
     HKEY key;
     DWORD disposition;
@@ -2173,7 +2173,7 @@ mswin_write_reg()
 }
 
 void
-mswin_destroy_reg()
+mswin_destroy_reg(void)
 {
     char keystring[MAX_PATH];
     HKEY key;

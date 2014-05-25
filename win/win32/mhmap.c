@@ -45,7 +45,7 @@ static void nhglyph2charcolor(short glyph, uchar* ch, int* color);
 #endif
 static COLORREF nhcolor_to_RGB(int c);
 
-HWND mswin_init_map_window ()
+HWND mswin_init_map_window(void)
 {
     static int run_once = 0;
     HWND ret;
@@ -93,7 +93,7 @@ void mswin_map_stretch(HWND hWnd, LPSIZE lpsz, BOOL redraw)
     wnd_size.cy = client_rt.bottom - client_rt.top;
 
     /* set new screen tile size */
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     data->xScrTile =
         max(1, (data->bFitToScreenMode? wnd_size.cx : lpsz->cx) / COLNO);
     data->yScrTile =
@@ -187,7 +187,7 @@ int mswin_map_mode(HWND hWnd, int mode)
     int oldMode;
     SIZE mapSize;
 
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     if( mode == data->mapMode ) return mode;
 
     oldMode = data->mapMode;
@@ -295,7 +295,7 @@ int mswin_map_mode(HWND hWnd, int mode)
 }
 
 /* register window class for map window */
-void register_map_window_class()
+void register_map_window_class(void)
 {
     WNDCLASS wcex;
     ZeroMemory( &wcex, sizeof(wcex));
@@ -322,7 +322,7 @@ LRESULT CALLBACK MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 {
     PNHMapWindow data;
 
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     switch (message) {
     case WM_CREATE:
         onCreate( hWnd, wParam, lParam );
@@ -383,7 +383,7 @@ LRESULT CALLBACK MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     case WM_DESTROY:
         if( data->hMapFont ) DeleteObject(data->hMapFont);
         free(data);
-        SetWindowLong(hWnd, GWL_USERDATA, (LONG)0);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)0);
         break;
 
     default:
@@ -398,7 +398,7 @@ void onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     PNHMapWindow data;
     RECT rt;
 
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     switch(wParam) {
     case MSNH_MSG_PRINT_GLYPH: {
         PMSNHMsgPrintGlyph msg_data = (PMSNHMsgPrintGlyph)lParam;
@@ -515,7 +515,7 @@ void onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
     data->xScrTile = GetNHApp()->mapTile_X;
     data->yScrTile = GetNHApp()->mapTile_Y;
 
-    SetWindowLong(hWnd, GWL_USERDATA, (LONG)data);
+    SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)data);
 }
 
 /* on WM_PAINT */
@@ -530,7 +530,7 @@ void onPaint(HWND hWnd)
     int i, j;
 
     /* get window data */
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     hDC = BeginPaint(hWnd, &ps);
 
@@ -562,7 +562,7 @@ void onPaint(HWND hWnd)
                         RECT  glyph_rect;
                         int   color;
                         unsigned special;
-                        int mgch;
+                        glyph_t mgch;
                         HBRUSH back_brush;
                         COLORREF OldFg;
 
@@ -689,7 +689,7 @@ void onMSNH_VScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
     int yDelta;
 
     /* get window data */
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     switch(LOWORD (wParam)) {
         /* User clicked shaft left of the scroll box. */
@@ -746,7 +746,7 @@ void onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
     int xDelta;
 
     /* get window data */
-    data = (PNHMapWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHMapWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     switch(LOWORD (wParam)) {
         /* User clicked shaft left of the scroll box. */

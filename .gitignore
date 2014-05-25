@@ -25,6 +25,7 @@
 /dat/vaults.dat
 /dat/dlb.lst
 /dat/porthelp
+/dat/guioptions
 
 # /doc/
 /doc/Makefile
@@ -58,6 +59,7 @@
 /src/graphicschk
 /src/nhdat
 /src/o
+/src/tiles.bmp
 
 # /sys/
 /sys/winnt/NetHack.ico
@@ -83,3 +85,10 @@
 # Swap files
 .sw[a-z]
 .*.sw[a-z]
+/win/win32/NetHack.ico
+/win/win32/mnsel.bmp
+/win/win32/mnselcnt.bmp
+/win/win32/mnunsel.bmp
+/win/win32/petmark.bmp
+/win/win32/rip.bmp
+/win/win32/splash.bmp

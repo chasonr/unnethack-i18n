@@ -17,7 +17,10 @@ struct getlin_data {
     size_t		result_size;
 };
 
-BOOL CALLBACK	GetlinDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK GetlinDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK ExtCmdDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK PlayerSelectorDlgProc(HWND, UINT, WPARAM, LPARAM);
+static void setComboBoxValue(HWND hWnd, int combo_box, int value);
 
 int mswin_getlin_window (
     const char *question,
@@ -47,7 +50,7 @@ int mswin_getlin_window (
     return ret;
 }
 
-BOOL CALLBACK GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     struct getlin_data* data;
     RECT   main_rt, dlg_rt;
@@ -66,7 +69,7 @@ BOOL CALLBACK GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     case WM_INITDIALOG:
         data = (struct getlin_data*)lParam;
         SetWindowText(hWnd, NH_A2W(data->question, wbuf, sizeof(wbuf)));
-        SetWindowLong(hWnd, GWL_USERDATA, lParam);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
 
         /* center dialog in the main window */
         GetWindowRect(hWnd, &dlg_rt);
@@ -136,7 +139,7 @@ BOOL CALLBACK GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         switch (LOWORD(wParam)) {
             /* OK button was pressed */
         case IDOK:
-            data = (struct getlin_data*)GetWindowLong(hWnd, GWL_USERDATA);
+            data = (struct getlin_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
             SendDlgItemMessage(hWnd, IDC_GETLIN_EDIT, WM_GETTEXT, (WPARAM)sizeof(wbuf), (LPARAM)wbuf );
             NH_W2A(wbuf, data->result, data->result_size);
 
@@ -161,8 +164,6 @@ struct extcmd_data {
     int*		selection;
 };
 
-BOOL CALLBACK	ExtCmdDlgProc(HWND, UINT, WPARAM, LPARAM);
-
 int mswin_ext_cmd_window (int* selection)
 {
     int ret;
@@ -185,7 +186,7 @@ int mswin_ext_cmd_window (int* selection)
     return ret;
 }
 
-BOOL CALLBACK ExtCmdDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK ExtCmdDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     struct extcmd_data* data;
     RECT   main_rt, dlg_rt;
@@ -197,7 +198,7 @@ BOOL CALLBACK ExtCmdDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     switch (message) {
     case WM_INITDIALOG:
         data = (struct extcmd_data*)lParam;
-        SetWindowLong(hWnd, GWL_USERDATA, lParam);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
 
         /* center dialog in the main window */
         GetWindowRect(GetNHApp()->hMainWnd, &main_rt);
@@ -229,7 +230,7 @@ BOOL CALLBACK ExtCmdDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         break;
 
     case WM_COMMAND:
-        data = (struct extcmd_data*)GetWindowLong(hWnd, GWL_USERDATA);
+        data = (struct extcmd_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
         switch (LOWORD(wParam)) {
             /* OK button ws clicked */
         case IDOK:
@@ -273,7 +274,6 @@ struct plsel_data {
     int*	selection;
 };
 
-BOOL CALLBACK	PlayerSelectorDlgProc(HWND, UINT, WPARAM, LPARAM);
 static void 		plselInitDialog(HWND hWnd);
 static void			plselAdjustLists(HWND hWnd, int changed_opt);
 static int			plselFinalSelection(HWND hWnd, int* selection);
@@ -300,7 +300,7 @@ int mswin_player_selection_window ( int* selection )
     return ret;
 }
 
-BOOL CALLBACK PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     struct plsel_data* data;
     RECT   main_rt, dlg_rt;
@@ -309,7 +309,7 @@ BOOL CALLBACK PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
     switch (message) {
     case WM_INITDIALOG:
         data = (struct plsel_data*)lParam;
-        SetWindowLong(hWnd, GWL_USERDATA, lParam);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
 
         /* center dialog in the main window */
         GetWindowRect(GetNHApp()->hMainWnd, &main_rt);
@@ -339,7 +339,7 @@ BOOL CALLBACK PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
         break;
 
     case WM_COMMAND:
-        data = (struct plsel_data*)GetWindowLong(hWnd, GWL_USERDATA);
+        data = (struct plsel_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
         switch (LOWORD(wParam)) {
 
             /* OK button was clicked */
@@ -431,7 +431,7 @@ BOOL CALLBACK PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
     return FALSE;
 }
 
-void setComboBoxValue(HWND hWnd, int combo_box, int value)
+static void setComboBoxValue(HWND hWnd, int combo_box, int value)
 {
     int index_max = SendDlgItemMessage(hWnd, combo_box, CB_GETCOUNT, 0, 0);
     int index;

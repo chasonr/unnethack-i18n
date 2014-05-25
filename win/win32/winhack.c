@@ -67,7 +67,6 @@ NHWinApp _nethack_app;
 
 // Foward declarations of functions included in this code module:
 extern void FDECL(pcmain, (int,char **));
-static void __cdecl mswin_moveloop(void *);
 
 #define MAX_CMDLINE_PARAM 255
 
@@ -179,7 +178,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 }
 
 
-PNHWinApp GetNHApp()
+PNHWinApp GetNHApp(void)
 {
     return &_nethack_app;
 }
@@ -188,7 +187,6 @@ TCHAR* _get_cmd_arg(TCHAR* pCmdLine)
 {
     static TCHAR* pArgs = NULL;
     TCHAR  *pRetArg;
-    BOOL   bQuoted;
 
     if( !pCmdLine && !pArgs ) return NULL;
     if( !pArgs ) pArgs = pCmdLine;
@@ -202,7 +200,6 @@ TCHAR* _get_cmd_arg(TCHAR* pCmdLine)
 
     /* check for quote */
     if( *pRetArg==TEXT('"') ) {
-        bQuoted = TRUE;
         pRetArg = CharNext(pRetArg);
         pArgs = _tcschr(pRetArg, TEXT('"'));
     } else {

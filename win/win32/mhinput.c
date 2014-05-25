@@ -31,7 +31,7 @@ void mswin_nh_input_init(void)
 }
 
 /* check for input */
-int	mswin_have_input()
+int	mswin_have_input(void)
 {
     return (nhi_read_pos!=nhi_write_pos);
 }
@@ -53,7 +53,7 @@ void mswin_input_push(PMSNHEvent event)
 }
 
 /* get event from the queue and delete it */
-PMSNHEvent mswin_input_pop()
+PMSNHEvent mswin_input_pop(void)
 {
     PMSNHEvent retval;
 
@@ -70,7 +70,7 @@ PMSNHEvent mswin_input_pop()
 }
 
 /* get event from the queue but leave it there */
-PMSNHEvent mswin_input_peek()
+PMSNHEvent mswin_input_peek(void)
 {
     PMSNHEvent retval;
 

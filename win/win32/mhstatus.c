@@ -21,7 +21,7 @@ static void register_status_window_class(void);
 #define DEFAULT_COLOR_BG_STATUS	COLOR_WINDOW
 #define DEFAULT_COLOR_FG_STATUS	COLOR_WINDOWTEXT
 
-HWND mswin_init_status_window ()
+HWND mswin_init_status_window(void)
 {
     static int run_once = 0;
     HWND ret;
@@ -52,11 +52,11 @@ HWND mswin_init_status_window ()
     if( !data ) panic("out of memory");
 
     ZeroMemory(data, sizeof(NHStatusWindow));
-    SetWindowLong(ret, GWL_USERDATA, (LONG)data);
+    SetWindowLongPtr(ret, GWLP_USERDATA, (LONG_PTR)data);
     return ret;
 }
 
-void register_status_window_class()
+void register_status_window_class(void)
 {
     WNDCLASS wcex;
     ZeroMemory( &wcex, sizeof(wcex));
@@ -84,7 +84,7 @@ LRESULT CALLBACK StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     HDC hdc;
     PNHStatusWindow data;
 
-    data = (PNHStatusWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHStatusWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     switch (message) {
     case WM_MSNH_COMMAND: {
         switch( wParam ) {
@@ -140,7 +140,7 @@ LRESULT CALLBACK StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
     case WM_DESTROY:
         free(data);
-        SetWindowLong(hWnd, GWL_USERDATA, (LONG)0);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)0);
         break;
 
     case WM_SETFOCUS:
@@ -164,7 +164,7 @@ void mswin_status_window_size (HWND hWnd, LPSIZE sz)
     sz->cx = rt.right - rt.left;
     sz->cy = rt.bottom - rt.top;
 
-    data = (PNHStatusWindow)GetWindowLong(hWnd, GWL_USERDATA);
+    data = (PNHStatusWindow)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     if(data) {
         hdc = GetDC(hWnd);
         saveFont = SelectObject(hdc, mswin_get_font(NHW_STATUS, ATR_NONE, hdc, FALSE));

@@ -34,7 +34,7 @@
 # Set to Y for a graphical version
 # Set to anything else (or undefine) for a tty version
 
-#GRAPHICAL = Y
+GRAPHICAL = Y
 
 # Debug
 # Set to Y for Debug support (to produce debug information)
@@ -954,10 +954,10 @@ $(U)txt2ppm.exe: $(PPMWRITERS) $(TEXT_IO)
 
 ifeq  "$(GRAPHICAL)" "Y"
 $(TILEBMP16): $(TILEUTIL16) $(TILEFILES)
-	@echo Creating 16x16 binary tile files (this may take some time)
+	@echo "Creating 16x16 binary tile files (this may take some time)"
 	@$(U)tile2bmp $(TILEBMP16)
 #$(TILEBMP32): $(TILEUTIL32) $(TILEFILES32)
-#	@echo Creating 32x32 binary tile files (this may take some time)
+#	@echo "Creating 32x32 binary tile files (this may take some time)"
 #	@$(U)til2bm32 $(TILEBMP32)
 else
 $(TILEBMP16):
@@ -1048,6 +1048,7 @@ spotless: clean
 ifneq "$(OBJ)" ""
 	rm -rf $(OBJ)
 endif
+	rm -f $(WIN32)/*.bmp
 
 clean:
 	rm -f $(O)*.o
