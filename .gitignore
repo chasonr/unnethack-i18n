@@ -5,6 +5,9 @@
 /config.status
 /tags
 /TAGS
+/binary
+/build
+/nethack.dsw
 
 # /dat/
 /dat/Makefile
@@ -20,6 +23,8 @@
 /dat/rumors
 /dat/spec_levs
 /dat/vaults.dat
+/dat/dlb.lst
+/dat/porthelp
 
 # /doc/
 /doc/Makefile
@@ -48,9 +53,18 @@
 /src/vis_tab.c
 /src/monstr.c
 /src/tile.c
+/src/Makefile.bcc
+/src/Makefile.gcc
+/src/graphicschk
+/src/nhdat
+/src/o
+
+# /sys/
+/sys/winnt/NetHack.ico
 
 # /util/
 /util/*.o
+/util/*.exe
 /util/Makefile
 /util/dgn_comp
 /util/dgn_lex.c
