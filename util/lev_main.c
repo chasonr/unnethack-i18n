@@ -103,7 +103,7 @@ extern void NDECL(monst_init);
 extern void NDECL(objects_init);
 extern void NDECL(decl_init);
 
-void FDECL(add_opcode, (sp_lev *, int, genericptr_t));
+void FDECL(add_opcode, (sp_lev *, int, struct opvar *));
 
 static boolean FDECL(write_common_data, (int,sp_lev *));
 static boolean FDECL(write_maze, (int,sp_lev *));
@@ -1069,18 +1069,18 @@ get_trap_type(char *s)
 int
 get_monster_id(char *s, char c)
 {
-    register int i, class;
+    register int i, mclass;
 
     SpinCursor(3);
-    class = c ? def_char_to_monclass(c) : 0;
-    if (class == MAXMCLASSES) return ERR;
+    mclass = c ? def_char_to_monclass(c) : 0;
+    if (mclass == MAXMCLASSES) return ERR;
 
     for (i = LOW_PM; i < NUMMONS; i++)
-        if (!class || class == mons[i].mlet)
+        if (!mclass || mclass == mons[i].mlet)
             if (!strcmp(s, mons[i].mname)) return i;
     /* didn't find it; lets try case insensitive search */
     for (i = LOW_PM; i < NUMMONS; i++)
-        if (!class || class == mons[i].mlet)
+        if (!mclass || mclass == mons[i].mlet)
             if (!strcasecmp(s, mons[i].mname)) {
                 if (be_verbose)
                     lc_warning("Monster type \"%s\" matches \"%s\".", s, mons[i].mname);
@@ -1093,26 +1093,24 @@ get_monster_id(char *s, char c)
  * Find the index of an object in the table, knowing its name.
  */
 int
-get_object_id(char *s, char c)
-        
-       		/* class */
+get_object_id(char *s, char c) /* class */
 {
-    int i, class;
+    int i, oclass;
     const char *objname;
 
     SpinCursor(3);
-    class = (c > 0) ? def_char_to_objclass(c) : 0;
-    if (class == MAXOCLASSES) return ERR;
+    oclass = (c > 0) ? def_char_to_objclass(c) : 0;
+    if (oclass == MAXOCLASSES) return ERR;
 
-    for (i = class ? bases[class] : 0; i < NUM_OBJECTS; i++) {
-        if (class && objects[i].oc_class != class) break;
+    for (i = oclass ? bases[oclass] : 0; i < NUM_OBJECTS; i++) {
+        if (oclass && objects[i].oc_class != oclass) break;
         objname = obj_descr[i].oc_name;
         if (objname && !strcmp(s, objname))
             return i;
     }
 
-    for (i = class ? bases[class] : 0; i < NUM_OBJECTS; i++) {
-        if (class && objects[i].oc_class != class) break;
+    for (i = oclass ? bases[oclass] : 0; i < NUM_OBJECTS; i++) {
+        if (oclass && objects[i].oc_class != oclass) break;
         objname = obj_descr[i].oc_name;
         if (objname && !strcasecmp(s, objname)) {
             if (be_verbose)
@@ -1127,14 +1125,14 @@ get_object_id(char *s, char c)
 static void
 init_obj_classes(void)
 {
-    int i, class, prev_class;
+    int i, oclass, prev_class;
 
     prev_class = -1;
     for (i = 0; i < NUM_OBJECTS; i++) {
-        class = objects[i].oc_class;
-        if (class != prev_class) {
-            bases[class] = i;
-            prev_class = class;
+        oclass = objects[i].oc_class;
+        if (oclass != prev_class) {
+            bases[oclass] = i;
+            prev_class = oclass;
         }
     }
 }
@@ -1227,7 +1225,7 @@ what_map_char(char c)
 }
 
 void
-add_opcode(sp_lev *sp, int opc, genericptr_t dat)
+add_opcode(sp_lev *sp, int opc, struct opvar *dat)
 {
     long nop = sp->n_opcodes;
     _opcode *tmp;

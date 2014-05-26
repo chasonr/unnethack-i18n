@@ -1452,7 +1452,7 @@ max_monster_difficulty(void)
 struct permonst *
 get_override_mon(struct mon_gen_override *override)
 {
-    int chance, try = 100;
+    int chance, tries = 100;
     struct mon_gen_tuple *mt;
     if (!override) return NULL;
 
@@ -1468,7 +1468,7 @@ get_override_mon(struct mon_gen_override *override)
                     return (&mons[mt->monid]);
             }
         }
-    } while (--try > 0);
+    } while (--tries > 0);
     return NULL;
 }
 
@@ -1593,13 +1593,13 @@ reset_rndmonst(int mndx)
  */
 
 struct permonst *
-mkclass(char class, int spc)
+mkclass(char mclass, int spc)
 {
     register int	first, last, num = 0;
     int maxmlev, mask = (G_NOGEN | G_UNIQ) & ~spc;
 
     maxmlev = level_difficulty() >> 1;
-    if(class < 1 || class >= MAXMCLASSES) {
+    if(mclass < 1 || mclass >= MAXMCLASSES) {
         warning("mkclass called with bad class!");
         return((struct permonst *) 0);
     }
@@ -1607,11 +1607,11 @@ mkclass(char class, int spc)
      *			mons[] array.
      */
     for (first = LOW_PM; first < SPECIAL_PM; first++)
-        if (mons[first].mlet == class) break;
+        if (mons[first].mlet == mclass) break;
     if (first == SPECIAL_PM) return (struct permonst *) 0;
 
     for (last = first;
-            last < SPECIAL_PM && mons[last].mlet == class; last++)
+            last < SPECIAL_PM && mons[last].mlet == mclass; last++)
         if (!(mvitals[last].mvflags & G_GONE) && !(mons[last].geno & mask)
                 && !is_placeholder(&mons[last])) {
             /* consider it */

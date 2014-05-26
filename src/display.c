@@ -1183,7 +1183,7 @@ docrt(void)
 /* Glyph Buffering (3rd screen) ============================================ */
 
 typedef struct {
-    xchar new;		/* perhaps move this bit into the rm strucure. */
+    xchar is_new;		/* perhaps move this bit into the rm strucure. */
     int   glyph;
 } gbuf_entry;
 
@@ -1263,7 +1263,7 @@ show_glyph(int x, int y, int glyph)
 
     if (gbuf[y][x].glyph != glyph) {
         gbuf[y][x].glyph = glyph;
-        gbuf[y][x].new   = 1;
+        gbuf[y][x].is_new = 1;
         if (gbuf_start[y] > x) gbuf_start[y] = x;
         if (gbuf_stop[y]  < x) gbuf_stop[y]  = x;
     }
@@ -1348,9 +1348,9 @@ flush_screen(int cursor_on_u)
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
         for (; x <= gbuf_stop[y]; gptr++, x++)
-            if (gptr->new) {
+            if (gptr->is_new) {
                 print_glyph(WIN_MAP,x,y,gptr->glyph);
-                gptr->new = 0;
+                gptr->is_new = 0;
             }
     }
 

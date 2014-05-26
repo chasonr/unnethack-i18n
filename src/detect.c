@@ -384,10 +384,10 @@ food_detect(register struct obj *sobj)
  *	0 - something was detected
  */
 int
-object_detect(struct obj *detector, int class, boolean quiet)
-          	          	/* object doing the detecting */
-   		      		/* an object class, 0 for all */
-       		      		/* don't output any message */
+object_detect(
+        struct obj *detector, /* object doing the detecting */
+        int oclass,           /* an object class, 0 for all */
+        boolean quiet)        /* don't output any message */
 {
     register int x, y;
     char stuff[BUFSZ];
@@ -401,9 +401,9 @@ object_detect(struct obj *detector, int class, boolean quiet)
     int uw = u.uinwater;
     int sym, boulder = 0;
 
-    if (class < 0 || class >= MAXOCLASSES) {
-        warning("object_detect:  illegal class %d", class);
-        class = 0;
+    if (oclass < 0 || oclass >= MAXOCLASSES) {
+        warning("object_detect:  illegal class %d", oclass);
+        oclass = 0;
     }
 
     /* Special boulder symbol check - does the class symbol happen
@@ -412,20 +412,20 @@ object_detect(struct obj *detector, int class, boolean quiet)
      * detect. Rather than trump anything, show both possibilities.
      * We can exclude checking the buried obj chain for boulders below.
      */
-    sym = class ? def_oc_syms[class] : 0;
+    sym = oclass ? def_oc_syms[oclass] : 0;
     if (sym && iflags.bouldersym && sym == iflags.bouldersym)
         boulder = ROCK_CLASS;
 
-    if (Hallucination || (Confusion && class == SCROLL_CLASS))
+    if (Hallucination || (Confusion && oclass == SCROLL_CLASS))
         Strcpy(stuff, something);
     else
-        Strcpy(stuff, class ? oclass_names[class] : "objects");
-    if (boulder && class != ROCK_CLASS) Strcat(stuff, " and/or large stones");
+        Strcpy(stuff, oclass ? oclass_names[oclass] : "objects");
+    if (boulder && oclass != ROCK_CLASS) Strcat(stuff, " and/or large stones");
 
     if (do_dknown) for(obj = invent; obj; obj = obj->nobj) do_dknown_of(obj);
 
     for (obj = fobj; obj; obj = obj->nobj) {
-        if ((!class && !boulder) || o_in(obj, class) || o_in(obj, boulder)) {
+        if ((!oclass && !boulder) || o_in(obj, oclass) || o_in(obj, boulder)) {
             if (obj->ox == u.ux && obj->oy == u.uy) ctu++;
             else ct++;
         }
@@ -433,7 +433,7 @@ object_detect(struct obj *detector, int class, boolean quiet)
     }
 
     for (obj = level.buriedobjlist; obj; obj = obj->nobj) {
-        if (!class || o_in(obj, class)) {
+        if (!oclass || o_in(obj, oclass)) {
             if (obj->ox == u.ux && obj->oy == u.uy) ctu++;
             else ct++;
         }
@@ -443,22 +443,22 @@ object_detect(struct obj *detector, int class, boolean quiet)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp)) continue;
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
-            if ((!class && !boulder) || o_in(obj, class) || o_in(obj, boulder)) ct++;
+            if ((!oclass && !boulder) || o_in(obj, oclass) || o_in(obj, boulder)) ct++;
             if (do_dknown) do_dknown_of(obj);
         }
         if ((is_cursed && mtmp->m_ap_type == M_AP_OBJECT &&
-                (!class || class == objects[mtmp->mappearance].oc_class)) ||
+                (!oclass || oclass == objects[mtmp->mappearance].oc_class)) ||
 #ifndef GOLDOBJ
-                (mtmp->mgold && (!class || class == COIN_CLASS))) {
+                (mtmp->mgold && (!oclass || oclass == COIN_CLASS))) {
 #else
-                (findgold(mtmp->minvent) && (!class || class == COIN_CLASS))) {
+                (findgold(mtmp->minvent) && (!oclass || oclass == COIN_CLASS))) {
 #endif
             ct++;
             break;
         }
     }
 
-    if (!clear_stale_map(!class ? ALL_CLASSES : class, 0) && !ct) {
+    if (!clear_stale_map(!oclass ? ALL_CLASSES : oclass, 0) && !ct) {
         if (!ctu) {
             if (detector)
                 if (!quiet) strange_feeling(detector, "You feel a lack of something.");
@@ -476,8 +476,8 @@ object_detect(struct obj *detector, int class, boolean quiet)
      *	Map all buried objects first.
      */
     for (obj = level.buriedobjlist; obj; obj = obj->nobj)
-        if (!class || (otmp = o_in(obj, class))) {
-            if (class) {
+        if (!oclass || (otmp = o_in(obj, oclass))) {
+            if (oclass) {
                 if (otmp != obj) {
                     otmp->ox = obj->ox;
                     otmp->oy = obj->oy;
@@ -497,9 +497,9 @@ object_detect(struct obj *detector, int class, boolean quiet)
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
             for (obj = level.objects[x][y]; obj; obj = obj->nexthere)
-                if ((!class && !boulder) ||
-                        (otmp = o_in(obj, class)) || (otmp = o_in(obj, boulder))) {
-                    if (class || boulder) {
+                if ((!oclass && !boulder) ||
+                        (otmp = o_in(obj, oclass)) || (otmp = o_in(obj, boulder))) {
+                    if (oclass || boulder) {
                         if (otmp != obj) {
                             otmp->ox = obj->ox;
                             otmp->oy = obj->oy;
@@ -514,9 +514,9 @@ object_detect(struct obj *detector, int class, boolean quiet)
     for (mtmp = fmon ; mtmp ; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp)) continue;
         for (obj = mtmp->minvent; obj; obj = obj->nobj)
-            if ((!class && !boulder) ||
-                    (otmp = o_in(obj, class)) || (otmp = o_in(obj, boulder))) {
-                if (!class && !boulder) otmp = obj;
+            if ((!oclass && !boulder) ||
+                    (otmp = o_in(obj, oclass)) || (otmp = o_in(obj, boulder))) {
+                if (!oclass && !boulder) otmp = obj;
                 otmp->ox = mtmp->mx;		/* at monster location */
                 otmp->oy = mtmp->my;
                 map_object(otmp, 1);
@@ -524,7 +524,7 @@ object_detect(struct obj *detector, int class, boolean quiet)
             }
         /* Allow a mimic to override the detected objects it is carrying. */
         if (is_cursed && mtmp->m_ap_type == M_AP_OBJECT &&
-                (!class || class == objects[mtmp->mappearance].oc_class)) {
+                (!oclass || oclass == objects[mtmp->mappearance].oc_class)) {
             struct obj temp;
 
             temp.otyp = mtmp->mappearance;	/* needed for obj_to_glyph() */
@@ -533,9 +533,9 @@ object_detect(struct obj *detector, int class, boolean quiet)
             temp.corpsenm = PM_TENGU;		/* if mimicing a corpse */
             map_object(&temp, 1);
 #ifndef GOLDOBJ
-        } else if (mtmp->mgold && (!class || class == COIN_CLASS)) {
+        } else if (mtmp->mgold && (!oclass || oclass == COIN_CLASS)) {
 #else
-        } else if (findgold(mtmp->minvent) && (!class || class == COIN_CLASS)) {
+        } else if (findgold(mtmp->minvent) && (!oclass || oclass == COIN_CLASS)) {
 #endif
             struct obj gold;
 
@@ -861,7 +861,7 @@ use_crystal_ball(struct obj *obj)
     if (obj->spe <= 0)
         pline_The("vision is unclear.");
     else {
-        int class;
+        int xclass;
         int ret = 0;
 
         makeknown(CRYSTAL_BALL);
@@ -872,10 +872,10 @@ use_crystal_ball(struct obj *obj)
          */
         if (ch == DEF_MIMIC_DEF) ch = DEF_MIMIC;
 
-        if ((class = def_char_to_objclass(ch)) != MAXOCLASSES)
-            ret = object_detect((struct obj *)0, class, FALSE);
-        else if ((class = def_char_to_monclass(ch)) != MAXMCLASSES)
-            ret = monster_detect((struct obj *)0, class);
+        if ((xclass = def_char_to_objclass(ch)) != MAXOCLASSES)
+            ret = object_detect((struct obj *)0, xclass, FALSE);
+        else if ((xclass = def_char_to_monclass(ch)) != MAXMCLASSES)
+            ret = monster_detect((struct obj *)0, xclass);
         else if (iflags.bouldersym && (ch == iflags.bouldersym))
             ret = object_detect((struct obj *)0, ROCK_CLASS, FALSE);
         else switch(ch) {

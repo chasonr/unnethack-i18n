@@ -1928,7 +1928,7 @@ add_debug_extended_commands(void)
 }
 
 
-static const char template[] = "%-18s %4ld  %6ld";
+static const char templ[] = "%-18s %4ld  %6ld";
 static const char count_str[] = "                   count  bytes";
 static const char separator[] = "------------------ -----  ------";
 
@@ -1959,7 +1959,7 @@ obj_chain(winid win, const char *src, struct obj *chain, long int *total_count, 
     count_obj(chain, &count, &size, TRUE, FALSE);
     *total_count += count;
     *total_size += size;
-    Sprintf(buf, template, src, count, size);
+    Sprintf(buf, templ, src, count, size);
     putstr(win, 0, buf);
 }
 
@@ -1974,7 +1974,7 @@ mon_invent_chain(winid win, const char *src, struct monst *chain, long int *tota
         count_obj(mon->minvent, &count, &size, TRUE, FALSE);
     *total_count += count;
     *total_size += size;
-    Sprintf(buf, template, src, count, size);
+    Sprintf(buf, templ, src, count, size);
     putstr(win, 0, buf);
 }
 
@@ -1998,7 +1998,7 @@ contained(winid win, const char *src, long int *total_count, long int *total_siz
     *total_count += count;
     *total_size += size;
 
-    Sprintf(buf, template, src, count, size);
+    Sprintf(buf, templ, src, count, size);
     putstr(win, 0, buf);
 }
 
@@ -2015,7 +2015,7 @@ mon_chain(winid win, const char *src, struct monst *chain, long int *total_count
     }
     *total_count += count;
     *total_size += size;
-    Sprintf(buf, template, src, count, size);
+    Sprintf(buf, templ, src, count, size);
     putstr(win, 0, buf);
 }
 
@@ -2076,7 +2076,7 @@ wiz_show_stats(void)
               &total_obj_count, &total_obj_size);
 
     putstr(win, 0, separator);
-    Sprintf(buf, template, "Total", total_obj_count, total_obj_size);
+    Sprintf(buf, templ, "Total", total_obj_count, total_obj_size);
     putstr(win, 0, buf);
 
     putstr(win, 0, "");
@@ -2091,7 +2091,7 @@ wiz_show_stats(void)
               &total_mon_count, &total_mon_size);
 
     putstr(win, 0, separator);
-    Sprintf(buf, template, "Total", total_mon_count, total_mon_size);
+    Sprintf(buf, templ, "Total", total_mon_count, total_mon_size);
     putstr(win, 0, buf);
 
 #if defined(__BORLANDC__) && !defined(_WIN32)

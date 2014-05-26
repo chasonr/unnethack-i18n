@@ -1755,7 +1755,7 @@ do_objs(void)
     char *c, *objnam;
     int nspell = 0;
     int prefix = 0;
-    char class = '\0';
+    char oclass = '\0';
     boolean	sumerr = FALSE;
 
     filename[0]='\0';
@@ -1778,14 +1778,14 @@ do_objs(void)
         if (!(objnam = tmpdup(OBJ_NAME(objects[i])))) continue;
 
         /* make sure probabilities add up to 1000 */
-        if(objects[i].oc_class != class) {
+        if(objects[i].oc_class != oclass) {
             if (sum && sum != 1000) {
                 Fprintf(stderr, "prob error for class %d (%d%%)",
-                        class, sum);
+                        oclass, sum);
                 (void) fflush(stderr);
                 sumerr = TRUE;
             }
-            class = objects[i].oc_class;
+            oclass = objects[i].oc_class;
             sum = 0;
         }
 
@@ -1793,7 +1793,7 @@ do_objs(void)
             if (*c >= 'a' && *c <= 'z') *c -= (char)('a' - 'A');
             else if (*c < 'A' || *c > 'Z') *c = '_';
 
-        switch (class) {
+        switch (oclass) {
         case WAND_CLASS:
             Fprintf(ofp,"#define\tWAN_");
             prefix = 1;
@@ -1844,7 +1844,7 @@ do_objs(void)
 
     /* check last set of probabilities */
     if (sum && sum != 1000) {
-        Fprintf(stderr, "prob error for class %d (%d%%)", class, sum);
+        Fprintf(stderr, "prob error for class %d (%d%%)", oclass, sum);
         (void) fflush(stderr);
         sumerr = TRUE;
     }

@@ -857,13 +857,13 @@ savedamage(register int fd, register int mode)
 }
 
 void
-save_mongen_override(register int fd, register struct mon_gen_override *or, register int mode)
+save_mongen_override(register int fd, register struct mon_gen_override *ovr, register int mode)
 {
     struct mon_gen_tuple *mt;
     struct mon_gen_tuple *prev;
     int marker = 0;
 
-    if (!or) {
+    if (!ovr) {
         if (perform_bwrite(mode)) {
             marker = 0;
             bwrite(fd, (genericptr_t) &marker, sizeof(marker));
@@ -872,9 +872,9 @@ save_mongen_override(register int fd, register struct mon_gen_override *or, regi
         if (perform_bwrite(mode)) {
             marker = 1;
             bwrite(fd, (genericptr_t) &marker, sizeof(marker));
-            bwrite(fd, (genericptr_t) or, sizeof(struct mon_gen_override));
+            bwrite(fd, (genericptr_t) ovr, sizeof(struct mon_gen_override));
         }
-        mt = or->gen_chances;
+        mt = ovr->gen_chances;
         while (mt) {
             if (perform_bwrite(mode)) {
                 bwrite(fd, (genericptr_t) mt, sizeof(struct mon_gen_tuple));
@@ -885,18 +885,18 @@ save_mongen_override(register int fd, register struct mon_gen_override *or, regi
                 free(prev);
         }
         if (release_data(mode))
-            or->gen_chances = NULL;
+            ovr->gen_chances = NULL;
     }
 }
 
 void
-save_lvl_sounds(register int fd, register struct lvl_sounds *or, register int mode)
+save_lvl_sounds(register int fd, register struct lvl_sounds *sp, register int mode)
 {
     int marker = 0;
     int i;
     int len;
 
-    if (!or) {
+    if (!sp) {
         if (perform_bwrite(mode)) {
             marker = 0;
             bwrite(fd, (genericptr_t) &marker, sizeof(marker));
@@ -905,21 +905,21 @@ save_lvl_sounds(register int fd, register struct lvl_sounds *or, register int mo
         if (perform_bwrite(mode)) {
             marker = 1;
             bwrite(fd, (genericptr_t) &marker, sizeof(marker));
-            bwrite(fd, (genericptr_t) or, sizeof(struct lvl_sounds));
+            bwrite(fd, (genericptr_t) sp, sizeof(struct lvl_sounds));
 
-            for (i = 0; i < or->n_sounds; i++) {
-                bwrite(fd, (genericptr_t)&(or->sounds[i].flags), sizeof(or->sounds[i].flags));
-                len = strlen(or->sounds[i].msg)+1;
+            for (i = 0; i < sp->n_sounds; i++) {
+                bwrite(fd, (genericptr_t)&(sp->sounds[i].flags), sizeof(sp->sounds[i].flags));
+                len = strlen(sp->sounds[i].msg)+1;
                 bwrite(fd, (genericptr_t)&len, sizeof(len));
-                bwrite(fd, (genericptr_t)or->sounds[i].msg, len);
+                bwrite(fd, (genericptr_t)sp->sounds[i].msg, len);
             }
         }
         if (release_data(mode)) {
-            for (i = 0; i < or->n_sounds; i++)
-                free(or->sounds[i].msg);
-            free(or->sounds);
-            or->sounds = NULL;
-            or->n_sounds = 0;
+            for (i = 0; i < sp->n_sounds; i++)
+                free(sp->sounds[i].msg);
+            free(sp->sounds);
+            sp->sounds = NULL;
+            sp->n_sounds = 0;
         }
     }
 }

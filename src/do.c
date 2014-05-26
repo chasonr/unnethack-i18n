@@ -1073,7 +1073,7 @@ goto_level(d_level *newlevel, boolean at_stairs, boolean falling, boolean portal
             newdungeon = (u.uz.dnum != newlevel->dnum),
             was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz),
             familiar = FALSE;
-    boolean new = FALSE;	/* made a new level? */
+    boolean is_new = FALSE;	/* made a new level? */
     boolean persistent_level = TRUE;
     struct monst *mtmp;
     char whynot[BUFSZ];
@@ -1204,7 +1204,7 @@ goto_level(d_level *newlevel, boolean at_stairs, boolean falling, boolean portal
             level_info[new_ledger].flags &= ~(FORGOTTEN|VISITED);
         }
         mklev();
-        new = TRUE;	/* made the level */
+        is_new = TRUE;	/* made the level */
     } else {
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
@@ -1465,10 +1465,10 @@ goto_level(d_level *newlevel, boolean at_stairs, boolean falling, boolean portal
     }
 
 #ifdef REINCARNATION
-    if (new && Is_rogue_level(&u.uz))
+    if (is_new && Is_rogue_level(&u.uz))
         You("enter what seems to be an older, more primitive world.");
 #endif
-    if (new && Hallucination &&
+    if (is_new && Hallucination &&
             Role_if(PM_ARCHEOLOGIST) &&
             Is_juiblex_level(&u.uz))
         pline("Ahh, Venice.");
@@ -1504,7 +1504,7 @@ goto_level(d_level *newlevel, boolean at_stairs, boolean falling, boolean portal
 #endif
 
     /* once Croesus is dead, his alarm doesn't work any more */
-    if (Is_knox(&u.uz) && (new || !mvitals[PM_CROESUS].died)) {
+    if (Is_knox(&u.uz) && (is_new || !mvitals[PM_CROESUS].died)) {
         You("penetrated a high security area!");
         pline("An alarm sounds!");
         for(mtmp = fmon; mtmp; mtmp = mtmp->nmon)

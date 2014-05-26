@@ -23,7 +23,7 @@ typedef struct dlb_procs {
     void NDECL((*dlb_cleanup_proc));
     boolean FDECL((*dlb_fopen_proc), (DLB_P,const char *,const char *));
     int FDECL((*dlb_fclose_proc), (DLB_P));
-    int FDECL((*dlb_fread_proc), (char *,int,int,DLB_P));
+    int FDECL((*dlb_fread_proc), (void *,int,int,DLB_P));
     int FDECL((*dlb_fseek_proc), (DLB_P,long,int));
     char *FDECL((*dlb_fgets_proc), (char *,int,DLB_P));
     int FDECL((*dlb_fgetc_proc), (DLB_P));
@@ -69,7 +69,7 @@ static boolean NDECL(lib_dlb_init);
 static void NDECL(lib_dlb_cleanup);
 static boolean FDECL(lib_dlb_fopen,(dlb *, const char *, const char *));
 static int FDECL(lib_dlb_fclose,(dlb *));
-static int FDECL(lib_dlb_fread,(char *, int, int, dlb *));
+static int FDECL(lib_dlb_fread,(void *, int, int, dlb *));
 static int FDECL(lib_dlb_fseek,(dlb *, long, int));
 static char *FDECL(lib_dlb_fgets,(char *, int, dlb *));
 static int FDECL(lib_dlb_fgetc,(dlb *));
@@ -284,7 +284,7 @@ lib_dlb_fclose(dlb *dp)
 }
 
 static int
-lib_dlb_fread(char *buf, int size, int quan, dlb *dp)
+lib_dlb_fread(void *buf, int size, int quan, dlb *dp)
 {
     long pos, nread, nbytes;
 
@@ -490,7 +490,7 @@ dlb_fclose(dlb *dp)
 }
 
 int
-dlb_fread(char *buf, int size, int quan, dlb *dp)
+dlb_fread(void *buf, int size, int quan, dlb *dp)
 {
     if (!dlb_initialized || size <= 0 || quan <= 0) return 0;
     if (dp->fp) return (int) fread(buf, size, quan, dp->fp);

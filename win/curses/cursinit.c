@@ -464,12 +464,12 @@ void curses_create_main_windows(void)
     }
 
     curses_add_nhwin(STATUS_WIN, status_height, status_width, status_y,
-                     status_x, status_orientation, borders);
+                     status_x, (orient)status_orientation, borders);
 
     curses_add_nhwin(MESSAGE_WIN, message_height, message_width, message_y,
-                     message_x, message_orientation, borders);
+                     message_x, (orient)message_orientation, borders);
 
-    curses_add_nhwin(MAP_WIN, map_height, map_width, map_y, map_x, 0,
+    curses_add_nhwin(MAP_WIN, map_height, map_width, map_y, map_x, CENTER,
                      borders);
 
     refresh();

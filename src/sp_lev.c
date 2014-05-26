@@ -31,7 +31,7 @@ extern void FDECL(mkmap, (lev_init *));
 
 STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *, struct mkroom *, packed_coord));
-STATIC_DCL void FDECL(create_trap, (trap *, struct mkroom *));
+STATIC_DCL void FDECL(create_trap, (room_trap *, struct mkroom *));
 STATIC_DCL int FDECL(noncoalignment, (aligntyp));
 STATIC_DCL void FDECL(create_monster, (monster *, struct mkroom *));
 STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
@@ -1443,7 +1443,7 @@ create_secret_door(struct mkroom *croom, xchar walls)
  */
 
 STATIC_OVL void
-create_trap(trap *t, struct mkroom *croom)
+create_trap(room_trap *t, struct mkroom *croom)
 {
     schar	x,y;
     coord	tm;
@@ -1597,20 +1597,20 @@ create_monster(monster *m, struct mkroom *croom)
 {
     struct monst *mtmp;
     schar x, y;
-    char class;
+    char mclass;
     aligntyp amask;
     coord cc;
     struct permonst *pm;
     unsigned g_mvflags;
 
 
-    if (m->class >= 0)
-        class = (char) def_char_to_monclass((char)m->class);
+    if (m->mclass >= 0)
+        mclass = (char) def_char_to_monclass((char)m->mclass);
     else
-        class = 0;
+        mclass = 0;
 
-    if (class == MAXMCLASSES)
-        panic("create_monster: unknown monster class '%c'", m->class);
+    if (mclass == MAXMCLASSES)
+        panic("create_monster: unknown monster class '%c'", m->mclass);
 
     amask = (m->align == AM_SPLEV_CO) ?
             Align2amask(u.ualignbase[A_ORIGINAL]) :
@@ -1619,7 +1619,7 @@ create_monster(monster *m, struct mkroom *croom)
             (m->align <= -(MAX_REGISTERS+1)) ? induced_align(80) :
             (m->align < 0 ? ralign[-m->align-1] : m->align);
 
-    if (!class)
+    if (!mclass)
         pm = (struct permonst *) 0;
     else if (m->id != NON_PM) {
         pm = &mons[m->id];
@@ -1629,7 +1629,7 @@ create_monster(monster *m, struct mkroom *croom)
         else if (g_mvflags & G_GONE)	/* genocided or extinct */
             pm = (struct permonst *) 0;	/* make random monster */
     } else {
-        pm = mkclass(class,G_NOGEN);
+        pm = mkclass(mclass,G_NOGEN);
         /* if we can't get a specific monster type (pm == 0) then the
            class has been genocided, so settle for a random monster */
     }
@@ -1817,8 +1817,8 @@ create_object(object *o, struct mkroom *croom)
 
     get_location_coord(&x, &y, DRY, croom, o->coord);
 
-    if (o->class >= 0)
-        c = o->class;
+    if (o->oclass >= 0)
+        c = o->oclass;
     else
         c = 0;
 
@@ -3208,7 +3208,7 @@ spo_monster(struct sp_coder *coder)
     if (!OV_pop_typ(id, SPOVAR_MONST)) panic("no mon type");
 
     tmpmons.id = SP_MONST_PM(OV_i(id));
-    tmpmons.class = SP_MONST_CLASS(OV_i(id));
+    tmpmons.mclass = SP_MONST_CLASS(OV_i(id));
     tmpmons.coord = OV_i(coord);
     tmpmons.has_invent = OV_i(has_inv);
 
@@ -3355,7 +3355,7 @@ spo_object(struct sp_coder *coder)
     if (!OV_pop_typ(id, SPOVAR_OBJ)) panic("no obj type");
 
     tmpobj.id = SP_OBJ_TYP(OV_i(id));
-    tmpobj.class = SP_OBJ_CLASS(OV_i(id));
+    tmpobj.oclass = SP_OBJ_CLASS(OV_i(id));
     tmpobj.containment = OV_i(containment);
 
     quancnt = (tmpobj.id > STRANGE_OBJECT) ? tmpobj.quan : 0;
@@ -3790,7 +3790,7 @@ spo_trap(struct sp_coder *coder)
 {
     struct opvar *type;
     struct opvar *coord;
-    trap tmptrap;
+    room_trap tmptrap;
 
     if (!OV_pop_i(type) ||
             !OV_pop_c(coord)) return;

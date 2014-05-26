@@ -223,10 +223,10 @@ reset_pick(void)
 }
 
 int
-pick_lock(register struct obj *pick, int rx, int ry, boolean explicit) /* pick a lock with a given object */
-               	   	      
-          
-                  /**< Mentioning tool when (un)locking doors? */
+pick_lock(
+        struct obj *pick, /* pick a lock with a given object */
+        int rx, int ry,
+        boolean mention)  /**< Mentioning tool when (un)locking doors? */
 {
     /* rx and ry are passed only from the use-stethoscope stuff */
     int picktyp, c, ch;
@@ -433,8 +433,8 @@ pick_lock(register struct obj *pick, int rx, int ry, boolean explicit) /* pick a
 
             Sprintf(qbuf,"%sock it%s%s?",
                     (door->doormask & D_LOCKED) ? "Unl" : "L",
-                    explicit ? " with " : "",
-                    explicit ? doname(pick) : "");
+                    mention ? " with " : "",
+                    mention ? doname(pick) : "");
 
             c = yn(qbuf);
             if(c == 'n') return(0);

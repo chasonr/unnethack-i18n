@@ -239,7 +239,7 @@ void curses_prev_mesg(void)
 
     wid = curses_get_wid(NHW_MENU);
     curses_create_nhmenu(wid);
-    identifier = malloc(sizeof(anything));
+    identifier = (anything *)malloc(sizeof(anything));
     identifier->a_void = NULL;
 
     for (count = 0; count < num_messages; count++) {
@@ -359,7 +359,7 @@ static void scroll_window(winid wid)
 static void mesg_add_line(char *mline)
 {
     nhprev_mesg *tmp_mesg = NULL;
-    nhprev_mesg *current_mesg = malloc(sizeof(nhprev_mesg));
+    nhprev_mesg *current_mesg = (nhprev_mesg *)malloc(sizeof(nhprev_mesg));
 
     current_mesg->str = curses_copy_of(mline);
     current_mesg->turn = moves;

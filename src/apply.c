@@ -2996,10 +2996,10 @@ do_flip_coin(struct obj *obj)
 }
 
 STATIC_OVL void
-add_class(char *cl, char class)
+add_class(char *cl, char oclass)
 {
     char tmp[2];
-    tmp[0] = class;
+    tmp[0] = oclass;
     tmp[1] = '\0';
     Strcat(cl, tmp);
 }

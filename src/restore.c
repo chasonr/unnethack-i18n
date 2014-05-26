@@ -190,41 +190,41 @@ struct lvl_sounds *
 rest_lvl_sounds(register int fd)
 {
     int marker;
-    struct lvl_sounds *or = NULL;
+    struct lvl_sounds *sp = NULL;
     mread(fd, (genericptr_t) &marker, sizeof(marker));
     if (marker) {
-        or = (struct lvl_sounds *)alloc(sizeof(struct lvl_sounds));
-        mread(fd, (genericptr_t) or, sizeof(*or));
-        or->sounds = NULL;
-        if (or->n_sounds) {
+        sp = (struct lvl_sounds *)alloc(sizeof(struct lvl_sounds));
+        mread(fd, (genericptr_t) sp, sizeof(*sp));
+        sp->sounds = NULL;
+        if (sp->n_sounds) {
             int i;
             int len;
-            or->sounds = (struct lvl_sound_bite *)alloc(sizeof(struct lvl_sound_bite)*or->n_sounds);
-            for (i = 0; i < or->n_sounds; i++) {
-                mread(fd, (genericptr_t)&(or->sounds[i].flags), sizeof(or->sounds[i].flags));
+            sp->sounds = (struct lvl_sound_bite *)alloc(sizeof(struct lvl_sound_bite)*sp->n_sounds);
+            for (i = 0; i < sp->n_sounds; i++) {
+                mread(fd, (genericptr_t)&(sp->sounds[i].flags), sizeof(sp->sounds[i].flags));
                 mread(fd, (genericptr_t)&len, sizeof(len));
-                or->sounds[i].msg = (char *)alloc(len);
-                mread(fd, (genericptr_t)or->sounds[i].msg, len);
+                sp->sounds[i].msg = (char *)alloc(len);
+                mread(fd, (genericptr_t)sp->sounds[i].msg, len);
             }
         }
     }
-    return or;
+    return sp;
 }
 
 struct mon_gen_override *
 rest_mongen_override(register int fd)
 {
     int marker;
-    struct mon_gen_override *or = NULL;
+    struct mon_gen_override *ovr = NULL;
     struct mon_gen_tuple *mt = NULL;
     int next;
 
     mread(fd, (genericptr_t) &marker, sizeof(marker));
     if (marker) {
-        or = (struct mon_gen_override *)alloc(sizeof(struct mon_gen_override));
-        mread(fd, (genericptr_t) or, sizeof(*or));
-        if (or->gen_chances) {
-            or->gen_chances = NULL;
+        ovr = (struct mon_gen_override *)alloc(sizeof(struct mon_gen_override));
+        mread(fd, (genericptr_t) ovr, sizeof(*ovr));
+        if (ovr->gen_chances) {
+            ovr->gen_chances = NULL;
             do {
                 mt = (struct mon_gen_tuple *)alloc(sizeof(struct mon_gen_tuple));
                 mread(fd, (genericptr_t) mt, sizeof(*mt));
@@ -233,12 +233,12 @@ rest_mongen_override(register int fd)
                 } else {
                     next = 0;
                 }
-                mt->next = or->gen_chances;
-                or->gen_chances = mt;
+                mt->next = ovr->gen_chances;
+                ovr->gen_chances = mt;
             } while (next);
         }
     }
-    return or;
+    return ovr;
 }
 
 

@@ -408,7 +408,7 @@ int rsrc_dlb_fclose(dlb *dp)
     return CloseHandleFile(dp->fd);
 }
 
-int rsrc_dlb_fread(char *buf, int size, int quan, dlb *dp)
+int rsrc_dlb_fread(void *buf, int size, int quan, dlb *dp)
 {
     int nread;
 

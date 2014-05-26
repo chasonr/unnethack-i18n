@@ -81,7 +81,7 @@ dlb *FDECL(dlb_fopen, (const char *,const char *));
 dlb *FDECL(dlb_fopen_area, (const char *,const char *,const char *));
 #endif
 int FDECL(dlb_fclose, (DLB_P));
-int FDECL(dlb_fread, (char *,int,int,DLB_P));
+int FDECL(dlb_fread, (void *,int,int,DLB_P));
 int FDECL(dlb_fseek, (DLB_P,long,int));
 char *FDECL(dlb_fgets, (char *,int,DLB_P));
 int FDECL(dlb_fgetc, (DLB_P));
@@ -94,7 +94,7 @@ boolean rsrc_dlb_init(void);
 void rsrc_dlb_cleanup(void);
 boolean rsrc_dlb_fopen(dlb *dp, const char *name, const char *mode);
 int rsrc_dlb_fclose(dlb *dp);
-int rsrc_dlb_fread(char *buf, int size, int quan, dlb *dp);
+int rsrc_dlb_fread(void *buf, int size, int quan, dlb *dp);
 int rsrc_dlb_fseek(dlb *dp, long pos, int whence);
 char *rsrc_dlb_fgets(char *buf, int len, dlb *dp);
 int rsrc_dlb_fgetc(dlb *dp);

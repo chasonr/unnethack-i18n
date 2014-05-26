@@ -94,10 +94,12 @@ extern const char *FDECL(core_func_params, (int));
 extern const char *FDECL(core_func_name, (int));
 extern int FDECL(handle_corefunc, (sp_lev *, char *, char *, char));
 
+#if 0
 struct coord {
 	long x;
 	long y;
 };
+#endif
 
 struct forloopdef {
     char *varname;

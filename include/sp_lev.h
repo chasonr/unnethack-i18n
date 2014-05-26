@@ -391,14 +391,14 @@ typedef struct {
 typedef struct {
     packed_coord coord;
     xchar x, y, type;
-} trap;
+} room_trap;
 
 typedef struct {
     Str_or_Len name, appear_as;
     short id;
     aligntyp align;
     packed_coord coord;
-    xchar x, y, class, appear;
+    xchar x, y, mclass, appear;
     schar peaceful, asleep;
     short female, invis, cancelled, revived, avenge, fleeing, blinded, paralyzed, stunned, confused;
     long seentraps;
@@ -410,7 +410,7 @@ typedef struct {
     int   corpsenm;
     short id, spe;
     packed_coord coord;
-    xchar x, y, class, containment;
+    xchar x, y, oclass, containment;
     schar curse_state;
     int   quan;
     short buried;

@@ -429,7 +429,7 @@ void curses_create_nhmenu(winid wid)
         return;
     }
 
-    new_menu = malloc(sizeof(nhmenu));
+    new_menu = (nhmenu *)malloc(sizeof(nhmenu));
     new_menu->wid = wid;
     new_menu->prompt = NULL;
     new_menu->entries = NULL;
@@ -468,7 +468,7 @@ void curses_add_nhmenu_item(winid wid, const ANY_P *identifier,
 
     new_str = curses_copy_of(str);
     curses_rtrim((char *) new_str);
-    new_item = malloc(sizeof(nhmenu_item));
+    new_item = (nhmenu_item *)malloc(sizeof(nhmenu_item));
     new_item->wid = wid;
     new_item->identifier = *identifier;
     new_item->accelerator = accelerator;
